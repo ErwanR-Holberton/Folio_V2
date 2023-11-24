@@ -1,6 +1,10 @@
 import pygame
-from drop_down_menu import drop_down_menu
 
-class submenus_class (drop_down_menu):
-    pass
+class submenus_class ():
+    def __init__(self, name):
+
+        font = pygame.font.Font(None, 20)                           #create default font size 20
+        self.text = font.render(name, True, (0, 0, 0))
+
+        self.color = (150, 150, 150)
 

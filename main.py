@@ -11,11 +11,10 @@ screen = pygame.display.set_mode((screen_info.current_w, screen_info.current_h),
 running = 1
 
 list = []
-list.append(drop_down_menu("projet", ["new", "load", "save"]))
-list.append(drop_down_menu("projet", ["new", "load", "save"]))
-list.append(drop_down_menu("projet", ["new", "load", "save"]))
-list.append(drop_down_menu("projet", ["new", "load", "save"]))
-list.append(drop_down_menu("projet", ["new", "load", "save"]))
+list.append(drop_down_menu("Project", ["New", "Load", "Save"]))
+list.append(drop_down_menu("Map", ["New", "Load", "Save"]))
+list.append(drop_down_menu("Play", ["This map", "That map"]))
+list.append(drop_down_menu("Help", []))
 
 while running:
     for event in pygame.event.get():
@@ -31,6 +30,15 @@ while running:
             for menu in list:
                 menu.state = 0
                 menu.test_click(mouse_x, mouse_y)
+
+        elif event.type == MOUSEMOTION:
+            mouse_x, mouse_y = event.pos
+            for menu in list:
+                if menu.state != 1:
+                    if menu.test_hover(mouse_x, mouse_y):
+                        menu.color = (160, 160, 160)
+                    else:
+                        menu.color = (150, 150, 150)
 
 
     screen.fill((255, 255, 255))
