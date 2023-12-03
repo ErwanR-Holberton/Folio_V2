@@ -1,23 +1,15 @@
 #!/usr/bin/env python3
-import pygame
-from pygame.locals import *
-from drop_down_menu import drop_down_menu
-from submenus import submenus_class
+import sys
+sys.dont_write_bytecode = True  #prevent __pycache__ creation
+from models import *
 
-pygame.init()   #initialise pygame library ?
 
-screen_info = pygame.display.Info() # Get the screen's width and height
-screen = pygame.display.set_mode((screen_info.current_w, screen_info.current_h), pygame.RESIZABLE) #create the screen
+screen = pygame.display.set_mode((800,600), pygame.RESIZABLE) #create the screen
 running = 1
 
-list = []
-list.append(drop_down_menu("Project", ["New", "Load", "Save"]))
-list.append(drop_down_menu("Map", ["New", "Load", "Save"]))
-list.append(drop_down_menu("Play", ["This map", "That map"]))
-list.append(drop_down_menu("Help", []))
-
 while running:
-    for event in pygame.event.get():
+
+    for event in pygame.event.get():    #main event loop
         if event.type == QUIT:          #if click on red cross
             running = 0
 
@@ -40,15 +32,14 @@ while running:
                     else:
                         menu.color = (150, 150, 150)
 
+    screen.fill((255, 255, 255))  #fill the screen, everything after is drawing
 
-    screen.fill((255, 255, 255))
-    
     for menu in list:
         menu.draw(screen)
         if menu.state == 1:
             menu.draw_submenus(screen)
 
-                     
+
     pygame.display.flip()                               #refresh screen
 
 pygame.quit() # Quit Pygame
