@@ -4,7 +4,6 @@ sys.dont_write_bytecode = True  #prevent __pycache__ creation
 from models import *
 
 
-screen = pygame.display.set_mode((800,600), pygame.RESIZABLE) #create the screen
 running = 1
 
 while running:
@@ -32,12 +31,17 @@ while running:
                     else:
                         menu.color = (150, 150, 150)
 
+        elif event.type == VIDEORESIZE:
+            tab.calculate(screen)
+
     screen.fill((255, 255, 255))  #fill the screen, everything after is drawing
 
     for menu in list:
         menu.draw(screen)
         if menu.state == 1:
             menu.draw_submenus(screen)
+
+    tab.draw(screen)
 
 
     pygame.display.flip()                               #refresh screen

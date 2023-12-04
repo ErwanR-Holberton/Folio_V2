@@ -1,6 +1,6 @@
 import pygame
 
-class submenus_class ():
+class submenus_class():
     def __init__(self, name):
 
         font = pygame.font.Font(None, 20)                           #create default font size 20
