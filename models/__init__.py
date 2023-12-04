@@ -1,6 +1,7 @@
 from models.drop_down_menu import * #import models
 from models.submenus import *
 from models.tab_menus import *
+from models.main_screen import *
 
 import pygame                   #import pygame and variables
 from pygame.locals import *
@@ -20,3 +21,4 @@ list.append(drop_down_menu("Play", ["This map", "That map"]))
 list.append(drop_down_menu("Help", []))
 
 tab = tab_menu_class(screen)
+grid= main_screen(screen)

@@ -21,6 +21,7 @@ while running:
             for menu in list:
                 menu.state = 0
                 menu.test_click(mouse_x, mouse_y)
+            grid.click(mouse_x, mouse_y)
 
         elif event.type == MOUSEMOTION:
             mouse_x, mouse_y = event.pos
@@ -33,15 +34,16 @@ while running:
 
         elif event.type == VIDEORESIZE:
             tab.calculate(screen)
+            grid.calculate(screen)
 
     screen.fill((255, 255, 255))  #fill the screen, everything after is drawing
+    tab.draw(screen)
+    grid.draw(screen)
 
     for menu in list:
         menu.draw(screen)
         if menu.state == 1:
             menu.draw_submenus(screen)
-
-    tab.draw(screen)
 
 
     pygame.display.flip()                               #refresh screen
