@@ -19,10 +19,9 @@ class main_screen():
             pygame.draw.line(self.surf, (0, 0, 0), (0, y), (width, y))
         for key, value in self.coordinates.items():
             key = key.split(".")
-            x = key[0]
-            y = key[1]
+            x = int(key[0])
+            y = int(key[1])
             if value == 1:
-                print (x * self.tile_size, y * self.tile_size, self.tile_size, self.tile_size)
                 pygame.draw.rect(self.surf, (50, 50, 50), (x * self.tile_size, y * self.tile_size, self.tile_size, self.tile_size))
 
     def draw(self, screen):

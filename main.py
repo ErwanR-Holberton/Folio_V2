@@ -12,7 +12,7 @@ while running:
         if event.type == QUIT:          #if click on red cross
             running = 0
 
-        elif event.type == KEYDOWN:             #if key is pressed
+        elif event.type == KEYUP:             #if key is pressed
             if event.key == pygame.K_ESCAPE:
                 running = 0
 
@@ -22,7 +22,7 @@ while running:
                 menu.state = 0
                 menu.test_click(mouse_x, mouse_y)
             grid.click(mouse_x, mouse_y)
-
+            grid.calculate(screen)
         elif event.type == MOUSEMOTION:
             mouse_x, mouse_y = event.pos
             for menu in list:
