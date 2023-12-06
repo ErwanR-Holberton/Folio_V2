@@ -12,7 +12,7 @@ class main_screen():
         width = screen.get_width() - tab_menu_class.width
         height = screen.get_height()
         self.surf = pygame.Surface((width, height))
-        self.surf.fill((200, 200, 200))
+        self.surf.fill((54, 57, 63))
         for x in range(0, width, self.tile_size):
             pygame.draw.line(self.surf, (0, 0, 0), (x, 0), (x, height))
         for y in range(0, height, self.tile_size):

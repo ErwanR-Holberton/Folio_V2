@@ -45,6 +45,7 @@ while running:
         if menu.state == 1:
             menu.draw_submenus(screen)
 
+    screen.blit(sand, (0, 0))
 
     pygame.display.flip()                               #refresh screen
 

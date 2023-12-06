@@ -22,3 +22,6 @@ list.append(drop_down_menu("Help", []))
 
 tab = tab_menu_class(screen)
 grid= main_screen(screen)
+tileset = pygame.image.load("tileset.png")
+sand = tileset.subsurface((0, 0, 16, 16)).copy()
+sand = pygame.transform.scale(sand, (32, 32))
