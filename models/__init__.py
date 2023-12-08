@@ -1,7 +1,8 @@
 from models.drop_down_menu import * #import models
 from models.submenus import *
-from models.tab_menus import *
+from models.tab import *
 from models.main_screen import *
+from models.tab_menus import *
 
 import pygame                   #import pygame and variables
 from pygame.locals import *
@@ -20,8 +21,13 @@ list.append(drop_down_menu("Map", ["New", "Load", "Save"]))
 list.append(drop_down_menu("Play", ["This map", "That map"]))
 list.append(drop_down_menu("Help", []))
 
-tab = tab_menu_class(screen)
+tab = tab_class(screen)
 grid= main_screen(screen)
 tileset = pygame.image.load("tileset.png")
-sand = tileset.subsurface((0, 0, 16, 16)).copy()
-sand = pygame.transform.scale(sand, (32, 32))
+
+
+def get_tile(x, y):
+    tile = tileset.subsurface((y * 16, x * 16, 16, 16)).copy()
+    return pygame.transform.scale(tile, (32, 32))
+
+sand = get_tile(37, 26)

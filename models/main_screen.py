@@ -1,5 +1,5 @@
 import pygame
-from models.tab_menus import *
+from models.tab import *
 
 class main_screen():
     def __init__(self, screen):
@@ -9,7 +9,7 @@ class main_screen():
         pass
 
     def calculate(self, screen):
-        width = screen.get_width() - tab_menu_class.width
+        width = screen.get_width() - tab_class.width
         height = screen.get_height()
         self.surf = pygame.Surface((width, height))
         self.surf.fill((54, 57, 63))
