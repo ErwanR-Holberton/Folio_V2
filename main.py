@@ -16,14 +16,19 @@ while running:
             if event.key == pygame.K_ESCAPE:
                 running = 0
 
-        elif event.type == MOUSEBUTTONUP:
+        elif event.type == MOUSEBUTTONUP: #if clicked
             mouse_x, mouse_y = event.pos
             for menu in list:
                 menu.state = 0
                 menu.test_click(mouse_x, mouse_y)
+            for button in tab.menu:
+                button.state = 0
+                button.test_click(mouse_x, mouse_y)
+
             grid.click(mouse_x, mouse_y)
             grid.calculate(screen)
-        elif event.type == MOUSEMOTION:
+
+        elif event.type == MOUSEMOTION: #if moves
             mouse_x, mouse_y = event.pos
             for menu in list:
                 if menu.state != 1:
@@ -31,6 +36,15 @@ while running:
                         menu.color = (160, 160, 160)
                     else:
                         menu.color = (150, 150, 150)
+            for button in tab.menu:
+                if button.state != 1:
+                    if button.test_hover(mouse_x - grid.width, mouse_y):
+                        button.color = (160, 160, 160)
+                        tab.calculate(screen)
+                    else:
+                        button.color = (150, 150, 150)
+                        tab.calculate(screen)
+
 
         elif event.type == VIDEORESIZE:
             tab.calculate(screen)

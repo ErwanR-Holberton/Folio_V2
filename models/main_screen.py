@@ -2,6 +2,7 @@ import pygame
 from models.tab import *
 
 class main_screen():
+
     def __init__(self, screen):
         self.coordinates = {}
         self.tile_size = 32
@@ -9,14 +10,15 @@ class main_screen():
         pass
 
     def calculate(self, screen):
-        width = screen.get_width() - tab_class.width
+        self.width = screen.get_width() - tab_class.width
+        print ("width", self.width)
         height = screen.get_height()
-        self.surf = pygame.Surface((width, height))
+        self.surf = pygame.Surface((self.width, height))
         self.surf.fill((54, 57, 63))
-        for x in range(0, width, self.tile_size):
+        for x in range(0, self.width, self.tile_size):
             pygame.draw.line(self.surf, (0, 0, 0), (x, 0), (x, height))
         for y in range(0, height, self.tile_size):
-            pygame.draw.line(self.surf, (0, 0, 0), (0, y), (width, y))
+            pygame.draw.line(self.surf, (0, 0, 0), (0, y), (self.width, y))
         for key, value in self.coordinates.items():
             key = key.split(".")
             x = int(key[0])
