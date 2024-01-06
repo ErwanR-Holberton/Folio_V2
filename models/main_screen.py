@@ -11,7 +11,6 @@ class main_screen():
 
     def calculate(self, screen):
         self.width = screen.get_width() - tab_class.width
-        print ("width", self.width)
         height = screen.get_height()
         self.surf = pygame.Surface((self.width, height))
         self.surf.fill((54, 57, 63))
