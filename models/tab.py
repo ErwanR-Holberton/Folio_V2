@@ -12,6 +12,21 @@ class tab_class():
 
         from functions import get_tile
     
+        self.colors = [
+            (255, 0, 0),   # Red
+            (0, 255, 0),   # Green
+            (0, 0, 255),   # Blue
+            (255, 255, 0), # Yellow
+            (255, 0, 255), # Magenta
+            (0, 255, 255), # Cyan
+            (128, 128, 128), # Gray
+            (255, 165, 0),   # Orange
+            (0, 128, 0),     # Dark Green
+            (128, 0, 128)   # Purple
+        ]
+        for x in range(10):
+            self.colors.append((255, 255, 255))
+        self.screen = screen
         self.selected_tile = None
         self.selected_tab = 1
         self.menu = []
@@ -46,6 +61,7 @@ class tab_class():
         self.calculate(screen)
 
     def calculate(self, screen):
+        """"""
         font = pygame.font.Font(None, 22) #create default font size 20
         self.surf = pygame.Surface((self.width, screen.get_height()))
         self.surf.fill((250, 250, 250))
@@ -56,7 +72,11 @@ class tab_class():
                 self.surf.blit(tile, (0 + (count %TILES_PER_LINE) * 40 + 4, tab_menus_class.menu_height + int(count /TILES_PER_LINE) * 40 + 4))
                 count += 1
         if self.selected_tab == 2:
-            self.surf.fill((250, 0, 250))
+            x = 0
+            for color in self.colors:
+                pygame.draw.circle(self.surf, color, (20 + (x % 10) * 30, 50 + int(x / 10) * 30), 10)
+                pygame.draw.circle(self.surf, (0, 0, 0), (20 + (x % 10) * 30, 50 + int(x / 10) * 30), 10, 1)
+                x += 1
         if self.selected_tab == 3:
             self.surf.fill((250, 250, 0))
 
@@ -66,16 +86,22 @@ class tab_class():
 
 
     def draw(self, screen):
+        """"""
         screen.blit(self.surf, (screen.get_width() - self.width, 0))
 
     def click(self, x, y):
+        """"""
         for button in self.menu:
                 button.state = 0
                 if button.test_click(x, y):
                     if button.name == "Tiles":
                         self.selected_tab = 1
+                        self.grid.mode = 0
+                        self.grid.calculate(self.screen)
                     if button.name == "Tools":
                         self.selected_tab = 2
+                        self.grid.mode = 1
+                        self.grid.calculate(self.screen)
                     if button.name == "Settings":
                         self.selected_tab = 3
         index_x = int (x / 40)

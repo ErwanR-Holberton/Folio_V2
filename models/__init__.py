@@ -24,4 +24,5 @@ list.append(drop_down_menu("Edit", ["Undo", "Redo"]))
 list.append(drop_down_menu("Help", []))
 
 tab = tab_class(screen)
-grid= main_screen(screen)
+grid = main_screen(screen)
+tab.grid = grid
