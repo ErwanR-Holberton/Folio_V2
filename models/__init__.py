@@ -3,7 +3,7 @@ from models.submenus import *
 from models.tab import *
 from models.main_screen import *
 from models.tab_menus import *
-from functions import get_tile
+from functions import get_tile, load_tiles
 
 import pygame                   #import pygame and variables
 from pygame.locals import *

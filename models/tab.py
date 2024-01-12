@@ -1,5 +1,6 @@
 import pygame
 from models.tab_menus import tab_menus_class
+from functions import load_tiles
 
 TILES_PER_LINE = 8
 
@@ -19,6 +20,8 @@ class tab_class():
         self.menu.append(tab_menus_class("Tools", []))
         self.menu.append(tab_menus_class("Settings", []))
         self.tiles = []
+        for tile in load_tiles():
+            self.tiles.append(tile)
         self.tiles.append(get_tile(37, 26))
         self.tiles.append(get_tile(12, 2))
         self.tiles.append(get_tile(37, 26))
