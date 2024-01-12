@@ -4,6 +4,7 @@ from models.tab import *
 class main_screen():
 
     def __init__(self, screen):
+        self.selected_tile = None
         self.coordinates = {}
         self.tile_size = 32
         self.calculate(screen)
@@ -22,12 +23,12 @@ class main_screen():
             key = key.split(".")
             x = int(key[0])
             y = int(key[1])
-            if value == 1:
-                pygame.draw.rect(self.surf, (50, 50, 50), (x * self.tile_size, y * self.tile_size, self.tile_size, self.tile_size))
+            if self.selected_tile is not None:
+                self.surf.blit(value, (x * self.tile_size, y * self.tile_size))
 
     def draw(self, screen):
         screen.blit(self.surf, (0, 0))
 
     def click(self, x, y):
         index = "{}.{}".format(int(x/self.tile_size), int(y/self.tile_size))
-        self.coordinates[index] = 1
+        self.coordinates[index] = self.selected_tile

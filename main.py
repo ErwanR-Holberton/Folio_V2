@@ -21,18 +21,11 @@ while running:
             for menu in list:
                 menu.state = 0
                 menu.test_click(mouse_x, mouse_y)
-            for button in tab.menu:
-                button.state = 0
-                if button.test_click(mouse_x - grid.width, mouse_y):
-                    if button.name == "Tiles":
-                        tab.selected_tab = 1
-                    if button.name == "Tools":
-                        tab.selected_tab = 2
-                    if button.name == "Settings":
-                        tab.selected_tab = 3
-
-            grid.click(mouse_x, mouse_y)
-            grid.calculate(screen)
+            if mouse_x > grid.width:
+                grid.selected_tile = tab.click(mouse_x - grid.width, mouse_y)
+            else:
+                grid.click(mouse_x, mouse_y)
+                grid.calculate(screen)
 
         elif event.type == MOUSEMOTION: #if moves
             mouse_x, mouse_y = event.pos
