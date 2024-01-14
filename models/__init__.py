@@ -23,6 +23,9 @@ list.append(drop_down_menu("Tile", ["New", "Edit", "Delete"]))
 list.append(drop_down_menu("Edit", ["Undo", "Redo"]))
 list.append(drop_down_menu("Help", []))
 
-tab = tab_class(screen)
+tab = tab_class(screen) 
+"""create an instance of tab_class with screen argument"""
 grid = main_screen(screen)
+"""create an instance of main_screen with screen argument"""
 tab.grid = grid
+"""assign the value of grid to the grid attribute of tab instance"""
