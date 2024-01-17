@@ -1,6 +1,5 @@
 import pygame
 from models.tab import *
-from models.drop_down_menu import drop_down_menu
 
 PIXEL_NUMBER = 16
 
@@ -38,10 +37,10 @@ class main_screen():
         else:
             """ Tile grid mode"""
             pixel_size_x = (self.width - 20) / PIXEL_NUMBER
-            pixel_size_y = (height - drop_down_menu.menu_height - 20) / PIXEL_NUMBER
+            pixel_size_y = (height - 30 - 20) / PIXEL_NUMBER #remplacer 30 par menu height
             pixel_size = int (min(pixel_size_x, pixel_size_y))
             offset_x = int((self.width - (pixel_size * PIXEL_NUMBER)) / 2)
-            offset_y = int((height - (pixel_size * PIXEL_NUMBER) - drop_down_menu.menu_height) / 2 + drop_down_menu.menu_height)
+            offset_y = int((height - (pixel_size * PIXEL_NUMBER) - 30) / 2 + 30) #remplacer 30 par menu height
 
             self.surf.fill((255, 255, 255)) # Background color
             for x in range(0, (PIXEL_NUMBER + 1) * pixel_size, pixel_size):
@@ -56,6 +55,6 @@ class main_screen():
 
     def click(self, x, y):
         """Handle a click event on the main screen"""
-        
+
         index = "{}.{}".format(int(x/self.tile_size), int(y/self.tile_size))
         self.coordinates[index] = self.selected_tile

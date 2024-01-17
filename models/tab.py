@@ -1,5 +1,4 @@
 import pygame
-from models.tab_menus import tab_menus_class
 from functions import load_tiles
 
 TILES_PER_LINE = 8
@@ -14,7 +13,7 @@ class tab_class():
         """Initialize the tab class"""
 
         from functions import get_tile
-    
+
         """Predefined color palette for drawing tools"""
         self.colors = [
             (255, 0, 0),   # Red
@@ -36,12 +35,12 @@ class tab_class():
         self.menu = []
 
         """Adjust the width of the menu based on the number of tabs"""
-        tab_menus_class.menu_width += 7
+        #tab_menus_class.menu_width += 7
 
         """Create tab menus for "Tiles", "Tools", and "Settings"""
-        self.menu.append(tab_menus_class("Tiles", []))
-        self.menu.append(tab_menus_class("Tools", []))
-        self.menu.append(tab_menus_class("Settings", []))
+        #self.menu.append(tab_menus_class("Tiles", []))
+        #self.menu.append(tab_menus_class("Tools", []))
+        #self.menu.append(tab_menus_class("Settings", []))
 
         """Load tiles for the "Tiles" tab"""
         self.tiles = []
@@ -71,7 +70,7 @@ class tab_class():
         self.tiles.append(get_tile(12, 2))
 
         """Set the initial state with the "Tiles" tab selected"""
-        self.menu[0].state = 1
+        #self.menu[0].state = 1
         self.calculate(screen)
 
     def calculate(self, screen):
@@ -87,7 +86,7 @@ class tab_class():
             """Display tiles in the "Tiles" tab"""
             count = 0
             for tile in self.tiles:
-                self.surf.blit(tile, (0 + (count %TILES_PER_LINE) * 40 + 4, tab_menus_class.menu_height + int(count /TILES_PER_LINE) * 40 + 4))
+                self.surf.blit(tile, (0 + (count %TILES_PER_LINE) * 40 + 4, 30 + int(count /TILES_PER_LINE) * 40 + 4)) #remplacer par height
                 count += 1
         if self.selected_tab == 2:
             """Display color palette in the "Tools" tab"""
@@ -132,10 +131,10 @@ class tab_class():
                         self.grid.calculate(self.screen)
                     if button.name == "Settings":
                         self.selected_tab = 3
-        
+
         """Calculate the index of the clicked tile in the "Tiles" tab"""
         index_x = int (x / 40)
-        index_y = int ((y - tab_menus_class.menu_height) /40)
+        index_y = int ((y - 30) /40) #remplacer par height
         index = index_y * TILES_PER_LINE + index_x
 
         """Update the selected tile based on the clicked tile"""
