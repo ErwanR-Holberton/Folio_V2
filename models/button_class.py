@@ -33,7 +33,7 @@ class button_class():
 
         self.rect_value = (x, y, width, height)
         text_x = x + int(width/2) - int(self.text_surface.get_width()/2)
-        text_y = int((height - self.text_surface.get_height())/2)
+        text_y = y + int((height - self.text_surface.get_height())/2)
 
         self.position_text = (text_x, text_y)
 
@@ -49,6 +49,10 @@ class button_class():
     def click(self, x, y):
         """ Toggle the menu state and update color accordingly"""
 
+        if self.state == 1 and self.sub_buttons is not None:
+            for button in self.sub_buttons:
+                button.click(x, y)
+                button.state = 0
         hover = self.hover(x, y)
         if hover:
             if self.state == 0:

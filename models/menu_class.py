@@ -19,6 +19,14 @@ class menu_class():
         self.expand("Edit", ["Undo", "Redo"])
         self.expand("Help", [])
 
+    def create_tab_menu(self):
+        "create a menu for the tab section"
+
+        self.button_width = 107
+        self.expand("Tiles")
+        self.expand("Tools")
+        self.expand("Settings")
+
     def expand(self, button_name, sub_buttons = None):
         """add a button to the object menu"""
 

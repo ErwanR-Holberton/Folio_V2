@@ -5,6 +5,8 @@ from models import *
 
 top = menu_class("top_menu")
 top.create_top_menu()
+tab_menu = menu_class("tab_menu")
+tab_menu.create_tab_menu()
 
 """Initialize the game state"""
 running = 1
@@ -23,10 +25,10 @@ while running:
 
         elif event.type == MOUSEBUTTONUP: # Check for mouse button click event
             mouse_x, mouse_y = event.pos
-            top.click(mouse_x, mouse_y)
-            """for menu in list:
-                menu.state = 0
-                menu.test_click(mouse_x, mouse_y)"""
+            var = top.click(mouse_x, mouse_y)
+            tab_menu.click(mouse_x - grid.width, mouse_y)
+            print (var)
+
             if mouse_x > grid.width:
                 grid.selected_tile = tab.click(mouse_x - grid.width, mouse_y)
             else:
@@ -36,21 +38,7 @@ while running:
         elif event.type == MOUSEMOTION: # Check for mouse motion event
             mouse_x, mouse_y = event.pos
             top.hover(mouse_x, mouse_y)
-            """for menu in list:
-                if menu.state != 1: # Change menu color if hovered
-                    if menu.test_hover(mouse_x, mouse_y):
-                        menu.color = (160, 160, 160)
-                    else:
-                        menu.color = (150, 150, 150)
-            for button in tab.menu:
-                if button.state != 1: # Change tab button color if hovered
-                    if button.test_hover(mouse_x - grid.width, mouse_y):
-                        button.color = (160, 160, 160)
-                        tab.calculate(screen)
-                    else:
-                        button.color = (150, 150, 150)
-                        tab.calculate(screen)"""
-
+            tab_menu.hover(mouse_x - grid.width, mouse_y)
 
         elif event.type == VIDEORESIZE: # Check for window resize event
             tab.calculate(screen)
@@ -58,15 +46,15 @@ while running:
 
     screen.fill((255, 255, 255))  #Fill the screen with a white background
 
-    # Draw the tab and grid
+    # Draw the menus tab and grid
+    for button in tab_menu.buttons:
+        button.draw(tab.surf)
     tab.draw(screen)
     grid.draw(screen)
 
     # Draw menus and submenus
     for button in top.buttons:
         button.draw(screen)
-        """if menu.state == 1:
-            menu.draw_submenus(screen)"""
 
     pygame.display.flip() # Refresh the display
 
