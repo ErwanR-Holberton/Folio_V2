@@ -56,5 +56,7 @@ class main_screen():
     def click(self, x, y):
         """Handle a click event on the main screen"""
 
+        if self.selected_tile is None:
+            return
         index = "{}.{}".format(int(x/self.tile_size), int(y/self.tile_size))
         self.coordinates[index] = self.selected_tile

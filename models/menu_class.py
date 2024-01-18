@@ -43,7 +43,13 @@ class menu_class():
 
     def click(self, x, y):
         """"""
+        clicked = 0
+        label = 0
         for button in self.buttons:
             button.color = (150, 150, 150)
             if button.click(x, y) is False:
                 button.state = 0
+            else:
+                clicked = 1
+                label = button.label
+        return clicked, label or None

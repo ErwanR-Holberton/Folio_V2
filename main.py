@@ -25,15 +25,17 @@ while running:
 
         elif event.type == MOUSEBUTTONUP: # Check for mouse button click event
             mouse_x, mouse_y = event.pos
-            var = top.click(mouse_x, mouse_y)
+            click, name = 0, None
+            click, name = top.click(mouse_x, mouse_y)
             tab_menu.click(mouse_x - grid.width, mouse_y)
-            print (var)
-
-            if mouse_x > grid.width:
-                grid.selected_tile = tab.click(mouse_x - grid.width, mouse_y)
-            else:
-                grid.click(mouse_x, mouse_y)
-                grid.calculate(screen)
+            print (grid.coordinates)
+            if not click:
+                if mouse_x > grid.width:
+                    if mouse_y > tab_menu.height:
+                        grid.selected_tile = tab.click(mouse_x - grid.width, mouse_y)
+                else:
+                    grid.click(mouse_x, mouse_y)
+                    grid.calculate(screen)
 
         elif event.type == MOUSEMOTION: # Check for mouse motion event
             mouse_x, mouse_y = event.pos
