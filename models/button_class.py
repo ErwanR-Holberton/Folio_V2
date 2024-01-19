@@ -9,6 +9,7 @@ class button_class():
         self.state = 0
         self.text_surface = create_text_surface(label)
         self.sub_buttons = []
+        self.radius_br = -1
 
     def hover(self, x, y):
         """Check if the given coordinates are within the menu area for hover effect"""
@@ -40,7 +41,7 @@ class button_class():
     def draw(self, screen):
         """Draw the menu on the screen"""
 
-        pygame.draw.rect(screen, self.color, self.rect_value)
+        pygame.draw.rect(screen, self.color, self.rect_value, border_bottom_right_radius= self.radius_br)
         screen.blit(self.text_surface, self.position_text)
         if self.state == 1:
             for button in self.sub_buttons:

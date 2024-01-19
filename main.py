@@ -5,8 +5,7 @@ from models import *
 
 top = menu_class("top_menu")
 top.create_top_menu()
-tab_menu = menu_class("tab_menu")
-tab_menu.create_tab_menu()
+top.buttons[-1].radius_br = 10
 
 """Initialize the game state"""
 running = 1
@@ -27,12 +26,10 @@ while running:
             mouse_x, mouse_y = event.pos
             click, name = 0, None
             click, name = top.click(mouse_x, mouse_y)
-            tab_menu.click(mouse_x - grid.width, mouse_y)
-            print (grid.coordinates)
+            tab.menu.click(mouse_x - grid.width, mouse_y)
             if not click:
                 if mouse_x > grid.width:
-                    if mouse_y > tab_menu.height:
-                        grid.selected_tile = tab.click(mouse_x - grid.width, mouse_y)
+                    grid.selected_tile = tab.click(mouse_x - grid.width, mouse_y)
                 else:
                     grid.click(mouse_x, mouse_y)
                     grid.calculate(screen)
@@ -40,7 +37,7 @@ while running:
         elif event.type == MOUSEMOTION: # Check for mouse motion event
             mouse_x, mouse_y = event.pos
             top.hover(mouse_x, mouse_y)
-            tab_menu.hover(mouse_x - grid.width, mouse_y)
+            tab.menu.hover(mouse_x - grid.width, mouse_y)
 
         elif event.type == VIDEORESIZE: # Check for window resize event
             tab.calculate(screen)
@@ -49,8 +46,6 @@ while running:
     screen.fill((255, 255, 255))  #Fill the screen with a white background
 
     # Draw the menus tab and grid
-    for button in tab_menu.buttons:
-        button.draw(tab.surf)
     tab.draw(screen)
     grid.draw(screen)
 
