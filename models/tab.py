@@ -2,6 +2,7 @@ import pygame
 from functions import load_tiles
 from models.menu_class import menu_class
 from models.button_class import button_class
+from pygame.locals import *
 
 TILES_PER_LINE = 8
 
@@ -10,6 +11,7 @@ class tab_class():
 
     width = 320
     size_name = 50
+    height = 30
 
     def __init__(self, screen):
         """Initialize the tab class"""
@@ -24,6 +26,7 @@ class tab_class():
         self.tools_obj[0].set_position(20, 150, 70, 30)
         self.tools_obj[1].set_position(110, 150, 70, 30)
         self.tools_obj[2].set_position(200, 150, 70, 30)
+        self.selected_color = (87, 56, 15)
 
         """Predefined color palette for drawing tools"""
         self.colors = [
@@ -71,6 +74,10 @@ class tab_class():
                 x += 1
             for button in self.tools_obj:
                 button.draw(self.surf)
+            self.selected_color = (self.tools_obj[0].label, self.tools_obj[1].label, self.tools_obj[2].label)
+            self.selected_color = tuple(int (x) if x.isdigit() else 255 for x in self.selected_color)
+            pygame.draw.rect(self.surf, self.selected_color, (10, 110, 300, 15))
+            pygame.draw.rect(self.surf, (0, 0, 0), (10, 110, 300, 15), 1)
         if self.selected_tab == 3:
             """Display a yellow background in the "Settings" tab"""
             self.surf.fill((250, 250, 0))
@@ -113,13 +120,25 @@ class tab_class():
 
         if click_detected == 0:
             """Calculate the index of the clicked tile in the "Tiles" tab"""
-            index_x = int (x / 40)
-            index_y = int ((y - 30) /40) #remplacer par height
-            index = index_y * TILES_PER_LINE + index_x
+            if self.selected_tab == 1: # tiles
+                index_x = int (x / 40)
+                index_y = int ((y - __class__.height) /40)
+                index = index_y * TILES_PER_LINE + index_x
 
-            """Update the selected tile based on the clicked tile"""
-            if index < len(self.tiles):
-                self.selected_tile = self.tiles[index_y * TILES_PER_LINE + index_x]
+                """Update the selected tile based on the clicked tile"""
+                if index < len(self.tiles):
+                    self.selected_tile = self.tiles[index_y * TILES_PER_LINE + index_x]
+
+            elif self.selected_tab == 2: # tools
+                for button in self.tools_obj:
+                    button.state = 0
+                    if button.label == "":
+                        button.label = button.name
+                        button.text_surface = button.create_text_surface(button.label)
+                    button.click(x, y)
+
+            else: # settings
+                pass
 
         self.calculate(self.screen)
 
@@ -154,4 +173,16 @@ class tab_class():
         self.tiles.append(get_tile(37, 26))
         self.tiles.append(get_tile(12, 2))
 
-
+    def handle_key_input(self, key):
+        if self.selected_tab == 2:
+            if key >= 1073741913 and key <= 1073741922:
+                key = (key - 1073741912) % 10
+            elif key >= K_0 and key <= K_9:
+                key = (key - 48)
+            elif key == K_BACKSPACE:
+                key = -1
+            else:
+                return
+            for button_index in range(3): #RGB buttons
+                if self.tools_obj[button_index].state == 1:
+                    self.tools_obj[button_index].edit_label(key)

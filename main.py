@@ -21,6 +21,8 @@ while running:
         elif event.type == KEYUP:
             if event.key == pygame.K_ESCAPE:
                 running = 0
+            tab.handle_key_input(event.key)
+            tab.calculate(screen)
 
         elif event.type == MOUSEBUTTONUP: # Check for mouse button click event
             mouse_x, mouse_y = event.pos
@@ -31,7 +33,8 @@ while running:
                 if mouse_x > grid.width:
                     grid.selected_tile = tab.click(mouse_x - grid.width, mouse_y)
                 else:
-                    grid.click(mouse_x, mouse_y)
+                    if tab.selected_tab == 1:
+                        grid.click(mouse_x, mouse_y)
                     grid.calculate(screen)
 
         elif event.type == MOUSEMOTION: # Check for mouse motion event

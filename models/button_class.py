@@ -7,9 +7,10 @@ class button_class():
         self.label = label
         self.color = (150, 150, 150)
         self.state = 0
-        self.text_surface = create_text_surface(label)
+        self.text_surface = self.create_text_surface(label)
         self.sub_buttons = []
         self.radius_br = -1
+        self.name = label
 
     def hover(self, x, y):
         """Check if the given coordinates are within the menu area for hover effect"""
@@ -59,6 +60,10 @@ class button_class():
             if self.state == 0:
                 self.state = 1
                 self.color = (120, 120, 120)
+                if self.name == "R" or self.name == "G" or self.name == "B":
+                    if self.label.isalpha():
+                        self.label = ""
+                        self.text_surface = self.create_text_surface("")
             else:
                 self.state = 0
                 self.color = (150, 150, 150)
@@ -76,9 +81,20 @@ class button_class():
             new.set_position(x, (y + count * h), w, h)
             self.sub_buttons.append(new)
 
+    def create_text_surface(self, text):
+        """Render text for the menu using a default font"""
+        font = pygame.font.Font(None, 22)
+        return font.render(text, True, (0, 0, 0))
 
-def create_text_surface(text):
-    """Render text for the menu using a default font"""
-    font = pygame.font.Font(None, 22)
-    return font.render(text, True, (0, 0, 0))
-
+    def edit_label(self, key):
+        if key == -1:
+            if len(self.label) > 0:
+                self.label = self.label[:-1]
+        else:
+            if len(self.label) > 0:
+                if int(self.label) == 0:
+                    self.label = ""
+            self.label += str(key)
+            if int(self.label) > 255:
+                self.label = "255"
+        self.text_surface = self.create_text_surface(self.label)
