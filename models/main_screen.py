@@ -11,6 +11,7 @@ class main_screen():
         self.coordinates = {} # Dictionary to store coordinates and corresponding tiles
         self.tile_size = 32 # Size of each tile
         self.mode = 0 # Display mode (0 for map grid, 1 for tile grid)
+        self.tile_grid = [[(0, 255, 255) for value in range(16)] for value in range(16)]
         self.calculate(screen) # Calculate the initial state of the main screen
         pass
 
@@ -43,9 +44,15 @@ class main_screen():
             offset_y = int((height - (pixel_size * PIXEL_NUMBER) - 30) / 2 + 30) #remplacer 30 par menu height
 
             self.surf.fill((255, 255, 255)) # Background color
+
+            for x in range(16):
+                for y in range(16):
+                    pygame.draw.rect(self.surf, self.tile_grid[x][y], (x * pixel_size + offset_x, y * pixel_size + offset_y, pixel_size, pixel_size))
+
             for x in range(0, (PIXEL_NUMBER + 1) * pixel_size, pixel_size):
                 pygame.draw.line(self.surf, (0, 0, 0), (x + offset_x, offset_y), (x + offset_x, pixel_size * PIXEL_NUMBER + offset_y))
                 pygame.draw.line(self.surf, (0, 0, 0), (offset_x, x + offset_y), (pixel_size * PIXEL_NUMBER + offset_x, x + offset_y))
+
 
 
     def draw(self, screen):
@@ -60,3 +67,16 @@ class main_screen():
             return
         index = "{}.{}".format(int(x/self.tile_size), int(y/self.tile_size))
         self.coordinates[index] = self.selected_tile
+
+    def set_color(self, x, y, color, screen):
+        height = screen.get_height()
+        pixel_size_x = (self.width - 20) / PIXEL_NUMBER
+        pixel_size_y = (height - 30 - 20) / PIXEL_NUMBER #remplacer 30 par menu height
+        pixel_size = int (min(pixel_size_x, pixel_size_y))
+        offset_x = int((self.width - (pixel_size * PIXEL_NUMBER)) / 2)
+        offset_y = int((height - (pixel_size * PIXEL_NUMBER) - 30) / 2 + 30) #remplacer 30 par menu height
+        index_x = int ((x - offset_x)/pixel_size)
+        index_y = int ((y - offset_y)/pixel_size)
+        if index_x < 0 or index_x > 15 or index_y < 0 or index_y > 15:
+            return
+        self.tile_grid[index_x][index_y] = color

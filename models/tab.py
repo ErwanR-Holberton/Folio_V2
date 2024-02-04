@@ -3,6 +3,7 @@ from functions import load_tiles
 from models.menu_class import menu_class
 from models.button_class import button_class
 from pygame.locals import *
+import math
 
 TILES_PER_LINE = 8
 
@@ -23,9 +24,11 @@ class tab_class():
         self.tools_obj.append(button_class("R"))
         self.tools_obj.append(button_class("G"))
         self.tools_obj.append(button_class("B"))
-        self.tools_obj[0].set_position(20, 150, 70, 30)
-        self.tools_obj[1].set_position(110, 150, 70, 30)
-        self.tools_obj[2].set_position(200, 150, 70, 30)
+        self.tools_obj.append(button_class("Validate"))
+        self.tools_obj[0].set_position(20, 175, 70, 30)
+        self.tools_obj[1].set_position(110, 175, 70, 30)
+        self.tools_obj[2].set_position(200, 175, 70, 30)
+        self.tools_obj[3].set_position(200, 125, 100, 30)
         self.selected_color = (87, 56, 15)
 
         """Predefined color palette for drawing tools"""
@@ -69,15 +72,15 @@ class tab_class():
             """Display color palette in the "Tools" tab"""
             x = 0
             for color in self.colors:
-                pygame.draw.circle(self.surf, color, (20 + (x % 10) * 30, 50 + int(x / 10) * 30), 10)
-                pygame.draw.circle(self.surf, (0, 0, 0), (20 + (x % 10) * 30, 50 + int(x / 10) * 30), 10, 1)
+                pygame.draw.circle(self.surf, color, (20 + (x % 10) * 30, 60 + int(x / 10) * 35), 12)
+                pygame.draw.circle(self.surf, (0, 0, 0), (20 + (x % 10) * 30, 60 + int(x / 10) * 35), 12, 1)
                 x += 1
             for button in self.tools_obj:
                 button.draw(self.surf)
             self.selected_color = (self.tools_obj[0].label, self.tools_obj[1].label, self.tools_obj[2].label)
             self.selected_color = tuple(int (x) if x.isdigit() else 255 for x in self.selected_color)
-            pygame.draw.rect(self.surf, self.selected_color, (10, 110, 300, 15))
-            pygame.draw.rect(self.surf, (0, 0, 0), (10, 110, 300, 15), 1)
+            pygame.draw.rect(self.surf, self.selected_color, (10, 125, 180, 30))
+            pygame.draw.rect(self.surf, (0, 0, 0), (10, 125, 180, 30), 1)
         if self.selected_tab == 3:
             """Display a yellow background in the "Settings" tab"""
             self.surf.fill((250, 250, 0))
@@ -130,12 +133,32 @@ class tab_class():
                     self.selected_tile = self.tiles[index_y * TILES_PER_LINE + index_x]
 
             elif self.selected_tab == 2: # tools
+                for i in range(20):
+                    center_x = 20 + (i % 10) * 30
+                    center_y = 60 + int(i / 10) * 35
+                    temp = (x - center_x) ** 2
+                    temp2 = (y - center_y) ** 2
+                    distance = math.sqrt(temp + temp2)
+                    print ("______")
+                    print (center_x, center_y)
+                    print (x, y)
+                    print (distance)
+                    if distance <= 12:
+                        print ("est inf a 12")
+                        self.selected_color = self.colors[i]
+
                 for button in self.tools_obj:
                     button.state = 0
                     if button.label == "":
                         button.label = button.name
                         button.text_surface = button.create_text_surface(button.label)
-                    button.click(x, y)
+                    if button.click(x, y):
+                        if button.name == "Validate":
+                            if self.selected_color not in self.colors:
+                                for i in range(18, 9, -1):
+                                    self.colors[i +1] = self.colors[i]
+                                self.colors[10] = self.selected_color
+
 
             else: # settings
                 pass

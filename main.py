@@ -35,7 +35,10 @@ while running:
                 else:
                     if tab.selected_tab == 1:
                         grid.click(mouse_x, mouse_y)
+                    elif tab.selected_tab == 2:
+                        grid.set_color(mouse_x, mouse_y, tab.selected_color, screen)
                     grid.calculate(screen)
+
 
         elif event.type == MOUSEMOTION: # Check for mouse motion event
             mouse_x, mouse_y = event.pos
