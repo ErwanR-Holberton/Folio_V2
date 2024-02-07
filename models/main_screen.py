@@ -12,12 +12,17 @@ class main_screen():
         self.tile_size = 32 # Size of each tile
         self.mode = 0 # Display mode (0 for map grid, 1 for tile grid)
         self.tile_grid = [[(0, 255, 255) for value in range(16)] for value in range(16)]
-        self.calculate(screen) # Calculate the initial state of the main screen
-        pass
+        self.offset = (0, 0)
 
-    def calculate(self, screen):
+        self.calculate(screen) # Calculate the initial state of the main screen
+
+    def calculate(self, screen, offset = None):
         """Calculate the appearance of the main screen based on the current mode"""
 
+        if offset != None:
+            self.offset = offset
+        else:
+            offset = self.offset
         self.width = screen.get_width() - tab_class.width
         height = screen.get_height()
         self.surf = pygame.Surface((self.width, height))
@@ -25,16 +30,18 @@ class main_screen():
         if self.mode == 0:
             """Map grid mode"""
             self.surf.fill((54, 57, 63)) # Background color
+            dx = offset[0] % self.tile_size
+            dy = offset[1] % self.tile_size
             for x in range(0, self.width, self.tile_size):
-                pygame.draw.line(self.surf, (0, 0, 0), (x, 0), (x, height)) # Vertical grid lines
+                pygame.draw.line(self.surf, (0, 0, 0), (x + dx, 0), (x + dx, height)) # Vertical grid lines
             for y in range(0, height, self.tile_size):
-                pygame.draw.line(self.surf, (0, 0, 0), (0, y), (self.width, y)) # Horizontal grid lines
+                pygame.draw.line(self.surf, (0, 0, 0), (0, y + dy), (self.width, y + dy)) # Horizontal grid lines
             for key, value in self.coordinates.items():
                 key = key.split(".")
                 x = int(key[0])
                 y = int(key[1])
                 if self.selected_tile is not None:
-                    self.surf.blit(value, (x * self.tile_size, y * self.tile_size))
+                    self.surf.blit(value, ((x * self.tile_size) + offset[0], (y * self.tile_size) + offset[1]))
         else:
             """ Tile grid mode"""
             pixel_size_x = (self.width - 20) / PIXEL_NUMBER
@@ -60,13 +67,20 @@ class main_screen():
 
         screen.blit(self.surf, (0, 0))
 
-    def click(self, x, y):
+    def click(self, x, y, offset):
         """Handle a click event on the main screen"""
 
         if self.selected_tile is None:
             return
-        index = "{}.{}".format(int(x/self.tile_size), int(y/self.tile_size))
+        print(offset)
+        if offset[0] > 0:
+            offset = (offset[0] - self.tile_size, offset[1])
+        if offset[1] > 0:
+            offset = (offset[0], offset[1] - self.tile_size)
+        print(offset)
+        index = "{}.{}".format(int((x - offset[0])/self.tile_size), int((y - offset[1])/self.tile_size))
         self.coordinates[index] = self.selected_tile
+        print (index, offset)
 
     def set_color(self, x, y, color, screen):
         height = screen.get_height()

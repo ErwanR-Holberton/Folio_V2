@@ -29,7 +29,7 @@ class tab_class():
         self.tools_obj[1].set_position(110, 175, 70, 30)
         self.tools_obj[2].set_position(200, 175, 70, 30)
         self.tools_obj[3].set_position(200, 125, 100, 30)
-        self.selected_color = (87, 56, 15)
+        self.selected_color = (255, 255, 255)
 
         """Predefined color palette for drawing tools"""
         self.colors = [
@@ -66,7 +66,7 @@ class tab_class():
             """Display tiles in the "Tiles" tab"""
             count = 0
             for tile in self.tiles:
-                self.surf.blit(tile, (0 + (count %TILES_PER_LINE) * 40 + 4, 30 + int(count /TILES_PER_LINE) * 40 + 4)) #remplacer par height
+                self.surf.blit(tile, ((count %TILES_PER_LINE) * 40 + 4, 30 + int(count /TILES_PER_LINE) * 40 + 4)) #remplacer par height
                 count += 1
         if self.selected_tab == 2:
             """Display color palette in the "Tools" tab"""
@@ -77,8 +77,6 @@ class tab_class():
                 x += 1
             for button in self.tools_obj:
                 button.draw(self.surf)
-            self.selected_color = (self.tools_obj[0].label, self.tools_obj[1].label, self.tools_obj[2].label)
-            self.selected_color = tuple(int (x) if x.isdigit() else 255 for x in self.selected_color)
             pygame.draw.rect(self.surf, self.selected_color, (10, 125, 180, 30))
             pygame.draw.rect(self.surf, (0, 0, 0), (10, 125, 180, 30), 1)
         if self.selected_tab == 3:
@@ -139,12 +137,7 @@ class tab_class():
                     temp = (x - center_x) ** 2
                     temp2 = (y - center_y) ** 2
                     distance = math.sqrt(temp + temp2)
-                    print ("______")
-                    print (center_x, center_y)
-                    print (x, y)
-                    print (distance)
                     if distance <= 12:
-                        print ("est inf a 12")
                         self.selected_color = self.colors[i]
 
                 for button in self.tools_obj:
@@ -209,3 +202,5 @@ class tab_class():
             for button_index in range(3): #RGB buttons
                 if self.tools_obj[button_index].state == 1:
                     self.tools_obj[button_index].edit_label(key)
+            self.selected_color = (self.tools_obj[0].label, self.tools_obj[1].label, self.tools_obj[2].label)
+            self.selected_color = tuple(int (x) if x.isdigit() else 255 for x in self.selected_color)

@@ -9,6 +9,8 @@ top.buttons[-1].radius_br = 10
 
 """Initialize the game state"""
 running = 1
+dragging = 0
+offset = (0, 0)
 
 """Main game loop"""
 while running:
@@ -24,24 +26,37 @@ while running:
             tab.handle_key_input(event.key)
             tab.calculate(screen)
 
+        elif event.type == MOUSEBUTTONDOWN:
+            mouse_x, mouse_y = event.pos
+            if event.button == 1:
+                pass
+            elif event.button == 3:
+                dragging = 1
+
         elif event.type == MOUSEBUTTONUP: # Check for mouse button click event
             mouse_x, mouse_y = event.pos
-            click, name = 0, None
-            click, name = top.click(mouse_x, mouse_y)
-            tab.menu.click(mouse_x - grid.width, mouse_y)
-            if not click:
-                if mouse_x > grid.width:
-                    grid.selected_tile = tab.click(mouse_x - grid.width, mouse_y)
-                else:
-                    if tab.selected_tab == 1:
-                        grid.click(mouse_x, mouse_y)
-                    elif tab.selected_tab == 2:
-                        grid.set_color(mouse_x, mouse_y, tab.selected_color, screen)
-                    grid.calculate(screen)
+            if event.button == 1:
+                click, name = 0, None
+                click, name = top.click(mouse_x, mouse_y)
+                tab.menu.click(mouse_x - grid.width, mouse_y)
+                if not click:
+                    if mouse_x > grid.width:
+                        grid.selected_tile = tab.click(mouse_x - grid.width, mouse_y)
+                    else:
+                        if tab.selected_tab == 1:
+                            grid.click(mouse_x, mouse_y, offset)
+                        elif tab.selected_tab == 2:
+                            grid.set_color(mouse_x, mouse_y, tab.selected_color, screen)
+                        grid.calculate(screen)
+            elif event.button == 3:
+                dragging = 0
 
 
         elif event.type == MOUSEMOTION: # Check for mouse motion event
             mouse_x, mouse_y = event.pos
+            if dragging == 1:
+                offset = (offset[0] + event.rel[0], offset[1] + event.rel[1])
+                grid.calculate(screen, offset)
             top.hover(mouse_x, mouse_y)
             tab.menu.hover(mouse_x - grid.width, mouse_y)
 
