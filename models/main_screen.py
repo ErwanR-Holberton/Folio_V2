@@ -72,13 +72,13 @@ class main_screen():
 
         if self.selected_tile is None:
             return
-        print(offset)
-        if offset[0] > 0:
-            offset = (offset[0] - self.tile_size, offset[1])
-        if offset[1] > 0:
-            offset = (offset[0], offset[1] - self.tile_size)
-        print(offset)
-        index = "{}.{}".format(int((x - offset[0])/self.tile_size), int((y - offset[1])/self.tile_size))
+        x -= offset[0]
+        y -= offset[1]
+        if x < 0:
+            x -= self.tile_size
+        if y < 0:
+            y -= self.tile_size
+        index = "{}.{}".format(int(x/self.tile_size), int(y/self.tile_size))
         self.coordinates[index] = self.selected_tile
         print (index, offset)
 
