@@ -6,14 +6,17 @@ from models import *
 top = menu_class("top_menu")
 top.create_top_menu()
 top.buttons[-1].radius_br = 10
+old_key = None
 
 """Initialize the game state"""
 running = 1
 dragging = 0
 offset = (0, 0)
+clock = pygame.time.Clock()
 
 """Main game loop"""
 while running:
+    clock.tick(10)
 
     """Event handling loop"""
     for event in pygame.event.get():
@@ -28,10 +31,7 @@ while running:
 
         elif event.type == MOUSEBUTTONDOWN:
             mouse_x, mouse_y = event.pos
-            if event.button == 1:
-                pass
-            elif event.button == 3:
-                dragging = 1
+            dragging = 1
 
         elif event.type == MOUSEBUTTONUP: # Check for mouse button click event
             mouse_x, mouse_y = event.pos
@@ -48,15 +48,21 @@ while running:
                         elif tab.selected_tab == 2:
                             grid.set_color(mouse_x, mouse_y, tab.selected_color, screen)
                         grid.calculate(screen)
-            elif event.button == 3:
-                dragging = 0
+            dragging = 0
 
 
         elif event.type == MOUSEMOTION: # Check for mouse motion event
             mouse_x, mouse_y = event.pos
             if dragging == 1:
-                offset = (offset[0] + event.rel[0], offset[1] + event.rel[1])
-                grid.calculate(screen, offset)
+                if event.buttons[0]:
+                    key_index = grid.click(mouse_x, mouse_y, offset)
+                    if key_index is not None and key_index != old_key:
+                        grid.calculate(screen, offset)
+                        old_key = key_index
+
+                elif event.buttons[2]:
+                    offset = (offset[0] + event.rel[0], offset[1] + event.rel[1])
+                    grid.calculate(screen, offset)
             top.hover(mouse_x, mouse_y)
             tab.menu.hover(mouse_x - grid.width, mouse_y)
 

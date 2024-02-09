@@ -1,4 +1,5 @@
 import pygame
+from time import time
 from models.tab import *
 
 PIXEL_NUMBER = 16
@@ -11,7 +12,7 @@ class main_screen():
         self.coordinates = {} # Dictionary to store coordinates and corresponding tiles
         self.tile_size = 32 # Size of each tile
         self.mode = 0 # Display mode (0 for map grid, 1 for tile grid)
-        self.tile_grid = [[(0, 255, 255) for value in range(16)] for value in range(16)]
+        self.tile_grid = [[(255, 255, 255) for value in range(16)] for value in range(16)]
         self.offset = (0, 0)
 
         self.calculate(screen) # Calculate the initial state of the main screen
@@ -19,6 +20,7 @@ class main_screen():
     def calculate(self, screen, offset = None):
         """Calculate the appearance of the main screen based on the current mode"""
 
+        """start = time()"""
         if offset != None:
             self.offset = offset
         else:
@@ -59,6 +61,7 @@ class main_screen():
             for x in range(0, (PIXEL_NUMBER + 1) * pixel_size, pixel_size):
                 pygame.draw.line(self.surf, (0, 0, 0), (x + offset_x, offset_y), (x + offset_x, pixel_size * PIXEL_NUMBER + offset_y))
                 pygame.draw.line(self.surf, (0, 0, 0), (offset_x, x + offset_y), (pixel_size * PIXEL_NUMBER + offset_x, x + offset_y))
+        """print("calculate: ", time()-start)"""
 
 
 
@@ -80,7 +83,7 @@ class main_screen():
             y -= self.tile_size
         index = "{}.{}".format(int(x/self.tile_size), int(y/self.tile_size))
         self.coordinates[index] = self.selected_tile
-        print (index, offset)
+        return index
 
     def set_color(self, x, y, color, screen):
         height = screen.get_height()
