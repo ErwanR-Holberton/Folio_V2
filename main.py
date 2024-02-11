@@ -5,7 +5,7 @@ from models import *
 
 top = menu_class("top_menu")
 top.create_top_menu()
-top.buttons[-1].radius_br = 10
+top.buttons[-1].radius_bottom_right = 10
 old_key = None
 
 """Initialize the game state"""

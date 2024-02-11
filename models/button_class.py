@@ -9,7 +9,7 @@ class button_class():
         self.state = 0
         self.text_surface = self.create_text_surface(label)
         self.sub_buttons = []
-        self.radius_br = -1
+        self.radius_bottom_right = -1
         self.name = label
 
     def hover(self, x, y):
@@ -42,7 +42,7 @@ class button_class():
     def draw(self, screen):
         """Draw the menu on the screen"""
 
-        pygame.draw.rect(screen, self.color, self.rect_value, border_bottom_right_radius= self.radius_br)
+        pygame.draw.rect(screen, self.color, self.rect_value, border_bottom_right_radius= self.radius_bottom_right)
         screen.blit(self.text_surface, self.position_text)
         if self.state == 1:
             for button in self.sub_buttons:
