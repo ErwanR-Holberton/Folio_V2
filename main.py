@@ -16,7 +16,7 @@ clock = pygame.time.Clock()
 
 """Main game loop"""
 while running:
-    clock.tick(10)
+    clock.tick(30)
 
     """Event handling loop"""
     for event in pygame.event.get():
