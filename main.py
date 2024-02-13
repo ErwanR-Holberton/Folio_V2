@@ -54,7 +54,7 @@ while running:
         elif event.type == MOUSEMOTION: # Check for mouse motion event
             mouse_x, mouse_y = event.pos
             if dragging == 1:
-                if event.buttons[0]:
+                if event.buttons[0] and mouse_x < grid.width:
                     key_index = grid.click(mouse_x, mouse_y, offset)
                     if key_index is not None and key_index != old_key:
                         grid.calculate(screen, offset)
