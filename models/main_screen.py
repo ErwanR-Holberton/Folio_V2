@@ -23,7 +23,6 @@ class main_screen():
     def calculate(self, screen, offset = None):
         """Calculate the appearance of the main screen based on the current mode"""
 
-        """start = time()"""
         if offset != None:
             self.offset = offset
         else:
@@ -35,18 +34,7 @@ class main_screen():
         if self.mode == 0:
             """Map grid mode"""
             self.surf.fill((54, 57, 63)) # Background color
-            dx = offset[0] % self.tile_size
-            dy = offset[1] % self.tile_size
-            for x in range(0, self.width, self.tile_size):
-                pygame.draw.line(self.surf, (0, 0, 0), (x + dx, 0), (x + dx, height)) # Vertical grid lines
-            for y in range(0, height, self.tile_size):
-                pygame.draw.line(self.surf, (0, 0, 0), (0, y + dy), (self.width, y + dy)) # Horizontal grid lines
-            """for key, value in self.coordinates.items():
-                key = key.split(".")
-                x = int(key[0])
-                y = int(key[1])
-                if self.selected_tile is not None:
-                    self.surf.blit(value, ((x * self.tile_size) + offset[0], (y * self.tile_size) + offset[1]))"""
+            self.draw_grid(offset, height)
             if self.tile_offset is not None:
                 dx, dy = self.tile_offset
             else:
@@ -69,9 +57,16 @@ class main_screen():
             for x in range(0, (PIXEL_NUMBER + 1) * pixel_size, pixel_size):
                 pygame.draw.line(self.surf, (0, 0, 0), (x + offset_x, offset_y), (x + offset_x, pixel_size * PIXEL_NUMBER + offset_y))
                 pygame.draw.line(self.surf, (0, 0, 0), (offset_x, x + offset_y), (pixel_size * PIXEL_NUMBER + offset_x, x + offset_y))
-        """print("calculate: ", time()-start)"""
 
+    def draw_grid(self, offset, height):
+        """draw the grid"""
 
+        dx = offset[0] % self.tile_size
+        dy = offset[1] % self.tile_size
+        for x in range(0, self.width, self.tile_size):
+            pygame.draw.line(self.surf, (0, 0, 0), (x + dx, 0), (x + dx, height)) # Vertical grid lines
+        for y in range(0, height, self.tile_size):
+            pygame.draw.line(self.surf, (0, 0, 0), (0, y + dy), (self.width, y + dy)) # Horizontal grid lines
 
     def draw(self, screen):
         """Draw the main screen on the given screen surface"""
@@ -98,8 +93,6 @@ class main_screen():
 
     def append_surface(self, index_x, index_y):
         """"append the background surface with the new tile"""
-
-        start = time()
 
         size_x = int(self.tile_surf.get_width() /self.tile_size)
         size_y = int(self.tile_surf.get_height() /self.tile_size)
@@ -129,8 +122,6 @@ class main_screen():
             new_surface.blit(self.tile_surf, (modified_offset[0] * self.tile_size, modified_offset[1] * self.tile_size))
             self.tile_surf = new_surface
             self.tile_surf.blit(self.selected_tile, ((index_x + modified_offset[0]) * self.tile_size, (index_y + modified_offset[1]) * self.tile_size))
-            print (index_x, index_y, modified_offset)
-        print("append: ", time()-start, self.tile_surf.get_width() * self.tile_surf.get_height())
 
     def set_color(self, x, y, color, screen):
         height = screen.get_height()

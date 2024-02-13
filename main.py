@@ -31,13 +31,14 @@ while running:
 
         elif event.type == MOUSEBUTTONDOWN:
             mouse_x, mouse_y = event.pos
-            dragging = 1
+            if mouse_x < grid.width and not top.hover(mouse_x, mouse_y):
+                dragging = 1
 
         elif event.type == MOUSEBUTTONUP: # Check for mouse button click event
             mouse_x, mouse_y = event.pos
             if event.button == 1:
-                click, name = 0, None
-                click, name = top.click(mouse_x, mouse_y)
+                click = 0
+                click = top.click(mouse_x, mouse_y)
                 tab.menu.click(mouse_x - grid.width, mouse_y)
                 if not click:
                     if mouse_x > grid.width:
@@ -55,10 +56,12 @@ while running:
             mouse_x, mouse_y = event.pos
             if dragging == 1:
                 if event.buttons[0] and mouse_x < grid.width:
-                    key_index = grid.click(mouse_x, mouse_y, offset)
-                    if key_index is not None and key_index != old_key:
-                        grid.calculate(screen, offset)
-                        old_key = key_index
+                    if not(top.hover(mouse_x, mouse_y)):
+                        """if not click on top menu"""
+                        key_index = grid.click(mouse_x, mouse_y, offset)
+                        if key_index is not None and key_index != old_key:
+                            grid.calculate(screen, offset)
+                            old_key = key_index
 
                 elif event.buttons[2]:
                     offset = (offset[0] + event.rel[0], offset[1] + event.rel[1])

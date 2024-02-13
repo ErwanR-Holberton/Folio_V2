@@ -38,18 +38,19 @@ class menu_class():
 
     def hover(self, x, y):
         """"""
+        button_hovered = False
         for button in self.buttons:
-            button.hover(x, y)
+            if button.hover(x, y):
+                button_hovered = True
+        return button_hovered
 
     def click(self, x, y):
         """"""
         clicked = 0
-        label = 0
         for button in self.buttons:
             button.color = (150, 150, 150)
             if button.click(x, y) is False:
                 button.state = 0
             else:
                 clicked = 1
-                label = button.label
-        return clicked, label or None
+        return clicked

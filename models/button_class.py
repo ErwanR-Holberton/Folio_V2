@@ -15,12 +15,16 @@ class button_class():
     def hover(self, x, y):
         """Check if the given coordinates are within the menu area for hover effect"""
 
+        button_hovered = 0
         if self.state != 1:
             self.color = (150, 150, 150)
         else:
             if self.sub_buttons is not None:
                 for button in self.sub_buttons:
-                    button.hover(x, y)
+                    if button.hover(x, y):
+                        button_hovered = 1
+        if button_hovered:
+            return True
 
         if x < self.rect_value[0] or x > self.rect_value[0] + self.rect_value[2]:
             return False
@@ -51,9 +55,11 @@ class button_class():
     def click(self, x, y):
         """ Toggle the menu state and update color accordingly"""
 
+        clicked_sub_button = 0
         if self.state == 1 and self.sub_buttons is not None:
             for button in self.sub_buttons:
-                button.click(x, y)
+                if button.click(x, y):
+                    clicked_sub_button = 1
                 button.state = 0
         hover = self.hover(x, y)
         if hover:
@@ -68,6 +74,8 @@ class button_class():
                 self.state = 0
                 self.color = (150, 150, 150)
             print (self.label, "clicked")
+        if clicked_sub_button:
+            return True
         return hover
 
     def create_sub_buttons(self, sub_buttons):
