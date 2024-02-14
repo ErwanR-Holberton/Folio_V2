@@ -21,4 +21,6 @@ tab = tab_class(screen)
 grid = main_screen(screen)
 """create an instance of main_screen with screen argument"""
 tab.grid = grid
-"""assign the value of grid to the grid attribute of tab instance"""
+"""give access point to grid in tab class"""
+button_class.grid = grid
+"""give access point to grid in button_class"""

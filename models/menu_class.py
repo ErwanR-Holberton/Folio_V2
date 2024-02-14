@@ -15,9 +15,10 @@ class menu_class():
         self.button_width = 100
         self.expand("Project", ["New", "Load", "Save"])
         self.expand("Map", ["New", "Load", "Save"])
-        self.expand("Tile", ["New", "Edit", "Delete"])
+        self.expand("Tile", ["New", "Save", "Edit", "Delete"])
         self.expand("Edit", ["Undo", "Redo"])
         self.expand("Help", [])
+        self.buttons[2].sub_buttons[1].function = self.buttons[2].sub_buttons[1].save_tile
 
     def create_tab_menu(self):
         "create a menu for the tab section"
@@ -41,6 +42,8 @@ class menu_class():
         button_hovered = False
         for button in self.buttons:
             if button.hover(x, y):
+                button_hovered = True
+            if button.hover_subbuttons(x, y):
                 button_hovered = True
         return button_hovered
 

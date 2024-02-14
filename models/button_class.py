@@ -11,9 +11,21 @@ class button_class():
         self.sub_buttons = []
         self.radius_bottom_right = -1
         self.name = label
+        self.function = None
+        self.function = self.function_1
 
     def hover(self, x, y):
         """Check if the given coordinates are within the menu area for hover effect"""
+
+        if x < self.rect_value[0] or x > self.rect_value[0] + self.rect_value[2]:
+            return False
+        if y < self.rect_value[1] or y > self.rect_value[1] + self.rect_value[3]:
+            return False
+        if self.state != 1:
+            self.color = (160, 160, 160)
+        return True
+
+    def hover_subbuttons(self, x, y):
 
         button_hovered = 0
         if self.state != 1:
@@ -25,14 +37,6 @@ class button_class():
                         button_hovered = 1
         if button_hovered:
             return True
-
-        if x < self.rect_value[0] or x > self.rect_value[0] + self.rect_value[2]:
-            return False
-        if y < self.rect_value[1] or y > self.rect_value[1] + self.rect_value[3]:
-            return False
-        if self.state != 1:
-            self.color = (160, 160, 160)
-        return True
 
     def set_position(self, x, y, width, height):
         """set the position and size of the button and text"""
@@ -73,7 +77,8 @@ class button_class():
             else:
                 self.state = 0
                 self.color = (150, 150, 150)
-            print (self.label, "clicked")
+            if self.function is not None:
+                self.function()
         if clicked_sub_button:
             return True
         return hover
@@ -106,3 +111,16 @@ class button_class():
             if int(self.label) > 255:
                 self.label = "255"
         self.text_surface = self.create_text_surface(self.label)
+
+    def function_1(self):
+        print(self.label, "clicked")
+
+    def save_tile(self):
+        new_tile = pygame.Surface((self.grid.tile_size, self.grid.tile_size))
+        for line in range (len(self.grid.tile_grid)):
+            for column in range (len(self.grid.tile_grid[line])):
+                new_tile.set_at((column, line), self.grid.tile_grid[column][line])
+                print(self.grid.tile_grid[column][line], end='')
+            print("")
+        pygame.image.save(new_tile, "test.png")
+

@@ -40,8 +40,8 @@ def load_tiles():
     """Load each image from the "./tiles" directory"""
     for file in images:
         loaded_image = pygame.image.load("./tiles/" + file)
-        
+
         """Use the get_tile function to scale the loaded tile and append it to the list"""
         tiles.append(get_tile(1, 1, loaded_image))
-        
+
     return tiles
