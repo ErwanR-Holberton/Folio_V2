@@ -3,22 +3,25 @@ import pygame
 from models.button_class import button_class
 
 class menu_class():
-    def __init__(self, name):
+    def __init__(self, name, screen):
         """Initialize class menu"""
         self.width = 0
         self.height = 30
         self.buttons = []
+        self.screen = screen
 
     def create_top_menu(self):
         "create a list of drop_down menus"
 
         self.button_width = 100
-        self.expand("Project", ["New", "Load", "Save"])
-        self.expand("Map", ["New", "Load", "Save"])
-        self.expand("Tile", ["New", "Save", "Edit", "Delete"])
+        self.expand("Project", ["New", "Load", "Save", "Delete"])
+        self.expand("Map", ["New", "Load", "Save", "Delete"])
+        self.expand("Tile", ["New", "Load", "Save", "Delete"])
         self.expand("Edit", ["Undo", "Redo"])
         self.expand("Help", [])
-        self.buttons[2].sub_buttons[1].function = self.buttons[2].sub_buttons[1].save_tile
+        self.buttons[2].sub_buttons[1].function = self.buttons[2].sub_buttons[1].load_tile
+        self.buttons[2].sub_buttons[2].function = self.buttons[2].sub_buttons[2].save_tile
+        self.buttons[2].sub_buttons[0].function = self.buttons[2].sub_buttons[0].new_tile
 
     def create_tab_menu(self):
         "create a menu for the tab section"
@@ -57,3 +60,7 @@ class menu_class():
             else:
                 clicked = 1
         return clicked
+
+    def draw(self):
+        for button in self.buttons:
+            button.draw(self.screen)

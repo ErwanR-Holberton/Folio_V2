@@ -1,4 +1,6 @@
 import pygame
+import json
+from pygame.locals import *
 
 class button_class():
     def __init__(self, label):
@@ -94,9 +96,9 @@ class button_class():
             new.set_position(x, (y + count * h), w, h)
             self.sub_buttons.append(new)
 
-    def create_text_surface(self, text):
+    def create_text_surface(self, text, size = 22):
         """Render text for the menu using a default font"""
-        font = pygame.font.Font(None, 22)
+        font = pygame.font.Font("CALIBRI.TTF", size)
         return font.render(text, True, (0, 0, 0))
 
     def edit_label(self, key):
@@ -111,16 +113,95 @@ class button_class():
             if int(self.label) > 255:
                 self.label = "255"
         self.text_surface = self.create_text_surface(self.label)
+        x, y, width, height = self.rect_value
+        self.set_position(x, y, width, height)
 
     def function_1(self):
         print(self.label, "clicked")
 
     def save_tile(self):
-        new_tile = pygame.Surface((self.grid.tile_size, self.grid.tile_size))
+        new_tile = pygame.Surface((len(self.grid.tile_grid), len(self.grid.tile_grid)), pygame.SRCALPHA)
+        new_tile.fill((0, 0, 0, 25))
         for line in range (len(self.grid.tile_grid)):
             for column in range (len(self.grid.tile_grid[line])):
                 new_tile.set_at((column, line), self.grid.tile_grid[column][line])
-                print(self.grid.tile_grid[column][line], end='')
-            print("")
+        self.popup("Choose a name for the tile:", "Tile save")
         pygame.image.save(new_tile, "test.png")
+
+    def load_tile(self):
+        image = pygame.image.load("test.png")
+        tile = self.grid.tile_grid = []
+        for line in range (image.get_height()):
+            new_line = []
+            for column in range (image.get_width()):
+                new_line.append(image.get_at((line, column)))
+            tile.append(new_line)
+        self.grid.calculate(self.grid.screen)
+
+    def save_tile_json(self):
+        with open ("dump.json", "w") as file:
+            json.dump(self.grid.tile_grid, file)
+
+    def load_tile_json(self):
+        with open ("dump.json", "r") as file:
+            self.grid.tile_grid = json.load(file)
+
+    def new_tile(self):
+        self.grid.tile_grid = [[(0, 0, 0, 0) for x in range(16)] for y in range(16)]
+        self.grid.calculate(self.grid.screen)
+
+    def popup(self, message, title):
+
+        size = (400, 110)
+        radius = 5
+        loop = 1
+        popup = pygame.Surface(size, pygame.SRCALPHA)
+        popup_rect = popup.get_rect(center=self.grid.surf.get_rect().center)
+        popup.fill((10, 8, 50, 0))
+        self.draw_popup(popup, size, radius, title)
+        while loop:
+            for event in pygame.event.get():
+                if event.type == QUIT: # Check for quit event (click on red cross or press Esc key)
+                    loop = 0
+                if event.type == MOUSEBUTTONUP: # Check for mouse button click event
+                    mouse_x, mouse_y = event.pos
+                    mouse_x -= popup_rect.topleft[0]
+                    mouse_y -= popup_rect.topleft[1]
+                    if mouse_x >= size[0] - 28 and mouse_x <= size[0] -8:
+                        if mouse_y >= 0 and mouse_y <= 15:
+                            loop = 0
+                if event.type == WINDOWRESIZED:
+                    self.grid.calculate(self.grid.screen)
+                    self.grid.draw(self.grid.screen)
+                    self.tab.calculate(self.tab.screen)
+                    self.tab.draw(self.tab.screen)
+                    self.top.draw()
+                    popup_rect = popup.get_rect(center=self.grid.surf.get_rect().center)
+            self.grid.screen.blit(popup, (popup_rect.topleft))
+            pygame.display.flip()
+
+    def draw_popup(self, popup, size, radius, title):
+        pygame.draw.rect(popup, (240, 240, 240), (0, 0, size[0], 20),border_top_left_radius= radius, border_top_right_radius=radius)# top border
+        pygame.draw.rect(popup, (0, 0, 0), (0, 0, size[0], 20), 1, border_top_left_radius= radius, border_top_right_radius=radius)# top border's border
+
+        pygame.draw.rect(popup, (220, 220, 220), (0, 19, size[0], size[1]-19), 5, border_bottom_left_radius=radius, border_bottom_right_radius=radius)# all around border
+
+        pygame.draw.rect(popup, (220, 0, 0), (size[0] -28, 0, 20, 15)) #red box
+        pygame.draw.rect(popup, (150, 150, 150), (size[0] -28, -1, 20, 16), 1) #red box border
+
+        pygame.draw.rect(popup, (190, 190, 190), (5, 20, size[0]-10, size[1]-25))# white background
+        pygame.draw.rect(popup, (150, 150, 150), (5, 20, size[0]-10, size[1]-25), 1)# white background border
+        pygame.draw.rect(popup, (0, 0, 0), (0, 0, size[0], size[1]), 1, radius)# all around border's border
+
+        pygame.draw.line(popup, (255, 255, 255), (size[0]-23, 3), (size[0]-15, 11), 2) # white cross in red box
+        pygame.draw.line(popup, (255, 255, 255), (size[0]-15, 3), (size[0]-23, 11), 2) # white cross in red box
+
+        title_surface = self.create_text_surface(title)
+        popup.blit(title_surface, (popup.get_width()//2-title_surface.get_width()//2, 0))
+
+        question = self.create_text_surface("Please choose a name for the tile:", 20)
+        popup.blit(question, (10, 40))
+
+        pygame.draw.rect(popup, (240, 240, 240), (10, 70, size[0] -20, 20))
+
 

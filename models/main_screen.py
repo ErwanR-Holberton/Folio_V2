@@ -17,6 +17,7 @@ class main_screen():
         self.tile_surf = pygame.Surface((self.tile_size, self.tile_size), pygame.SRCALPHA) # create a starting surface of tile size
         self.tile_surf.fill((255, 0, 0, 0))
         self.tile_offset = None
+        self.screen = screen
 
         self.calculate(screen) # Calculate the initial state of the main screen
 
@@ -29,7 +30,7 @@ class main_screen():
             offset = self.offset
         self.width = screen.get_width() - tab_class.width
         height = screen.get_height()
-        self.surf = pygame.Surface((self.width, height))
+        self.surf = pygame.Surface((self.width, height), pygame.SRCALPHA)
 
         if self.mode == 0:
             """Map grid mode"""

@@ -18,7 +18,7 @@ class tab_class():
         """Initialize the tab class"""
 
         self.create_list_of_tiles()
-        self.menu = menu_class("tab_menu")
+        self.menu = menu_class("tab_menu", screen)
         self.menu.create_tab_menu()
         self.tools_obj = []
         self.tools_obj.append(button_class("R"))

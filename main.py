@@ -3,9 +3,6 @@ import sys
 sys.dont_write_bytecode = True  #prevent __pycache__ creation
 from models import *
 
-top = menu_class("top_menu")
-top.create_top_menu()
-top.buttons[-1].radius_bottom_right = 10
 old_key = None
 
 """Initialize the game state"""
@@ -80,8 +77,7 @@ while running:
     grid.draw(screen)
 
     # Draw menus and submenus
-    for button in top.buttons:
-        button.draw(screen)
+    top.draw()
 
     pygame.display.flip() # Refresh the display
 

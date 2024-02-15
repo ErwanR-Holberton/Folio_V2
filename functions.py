@@ -1,21 +1,10 @@
 import pygame
 import os
 
-"""Load the tileset image"""
-tileset = pygame.image.load("tileset.png")
+tileset = pygame.image.load("tileset.png") #Load the tileset image
 
 def get_tile(x, y, set = tileset):
-    """
-    Extract a specific tile from the tileset and scale it to the desired size.
-
-    Parameters:
-    - x: Row index of the tile in the tileset.
-    - y: Column index of the tile in the tileset.
-    - set: The tileset image (default is the global tileset).
-
-    Returns:
-    - A scaled version of the specified tile.
-    """
+    """Extract a specific tile from the tileset and scale it to the desired size."""
 
     """Extract the specified tile from the tileset"""
     tile = set.subsurface((y * 16, x * 16, 16, 16)).copy()
@@ -24,12 +13,7 @@ def get_tile(x, y, set = tileset):
     return pygame.transform.scale(tile, (32, 32))
 
 def load_tiles():
-    """
-    Load individual tiles from the "./tiles" directory and return a list of scaled tiles.
-
-    Returns:
-    - A list of scaled tiles loaded from individual images in the "./tiles" directory.
-    """
+    """Load individual tiles from the "./tiles" directory and return a list of scaled tiles."""
 
     """Get a list of file names in the "./tiles" directory"""
     images = [f for f in os.listdir("./tiles")]
