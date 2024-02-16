@@ -24,6 +24,7 @@ class main_screen():
     def calculate(self, screen, offset = None):
         """Calculate the appearance of the main screen based on the current mode"""
 
+        start = pygame.time.get_ticks()
         if offset != None:
             self.offset = offset
         else:
@@ -58,6 +59,7 @@ class main_screen():
             for x in range(0, (PIXEL_NUMBER + 1) * pixel_size, pixel_size):
                 pygame.draw.line(self.surf, (0, 0, 0), (x + offset_x, offset_y), (x + offset_x, pixel_size * PIXEL_NUMBER + offset_y))
                 pygame.draw.line(self.surf, (0, 0, 0), (offset_x, x + offset_y), (pixel_size * PIXEL_NUMBER + offset_x, x + offset_y))
+        print ("calculate time: ", pygame.time.get_ticks()-start)
 
     def draw_grid(self, offset, height):
         """draw the grid"""

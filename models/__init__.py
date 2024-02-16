@@ -1,6 +1,6 @@
 from models.tab import * #import models
 from models.main_screen import *
-from functions import get_tile, load_tiles
+from utils.functions import get_tile, load_tiles
 from models.menu_class import menu_class
 
 import pygame                   #import pygame and variables
@@ -28,3 +28,4 @@ button_class.tab = tab
 """give access point to tab in button_class"""
 button_class.top = top
 """give access point to top in button_class"""
+grid.tab = tab

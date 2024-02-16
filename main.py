@@ -17,21 +17,25 @@ while running:
 
     """Event handling loop"""
     for event in pygame.event.get():
+        start = pygame.time.get_ticks()
         if event.type == QUIT: # Check for quit event (click on red cross or press Esc key)
             running = 0
 
         elif event.type == KEYUP:
+            print (event.type, "KEYUP")
             if event.key == pygame.K_ESCAPE:
                 running = 0
             tab.handle_key_input(event.key)
             tab.calculate(screen)
 
         elif event.type == MOUSEBUTTONDOWN:
+            print (event.type, "BUTTONDOWN")
             mouse_x, mouse_y = event.pos
             if mouse_x < grid.width and not top.hover(mouse_x, mouse_y):
                 dragging = 1
 
         elif event.type == MOUSEBUTTONUP: # Check for mouse button click event
+            print (event.type, "BUTTONUP")
             mouse_x, mouse_y = event.pos
             if event.button == 1:
                 click = 0
@@ -50,6 +54,7 @@ while running:
 
 
         elif event.type == MOUSEMOTION: # Check for mouse motion event
+            print (event.type, "MOTION")
             mouse_x, mouse_y = event.pos
             if dragging == 1:
                 if event.buttons[0] and mouse_x < grid.width:
@@ -67,10 +72,13 @@ while running:
             tab.menu.hover(mouse_x - grid.width, mouse_y)
 
         elif event.type == VIDEORESIZE: # Check for window resize event
+            print (event.type, "RESIZE")
             tab.calculate(screen)
             grid.calculate(screen)
+        print (event.type, "time: ", pygame.time.get_ticks() - start)
 
     screen.fill((255, 255, 255))  #Fill the screen with a white background
+    start = pygame.time.get_ticks()
 
     # Draw the menus tab and grid
     tab.draw(screen)
@@ -80,5 +88,6 @@ while running:
     top.draw()
 
     pygame.display.flip() # Refresh the display
+    print ("total time: ", pygame.time.get_ticks() - start)
 
 pygame.quit() # Quit Pygame when the game loop exits

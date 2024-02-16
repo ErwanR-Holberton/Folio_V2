@@ -1,5 +1,5 @@
 import pygame
-from functions import load_tiles
+from utils.functions import load_tiles
 from models.menu_class import menu_class
 from models.button_class import button_class
 from pygame.locals import *
@@ -17,6 +17,8 @@ class tab_class():
     def __init__(self, screen):
         """Initialize the tab class"""
 
+        self.screen = screen
+        self.selected_tab = 1
         self.create_list_of_tiles()
         self.menu = menu_class("tab_menu", screen)
         self.menu.create_tab_menu()
@@ -29,7 +31,8 @@ class tab_class():
         self.tools_obj[1].set_position(110, 175, 70, 30)
         self.tools_obj[2].set_position(200, 175, 70, 30)
         self.tools_obj[3].set_position(200, 125, 100, 30)
-        self.selected_color = (255, 255, 255)
+        self.selected_color = (255, 255, 255, 0)
+        self.reload_user_tiles()
 
         """Predefined color palette for drawing tools"""
         self.colors = [
@@ -42,13 +45,11 @@ class tab_class():
             (128, 128, 128), # Gray
             (255, 165, 0),   # Orange
             (0, 128, 0),     # Dark Green
-            (128, 0, 128)   # Purple
+            (255, 255, 255, 0)   # Transparent
         ]
         for x in range(10):
             self.colors.append((255, 255, 255))
-        self.screen = screen
         self.selected_tile = None
-        self.selected_tab = 1
 
         """Set the initial state with the "Tiles" tab selected"""
         self.menu.buttons[0].state = 1
@@ -66,6 +67,9 @@ class tab_class():
             """Display tiles in the "Tiles" tab"""
             count = 0
             for tile in self.tiles:
+                self.surf.blit(tile, ((count %TILES_PER_LINE) * 40 + 4, 30 + int(count /TILES_PER_LINE) * 40 + 4)) #remplacer par height
+                count += 1
+            for tile in self.user_tiles:
                 self.surf.blit(tile, ((count %TILES_PER_LINE) * 40 + 4, 30 + int(count /TILES_PER_LINE) * 40 + 4)) #remplacer par height
                 count += 1
         if self.selected_tab == 2:
@@ -128,7 +132,10 @@ class tab_class():
 
                 """Update the selected tile based on the clicked tile"""
                 if index < len(self.tiles):
-                    self.selected_tile = self.tiles[index_y * TILES_PER_LINE + index_x]
+                    self.selected_tile = self.tiles[index]
+                elif index - len(self.tiles) < len(self.user_tiles):
+                    index -= len(self.tiles)
+                    self.selected_tile = self.user_tiles[index]
 
             elif self.selected_tab == 2: # tools
                 for i in range(20):
@@ -164,7 +171,7 @@ class tab_class():
     def create_list_of_tiles(self):
         """Duplicate tiles for demonstration purposes
         Load tiles for the "Tiles" tab"""
-        from functions import get_tile
+        from utils.functions import get_tile
         self.tiles = []
         for tile in load_tiles():
             self.tiles.append(tile)
@@ -204,3 +211,10 @@ class tab_class():
                     self.tools_obj[button_index].edit_label(key)
             self.selected_color = (self.tools_obj[0].label, self.tools_obj[1].label, self.tools_obj[2].label)
             self.selected_color = tuple(int (x) if x.isdigit() else 255 for x in self.selected_color)
+
+    def reload_user_tiles(self):
+
+        self.user_tiles = load_tiles("./saves/tiles/")
+        for index in range(len(self.user_tiles)):
+            self.user_tiles[index] = pygame.transform.scale(self.user_tiles[index], (32, 32))
+        self.calculate(self.screen)

@@ -125,8 +125,10 @@ class button_class():
         for line in range (len(self.grid.tile_grid)):
             for column in range (len(self.grid.tile_grid[line])):
                 new_tile.set_at((column, line), self.grid.tile_grid[column][line])
-        self.popup("Choose a name for the tile:", "Tile save")
-        pygame.image.save(new_tile, "test.png")
+        name = self.popup("Please choose a name for the tile:", "Tile save")
+        if name is not None:
+            pygame.image.save(new_tile, "saves/tiles/" + name + ".png")
+        self.grid.tab.reload_user_tiles()
 
     def load_tile(self):
         image = pygame.image.load("test.png")
@@ -158,7 +160,8 @@ class button_class():
         popup = pygame.Surface(size, pygame.SRCALPHA)
         popup_rect = popup.get_rect(center=self.grid.surf.get_rect().center)
         popup.fill((10, 8, 50, 0))
-        self.draw_popup(popup, size, radius, title)
+        self.draw_popup(popup, size, radius, title, message)
+        answer = ""
         while loop:
             for event in pygame.event.get():
                 if event.type == QUIT: # Check for quit event (click on red cross or press Esc key)
@@ -177,10 +180,25 @@ class button_class():
                     self.tab.draw(self.tab.screen)
                     self.top.draw()
                     popup_rect = popup.get_rect(center=self.grid.surf.get_rect().center)
+                if event.type == KEYUP:
+                    if 'a' <= event.unicode <= 'z' or 'A' <= event.unicode <= 'Z':
+                        answer += event.unicode
+                        answer_surface = self.create_text_surface(answer)
+                        pygame.draw.rect(popup, (240, 240, 240), (10, 70, size[0] -20, 20))
+                        popup.blit(answer_surface, (15, 70))
+                    elif event.unicode == '\x08':
+                        if len(answer) > 0:
+                            answer = answer[:-1]
+                            answer_surface = self.create_text_surface(answer)
+                            pygame.draw.rect(popup, (240, 240, 240), (10, 70, size[0] -20, 20))
+                            popup.blit(answer_surface, (15, 70))
+                    elif event.unicode == '\r':
+                        if len(answer) > 0:
+                            return answer
             self.grid.screen.blit(popup, (popup_rect.topleft))
             pygame.display.flip()
 
-    def draw_popup(self, popup, size, radius, title):
+    def draw_popup(self, popup, size, radius, title, message):
         pygame.draw.rect(popup, (240, 240, 240), (0, 0, size[0], 20),border_top_left_radius= radius, border_top_right_radius=radius)# top border
         pygame.draw.rect(popup, (0, 0, 0), (0, 0, size[0], 20), 1, border_top_left_radius= radius, border_top_right_radius=radius)# top border's border
 
@@ -199,9 +217,21 @@ class button_class():
         title_surface = self.create_text_surface(title)
         popup.blit(title_surface, (popup.get_width()//2-title_surface.get_width()//2, 0))
 
-        question = self.create_text_surface("Please choose a name for the tile:", 20)
+        question = self.create_text_surface(message, 20)
         popup.blit(question, (10, 40))
 
-        pygame.draw.rect(popup, (240, 240, 240), (10, 70, size[0] -20, 20))
+        pygame.draw.rect(popup, (240, 240, 240), (10, 69, size[0] -20, 25))
 
+    def save_map(self):
 
+        name = self.popup("Please choose a name for the map:", "Map save")
+        if name is not None:
+            pygame.image.save(self.grid.tile_surf, "saves/maps/" + name + ".png")
+
+    def load_map(self):
+
+        name = self.popup("Please enter the name of the desired map:", "Map load")
+        if name is not None:
+            self.grid.tile_surf = pygame.image.load("saves/maps/" + name + ".png")
+            self.grid.calculate(self.grid.screen)
+        print("function load")
