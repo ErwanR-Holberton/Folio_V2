@@ -15,14 +15,15 @@ class main_screen():
         self.tile_grid = [[(255, 255, 255) for value in range(16)] for value in range(16)]
         self.offset = (0, 0)
         self.tile_surf = pygame.Surface((self.tile_size, self.tile_size), pygame.SRCALPHA) # create a starting surface of tile size
-        self.tile_surf.fill((255, 0, 0, 0))
+        self.tile_surf.fill((0, 0, 0, 0))
         self.tile_offset = None
         self.screen = screen
+        self.allow_process = 1
 
-        self.calculate(screen) # Calculate the initial state of the main screen
+        self.process_surface(screen) # process the initial grid
 
-    def calculate(self, screen, offset = None):
-        """Calculate the appearance of the main screen based on the current mode"""
+    def process_surface(self, screen, offset = None):
+        """process one frame of the grid """
 
         start = pygame.time.get_ticks()
         if offset != None:
@@ -59,7 +60,7 @@ class main_screen():
             for x in range(0, (PIXEL_NUMBER + 1) * pixel_size, pixel_size):
                 pygame.draw.line(self.surf, (0, 0, 0), (x + offset_x, offset_y), (x + offset_x, pixel_size * PIXEL_NUMBER + offset_y))
                 pygame.draw.line(self.surf, (0, 0, 0), (offset_x, x + offset_y), (pixel_size * PIXEL_NUMBER + offset_x, x + offset_y))
-        print ("calculate time: ", pygame.time.get_ticks()-start)
+        print ("process_surface time: ", pygame.time.get_ticks()-start)
 
     def draw_grid(self, offset, height):
         """draw the grid"""

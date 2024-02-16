@@ -19,14 +19,14 @@ while running:
     for event in pygame.event.get():
         start = pygame.time.get_ticks()
         if event.type == QUIT: # Check for quit event (click on red cross or press Esc key)
-            running = 0
+            response = popup("Are you sure you want to quit?", "Quitting the app :(", grid, tab, top)
+            if response == "yes":
+                running = 0
 
         elif event.type == KEYUP:
             print (event.type, "KEYUP")
-            if event.key == pygame.K_ESCAPE:
-                running = 0
             tab.handle_key_input(event.key)
-            tab.calculate(screen)
+            tab.process_tab(screen)
 
         elif event.type == MOUSEBUTTONDOWN:
             print (event.type, "BUTTONDOWN")
@@ -49,7 +49,7 @@ while running:
                             grid.click(mouse_x, mouse_y, offset)
                         elif tab.selected_tab == 2:
                             grid.set_color(mouse_x, mouse_y, tab.selected_color, screen)
-                        grid.calculate(screen)
+                        grid.allow_process = 1
             dragging = 0
 
 
@@ -60,23 +60,30 @@ while running:
                 if event.buttons[0] and mouse_x < grid.width:
                     if not(top.hover(mouse_x, mouse_y)):
                         """if not click on top menu"""
-                        key_index = grid.click(mouse_x, mouse_y, offset)
-                        if key_index is not None and key_index != old_key:
-                            grid.calculate(screen, offset)
-                            old_key = key_index
+                        if tab.selected_tab == 1:
+                            key_index = grid.click(mouse_x, mouse_y, offset)
+                            if key_index is not None and key_index != old_key:
+                                grid.allow_process = 1
+                                old_key = key_index
+                        elif tab.selected_tab == 2:
+                            grid.set_color(mouse_x, mouse_y, tab.selected_color, screen)
+                            grid.allow_process = 1
 
                 elif event.buttons[2]:
                     offset = (offset[0] + event.rel[0], offset[1] + event.rel[1])
-                    grid.calculate(screen, offset)
+                    grid.allow_process = 1
             top.hover(mouse_x, mouse_y)
             tab.menu.hover(mouse_x - grid.width, mouse_y)
 
         elif event.type == VIDEORESIZE: # Check for window resize event
             print (event.type, "RESIZE")
-            tab.calculate(screen)
-            grid.calculate(screen)
+            tab.process_tab(screen)
+            grid.allow_process = 1
         print (event.type, "time: ", pygame.time.get_ticks() - start)
 
+    if grid.allow_process:
+        grid.process_surface(screen, offset)
+        grid.allow_process = 0
     screen.fill((255, 255, 255))  #Fill the screen with a white background
     start = pygame.time.get_ticks()
 

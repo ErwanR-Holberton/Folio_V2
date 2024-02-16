@@ -2,6 +2,7 @@ from models.tab import * #import models
 from models.main_screen import *
 from utils.functions import get_tile, load_tiles
 from models.menu_class import menu_class
+from utils.popups import popup
 
 import pygame                   #import pygame and variables
 from pygame.locals import *

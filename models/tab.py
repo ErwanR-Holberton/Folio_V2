@@ -54,9 +54,9 @@ class tab_class():
         """Set the initial state with the "Tiles" tab selected"""
         self.menu.buttons[0].state = 1
         self.menu.buttons[0].color = (120, 120, 120)
-        self.calculate(screen)
+        self.process_tab(screen)
 
-    def calculate(self, screen):
+    def process_tab(self, screen):
         """Calculate the appearance of the tab based on the selected tab"""
 
         """Create a surface for the tab"""
@@ -115,11 +115,11 @@ class tab_class():
                 if button.label == "Tiles":
                     self.selected_tab = 1
                     self.grid.mode = 0
-                    self.grid.calculate(self.screen)
+                    self.grid.allow_process = 1
                 if button.label == "Tools":
                     self.selected_tab = 2
                     self.grid.mode = 1
-                    self.grid.calculate(self.screen)
+                    self.grid.allow_process = 1
                 if button.label == "Settings":
                     self.selected_tab = 3
 
@@ -163,7 +163,7 @@ class tab_class():
             else: # settings
                 pass
 
-        self.calculate(self.screen)
+        self.process_tab(self.screen)
 
         return self.selected_tile
 
@@ -178,6 +178,7 @@ class tab_class():
 
 
     def handle_key_input(self, key):
+        """handle user input to change RGB values"""
         if self.selected_tab == 2:
             if key >= 1073741913 and key <= 1073741922:
                 key = (key - 1073741912) % 10
@@ -194,8 +195,8 @@ class tab_class():
             self.selected_color = tuple(int (x) if x.isdigit() else 255 for x in self.selected_color)
 
     def reload_user_tiles(self):
-
+        """load user tiles"""
         self.user_tiles = load_tiles("./saves/tiles/")
         for index in range(len(self.user_tiles)):
             self.user_tiles[index] = pygame.transform.scale(self.user_tiles[index], (32, 32))
-        self.calculate(self.screen)
+        self.process_tab(self.screen)

@@ -24,6 +24,7 @@ class menu_class():
         self.buttons[2].sub_buttons[0].function = self.buttons[2].sub_buttons[0].new_tile
         self.buttons[1].sub_buttons[2].function = self.buttons[1].sub_buttons[2].save_map
         self.buttons[1].sub_buttons[1].function = self.buttons[1].sub_buttons[1].load_map
+        self.buttons[1].sub_buttons[0].function = self.buttons[1].sub_buttons[0].new_map
 
     def create_tab_menu(self):
         "create a menu for the tab section"

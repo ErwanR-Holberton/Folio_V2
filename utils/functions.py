@@ -19,7 +19,7 @@ def load_tiles(path = "./base_assets/tiles/"):
     tile_list = [f for f in os.listdir(path)]
 
     tile_list.sort()
-    
+
     """Initialize an empty list to store loaded and scaled tiles"""
     tiles = []
 
@@ -35,3 +35,8 @@ def load_tiles(path = "./base_assets/tiles/"):
             tiles.append(loaded_image)
 
     return tiles
+
+def create_text_surface(text, size = 22):
+    """Render text for the menu using calibri font"""
+    font = pygame.font.Font("./base_assets/CALIBRI.TTF", size)
+    return font.render(text, True, (0, 0, 0))
