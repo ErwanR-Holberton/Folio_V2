@@ -18,6 +18,8 @@ def load_tiles(path = "./base_assets/tiles/"):
     """Get a list of file names in the desired directory"""
     tile_list = [f for f in os.listdir(path)]
 
+    tile_list.sort()
+    
     """Initialize an empty list to store loaded and scaled tiles"""
     tiles = []
 

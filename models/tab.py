@@ -175,26 +175,7 @@ class tab_class():
         self.tiles = []
         for tile in load_tiles():
             self.tiles.append(tile)
-        self.tiles.append(get_tile(37, 26))
-        self.tiles.append(get_tile(12, 2))
-        self.tiles.append(get_tile(37, 26))
-        self.tiles.append(get_tile(12, 2))
-        self.tiles.append(get_tile(37, 26))
-        self.tiles.append(get_tile(12, 2))
-        self.tiles.append(get_tile(37, 26))
-        self.tiles.append(get_tile(0, 0))
-        self.tiles.append(get_tile(37, 26))
-        self.tiles.append(get_tile(12, 2))
-        self.tiles.append(get_tile(37, 26))
-        self.tiles.append(get_tile(12, 2))
-        self.tiles.append(get_tile(37, 26))
-        self.tiles.append(get_tile(12, 2))
-        self.tiles.append(get_tile(37, 26))
-        self.tiles.append(get_tile(12, 2))
-        self.tiles.append(get_tile(37, 26))
-        self.tiles.append(get_tile(12, 2))
-        self.tiles.append(get_tile(37, 26))
-        self.tiles.append(get_tile(12, 2))
+
 
     def handle_key_input(self, key):
         if self.selected_tab == 2:

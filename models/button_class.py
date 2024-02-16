@@ -98,7 +98,7 @@ class button_class():
 
     def create_text_surface(self, text, size = 22):
         """Render text for the menu using a default font"""
-        font = pygame.font.Font("CALIBRI.TTF", size)
+        font = pygame.font.Font("./base_assets/CALIBRI.TTF", size)
         return font.render(text, True, (0, 0, 0))
 
     def edit_label(self, key):
