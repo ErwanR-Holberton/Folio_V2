@@ -16,12 +16,33 @@ while running:
     clock.tick(30)
 
     """Event handling loop"""
+    """for event in pygame.event.get():
+        start = pygame.time.get_ticks()
+        if event.type == QUIT: # Check for quit event (click on red cross or press Esc key)
+            response = popup("Are you sure you want to quit? (yes or no)", "Quitting the app :(", grid, tab, top)
+            if response == "yes":
+                running = 0"""
+
     for event in pygame.event.get():
         start = pygame.time.get_ticks()
         if event.type == QUIT: # Check for quit event (click on red cross or press Esc key)
-            response = popup("Are you sure you want to quit?", "Quitting the app :(", grid, tab, top)
+            response = popup("Are you sure you want to quit? (yes or no)", "Quitting the app :(", grid, tab, top)
             if response == "yes":
-                running = 0
+                response2 = popup("Did you really think about it? (yes or no)", "Are you really really sure?", grid, tab, top)
+            if response2 == "yes":
+                response3 = popup("We will be so sad if you do! (iregret or fuckoff)", "Your're breaking our hearts", grid, tab, top)
+                if response3 == "fuckoff":
+                    response4 = popup("Ok go you evil bastard and never come back", "sun of a bitch", grid, tab, top)
+                    if response4 == "yes":
+                        response5 = popup("We so hate you", "god of code damn you(yes or no)", grid, tab, top)
+                        if response5 == "yes":
+                            response6 = popup("We can keep you forever(help or ok)", "you'll never get out of here", grid, tab, top)
+                            if response6 == "help":
+                                response7 = popup("than putting fucking tiles on a map?", "What do you have to do more interesting", grid, tab, top)
+                                if response7 == "nothing":
+                                    response8 = popup("And enjoy your day :D", "Say thankusomuchsoftware", grid, tab, top)
+                                    if response8 == "thankusomuchsoftware":
+                                        running = 0
 
         elif event.type == KEYUP:
             print (event.type, "KEYUP")
