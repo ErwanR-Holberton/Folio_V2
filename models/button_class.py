@@ -180,7 +180,13 @@ class button_class():
         self.grid.allow_process = 1
 
     def delete_tile(self):
-        pass
+        """delete a tile"""
+        name = popup("Please choose a tile to delete:", "Tile delete", self.grid, self.tab, self.top)
+        if name is not None and os.path.exists("./saves/tiles/" + name + ".png"):
+            os.remove("./saves/tiles/" + name + ".png")
 
     def delete_map(self):
-        pass
+        """delete a map"""
+        name = popup("Please choose a map to delete:", "Map delete", self.grid, self.tab, self.top)
+        if name is not None and os.path.exists("./saves/maps/" + name + ".png"):
+            os.remove("./saves/maps/" + name + ".png")

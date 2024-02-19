@@ -12,7 +12,7 @@ class main_screen():
         self.coordinates = {} # Dictionary to store coordinates and corresponding tiles
         self.tile_size = 32 # Size of each tile
         self.mode = 0 # Display mode (0 for map grid, 1 for tile grid)
-        self.tile_grid = [[(255, 255, 255) for value in range(16)] for value in range(16)]
+        self.tile_grid = [[(255, 255, 255, 0) for value in range(16)] for value in range(16)]
         self.offset = (0, 0)
         self.tile_surf = pygame.Surface((self.tile_size, self.tile_size), pygame.SRCALPHA) # create a starting surface of tile size
         self.tile_surf.fill((0, 0, 0, 0))
@@ -32,6 +32,8 @@ class main_screen():
             offset = self.offset
         self.width = screen.get_width() - tab_class.width
         height = screen.get_height()
+        if self.width <= 0:
+            return
         self.surf = pygame.Surface((self.width, height), pygame.SRCALPHA)
 
         if self.mode == 0:
@@ -79,9 +81,6 @@ class main_screen():
 
     def click(self, x, y, offset):
         """Handle a click event on the main screen"""
-
-        if self.selected_tile is None:
-            return
         x -= offset[0]
         y -= offset[1]
         if x < 0:
@@ -91,13 +90,20 @@ class main_screen():
         index_x = int(x/self.tile_size)
         index_y = int(y/self.tile_size)
         index = "{}.{}".format (index_x, index_y)
-        self.coordinates[index] = self.selected_tile
-        self.append_surface(index_x, index_y)
+        if self.selected_tile is None:
+            if index in self.coordinates:
+                del self.coordinates[index]
+            if self.tile_offset is not None:
+                for x in range(self.tile_size):
+                    for y in range(self.tile_size):
+                        self.tile_surf.set_at(((index_x - self.tile_offset[0]) * self.tile_size + x, (index_y - self.tile_offset[1]) * self.tile_size + y), (0, 0, 0, 0))
+        else:
+            self.coordinates[index] = self.selected_tile
+            self.append_surface(index_x, index_y)
         return index
 
     def append_surface(self, index_x, index_y):
         """"append the background surface with the new tile"""
-
         size_x = int(self.tile_surf.get_width() /self.tile_size)
         size_y = int(self.tile_surf.get_height() /self.tile_size)
         if self.tile_offset is None:

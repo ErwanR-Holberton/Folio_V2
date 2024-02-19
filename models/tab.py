@@ -1,5 +1,5 @@
 import pygame
-from utils.functions import load_tiles
+from utils.functions import load_tiles, create_text_surface
 from models.menu_class import menu_class
 from models.button_class import button_class
 from pygame.locals import *
@@ -131,7 +131,9 @@ class tab_class():
                 index = index_y * TILES_PER_LINE + index_x
 
                 """Update the selected tile based on the clicked tile"""
-                if index < len(self.tiles):
+                if index == 0:
+                    self.selected_tile = None
+                elif index < len(self.tiles):
                     self.selected_tile = self.tiles[index]
                 elif index - len(self.tiles) < len(self.user_tiles):
                     index -= len(self.tiles)
@@ -151,7 +153,7 @@ class tab_class():
                     button.state = 0
                     if button.label == "":
                         button.label = button.name
-                        button.text_surface = button.create_text_surface(button.label)
+                        button.text_surface = create_text_surface(button.label)
                     if button.click(x, y):
                         if button.name == "Validate":
                             if self.selected_color not in self.colors:
@@ -173,6 +175,9 @@ class tab_class():
         Load tiles for the "Tiles" tab"""
         from utils.functions import get_tile
         self.tiles = []
+        delete_tile = pygame.image.load("base_assets/delete.png")
+        delete_tile = pygame.transform.scale(delete_tile, (32, 32))
+        self.tiles.append(delete_tile)
         for tile in load_tiles():
             self.tiles.append(tile)
 

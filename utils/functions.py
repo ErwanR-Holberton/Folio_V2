@@ -16,7 +16,7 @@ def load_tiles(path = "./base_assets/tiles/"):
     """Load individual tiles from the desired directory and return a list of scaled tiles."""
 
     """Get a list of file names in the desired directory"""
-    tile_list = [f for f in os.listdir(path)]
+    tile_list = [f for f in os.listdir(path) if os.path.isfile(path + '/' + f)]
 
     tile_list.sort()
 
