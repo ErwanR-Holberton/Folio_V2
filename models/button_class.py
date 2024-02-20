@@ -190,3 +190,22 @@ class button_class():
         name = popup("Please choose a map to delete:", "Map delete", self.grid, self.tab, self.top)
         if name is not None and os.path.exists("./saves/maps/" + name + ".png"):
             os.remove("./saves/maps/" + name + ".png")
+
+    def undo(self):
+        if self.grid.mode == 0:
+            print(self.grid.undo_index_map, self.grid.history_map)
+            self.grid.undo_index_map += 1
+            self.grid.tile_surf = self.grid.history_map[self.grid.undo_index_map]
+            print ("mode 0")
+        elif self.grid.mode == 1:
+            for tableau in self.grid.history_tile:
+                print("hello", tableau[0][0:3])
+            print (len(self.grid.history_tile))
+            print (self.grid.tile_grid)
+            print(self.grid.undo_index_tile)
+            print(self.grid.tile_grid is self.grid.history_tile[self.grid.undo_index_tile])
+            self.grid.undo_index_tile += 1
+            self.grid.tile_grid = self.grid.history_tile[self.grid.undo_index_tile]
+            print ("mode 1")
+            print (self.grid.tile_grid)
+        self.grid.allow_process = 1

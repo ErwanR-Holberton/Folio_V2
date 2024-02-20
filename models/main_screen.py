@@ -19,6 +19,10 @@ class main_screen():
         self.tile_offset = None
         self.screen = screen
         self.allow_process = 1
+        self.history_tile = []
+        self.history_map = []
+        self.undo_index_tile = 0
+        self.undo_index_map = 0
 
         self.process_surface(screen) # process the initial grid
 
@@ -100,6 +104,7 @@ class main_screen():
         else:
             self.coordinates[index] = self.selected_tile
             self.append_surface(index_x, index_y)
+        self.save_history_map()
         return index
 
     def append_surface(self, index_x, index_y):
@@ -145,3 +150,30 @@ class main_screen():
         if index_x < 0 or index_x > 15 or index_y < 0 or index_y > 15:
             return
         self.tile_grid[index_x][index_y] = color
+        self.save_history_tile()
+
+    def save_history_map(self):
+        """save the history of the map"""
+        if self.undo_index_map == 0:
+            self.history_map.insert(0, self.tile_surf)
+        else:
+            self.history_map.insert(self.undo_index_map - 1, self.tile_surf)
+            self.history_map = self.history_map[self.undo_index_map - 1:]
+            self.undo_index_map = 0
+
+    def save_history_tile(self):
+        """save the history of the tile"""
+        empty = []
+        for i in self.tile_grid:
+            empty.append(i)
+        for tableau in self.history_tile:
+            print("saved", tableau[0][0:3], id(tableau))
+        if self.undo_index_tile == 0:
+            self.history_tile.insert(0, empty)
+            print(self.history_tile[0][0][0])
+        else:
+            self.history_tile.insert(self.undo_index_tile - 1, self.tile_grid.copy())
+            self.history_tile = self.history_tile[self.undo_index_tile - 1:]
+            self.undo_index_tile = 0
+        for tableau in self.history_tile:
+            print("saved2", tableau[0][0:3], id(tableau[0]))

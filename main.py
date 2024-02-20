@@ -14,6 +14,7 @@ clock = pygame.time.Clock()
 """Main game loop"""
 while running:
     clock.tick(30)
+    """print(grid.tile_grid[0][0])"""
 
     """Event handling loop"""
     for event in pygame.event.get():
