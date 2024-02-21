@@ -172,9 +172,25 @@ class main_screen():
 
     def save_history_tile(self):
         """save the history of the tile"""
+        print ("save", self.undo_index_tile)
+        for bjnk in self.history_tile:
+            print(bjnk[0][:5])
         if self.undo_index_tile == 0:
-            self.history_tile.insert(0, copy.deepcopy(self.tile_grid))
+            if self.dragging == 2:
+                self.history_tile[0] = copy.deepcopy(self.tile_grid)
+            else:
+                self.history_tile.insert(0, copy.deepcopy(self.tile_grid))
         else:
-            self.history_tile.insert(self.undo_index_tile, copy.deepcopy(self.tile_grid))
-            self.history_tile = self.history_tile[self.undo_index_tile:]
+            print("hello")
+            for bjnk in self.history_tile:
+                print(bjnk[0][:5])
+            self.history_tile[self.undo_index_tile -1] = copy.deepcopy(self.tile_grid)
+            print("------------------------------")
+            for bjnk in self.history_tile:
+                print(bjnk[0][:5])
+            self.history_tile = self.history_tile[self.undo_index_tile -1:]
             self.undo_index_tile = 0
+        if self.dragging == 1:
+            self.dragging = 1
+        for bjnk in self.history_tile:
+            print(bjnk[0][:5])

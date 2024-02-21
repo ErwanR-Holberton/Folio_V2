@@ -199,22 +199,34 @@ class button_class():
         if self.grid.mode == 0:
             if self.grid.undo_index_map != len(self.grid.history_map) -1:
                 self.grid.undo_index_map += 1
-                self.grid.tile_surf = self.grid.history_map[self.grid.undo_index_map][0]
-                self.grid.tile_offset = self.grid.history_map[self.grid.undo_index_map][1]
+                self.grid.tile_surf = self.grid.history_map[self.grid.undo_index_map][0].copy()
+                self.grid.tile_offset = self.copy_tuple(self.grid.history_map[self.grid.undo_index_map][1])
         elif self.grid.mode == 1:
             if self.grid.undo_index_tile != len(self.grid.history_tile) -1:
                 self.grid.undo_index_tile += 1
-                self.grid.tile_grid = self.grid.history_tile[self.grid.undo_index_tile]
+                self.grid.tile_grid = self.grid.history_tile[self.grid.undo_index_tile].copy()
         self.grid.allow_process = 1
+        print ("undo")
+        for bjnk in self.grid.history_tile:
+            print(bjnk[0][:5])
 
     def redo(self):
         if self.grid.mode == 0:
             if self.grid.undo_index_map != 0:
                 self.grid.undo_index_map -= 1
-                self.grid.tile_surf = self.grid.history_map[self.grid.undo_index_map][0]
-                self.grid.tile_offset = self.grid.history_map[self.grid.undo_index_map][1]
+                self.grid.tile_surf = self.grid.history_map[self.grid.undo_index_map][0].copy()
+                self.grid.tile_offset = self.copy_tuple(self.grid.history_map[self.grid.undo_index_map][1])
         elif self.grid.mode == 1:
             if self.grid.undo_index_tile != 0:
                 self.grid.undo_index_tile -= 1
-                self.grid.tile_grid = self.grid.history_tile[self.grid.undo_index_tile]
+                self.grid.tile_grid = self.grid.history_tile[self.grid.undo_index_tile].copy()
         self.grid.allow_process = 1
+        print ("redo")
+        for bjnk in self.grid.history_tile:
+            print(bjnk[0][:5])
+
+    @staticmethod
+    def copy_tuple(target):
+        if target is None:
+            return None
+        return (target[0], target[1])
