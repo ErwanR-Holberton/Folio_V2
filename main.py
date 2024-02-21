@@ -14,11 +14,9 @@ clock = pygame.time.Clock()
 """Main game loop"""
 while running:
     clock.tick(30)
-    """print(grid.tile_grid[0][0])"""
 
     """Event handling loop"""
     for event in pygame.event.get():
-        start = pygame.time.get_ticks()
         if event.type == QUIT: # Check for quit event (click on red cross or press Esc key)
             """response = popup("Are you sure you want to quit? (yes or no)", "Quitting the app :(", grid, tab, top)
             if response == "yes":"""
@@ -32,6 +30,7 @@ while running:
             mouse_x, mouse_y = event.pos
             if mouse_x < grid.width and not top.hover(mouse_x, mouse_y):
                 dragging = 1
+                grid.dragging = 1
 
         elif event.type == MOUSEBUTTONUP: # Check for mouse button click event
             mouse_x, mouse_y = event.pos
@@ -49,6 +48,7 @@ while running:
                             grid.set_color(mouse_x, mouse_y, tab.selected_color, screen)
                         grid.allow_process = 1
             dragging = 0
+            grid.dragging = 0
 
 
         elif event.type == MOUSEMOTION: # Check for mouse motion event
@@ -75,13 +75,11 @@ while running:
         elif event.type == VIDEORESIZE: # Check for window resize event
             tab.process_tab(screen)
             grid.allow_process = 1
-        """print (event.type, "time: ", pygame.time.get_ticks() - start)"""
 
     if grid.allow_process:
         grid.process_surface(screen, offset)
         grid.allow_process = 0
     screen.fill((255, 255, 255))  #Fill the screen with a white background
-    start = pygame.time.get_ticks()
 
     # Draw the menus tab and grid
     tab.draw(screen)
@@ -91,6 +89,5 @@ while running:
     top.draw()
 
     pygame.display.flip() # Refresh the display
-    """print ("total time: ", pygame.time.get_ticks() - start)"""
 
 pygame.quit() # Quit Pygame when the game loop exits

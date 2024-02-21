@@ -24,17 +24,15 @@ class main_screen():
         self.history_map = []
         self.undo_index_tile = 0
         self.undo_index_map = 0
-        print(self.history_map, self.history_tile)
+        self.dragging = 0
         self.save_history_map()
         self.save_history_tile()
-        print(self.history_map, self.history_tile)
 
         self.process_surface(screen) # process the initial grid
 
     def process_surface(self, screen, offset = None):
         """process one frame of the grid """
 
-        start = pygame.time.get_ticks()
         if offset != None:
             self.offset = offset
         else:
@@ -71,7 +69,6 @@ class main_screen():
             for x in range(0, (PIXEL_NUMBER + 1) * pixel_size, pixel_size):
                 pygame.draw.line(self.surf, (0, 0, 0), (x + offset_x, offset_y), (x + offset_x, pixel_size * PIXEL_NUMBER + offset_y))
                 pygame.draw.line(self.surf, (0, 0, 0), (offset_x, x + offset_y), (pixel_size * PIXEL_NUMBER + offset_x, x + offset_y))
-        print ("process_surface time: ", pygame.time.get_ticks()-start)
 
     def draw_grid(self, offset, height):
         """draw the grid"""
@@ -169,18 +166,15 @@ class main_screen():
         if self.undo_index_map == 0:
             self.history_map.insert(0, [self.tile_surf.copy(), offset_copy])
         else:
-            self.history_map.insert(self.undo_index_map - 1, [self.tile_surf.copy(), offset_copy])
+            self.history_map.insert(self.undo_index_map, [self.tile_surf.copy(), offset_copy])
             self.history_map = self.history_map[self.undo_index_map:]
             self.undo_index_map = 0
-        for saved_offset in self.history_map:
-            print(saved_offset[1], end=" ")
-        print()
 
     def save_history_tile(self):
         """save the history of the tile"""
         if self.undo_index_tile == 0:
             self.history_tile.insert(0, copy.deepcopy(self.tile_grid))
         else:
-            self.history_tile.insert(self.undo_index_tile - 1, copy.deepcopy(self.tile_grid))
+            self.history_tile.insert(self.undo_index_tile, copy.deepcopy(self.tile_grid))
             self.history_tile = self.history_tile[self.undo_index_tile:]
             self.undo_index_tile = 0
