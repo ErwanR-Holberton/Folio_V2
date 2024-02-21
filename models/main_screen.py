@@ -24,6 +24,10 @@ class main_screen():
         self.history_map = []
         self.undo_index_tile = 0
         self.undo_index_map = 0
+        print(self.history_map, self.history_tile)
+        self.save_history_map()
+        self.save_history_tile()
+        print(self.history_map, self.history_tile)
 
         self.process_surface(screen) # process the initial grid
 
@@ -158,12 +162,19 @@ class main_screen():
 
     def save_history_map(self):
         """save the history of the map"""
-        if self.undo_index_map == 0:
-            self.history_map.insert(0, self.tile_surf)
+        if self.tile_offset is not None:
+            offset_copy = (self.tile_offset[0], self.tile_offset[1])
         else:
-            self.history_map.insert(self.undo_index_map - 1, self.tile_surf)
-            self.history_map = self.history_map[self.undo_index_map - 1:]
+            offset_copy = None
+        if self.undo_index_map == 0:
+            self.history_map.insert(0, [self.tile_surf.copy(), offset_copy])
+        else:
+            self.history_map.insert(self.undo_index_map - 1, [self.tile_surf.copy(), offset_copy])
+            self.history_map = self.history_map[self.undo_index_map:]
             self.undo_index_map = 0
+        for saved_offset in self.history_map:
+            print(saved_offset[1], end=" ")
+        print()
 
     def save_history_tile(self):
         """save the history of the tile"""
@@ -171,6 +182,5 @@ class main_screen():
             self.history_tile.insert(0, copy.deepcopy(self.tile_grid))
         else:
             self.history_tile.insert(self.undo_index_tile - 1, copy.deepcopy(self.tile_grid))
-            self.history_tile = self.history_tile[self.undo_index_tile - 1:]
+            self.history_tile = self.history_tile[self.undo_index_tile:]
             self.undo_index_tile = 0
-

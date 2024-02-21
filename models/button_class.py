@@ -197,19 +197,24 @@ class button_class():
 
     def undo(self):
         if self.grid.mode == 0:
-            print(self.grid.undo_index_map, self.grid.history_map)
-            self.grid.undo_index_map += 1
-            self.grid.tile_surf = self.grid.history_map[self.grid.undo_index_map]
-            print ("mode 0")
+            if self.grid.undo_index_map != len(self.grid.history_map) -1:
+                self.grid.undo_index_map += 1
+                self.grid.tile_surf = self.grid.history_map[self.grid.undo_index_map][0]
+                self.grid.tile_offset = self.grid.history_map[self.grid.undo_index_map][1]
         elif self.grid.mode == 1:
-            for tableau in self.grid.history_tile:
-                print("hello", tableau[0][0:3])
-            print (len(self.grid.history_tile))
-            print (self.grid.tile_grid)
-            print(self.grid.undo_index_tile)
-            print(self.grid.tile_grid is self.grid.history_tile[self.grid.undo_index_tile])
-            self.grid.undo_index_tile += 1
-            self.grid.tile_grid = self.grid.history_tile[self.grid.undo_index_tile]
-            print ("mode 1")
-            print (self.grid.tile_grid)
+            if self.grid.undo_index_tile != len(self.grid.history_tile) -1:
+                self.grid.undo_index_tile += 1
+                self.grid.tile_grid = self.grid.history_tile[self.grid.undo_index_tile]
+        self.grid.allow_process = 1
+
+    def redo(self):
+        if self.grid.mode == 0:
+            if self.grid.undo_index_map != 0:
+                self.grid.undo_index_map -= 1
+                self.grid.tile_surf = self.grid.history_map[self.grid.undo_index_map][0]
+                self.grid.tile_offset = self.grid.history_map[self.grid.undo_index_map][1]
+        elif self.grid.mode == 1:
+            if self.grid.undo_index_tile != 0:
+                self.grid.undo_index_tile -= 1
+                self.grid.tile_grid = self.grid.history_tile[self.grid.undo_index_tile]
         self.grid.allow_process = 1
