@@ -20,9 +20,9 @@ while running:
     for event in pygame.event.get():
         start = pygame.time.get_ticks()
         if event.type == QUIT: # Check for quit event (click on red cross or press Esc key)
-            response = popup("Are you sure you want to quit? (yes or no)", "Quitting the app :(", grid, tab, top)
-            if response == "yes":
-                running = 0
+            """response = popup("Are you sure you want to quit? (yes or no)", "Quitting the app :(", grid, tab, top)
+            if response == "yes":"""
+            running = 0
 
         elif event.type == KEYUP:
             tab.handle_key_input(event.key)

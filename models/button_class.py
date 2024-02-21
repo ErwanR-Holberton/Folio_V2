@@ -143,6 +143,7 @@ class button_class():
                     new_line.append(image.get_at((line, column)))
                 tile.append(new_line)
             self.grid.allow_process = 1
+            self.grid.save_history_tile()
 
     def save_tile_json(self):
         """saves a tile to a json file"""
@@ -158,6 +159,7 @@ class button_class():
         """creates a new tile"""
         self.grid.tile_grid = [[(0, 0, 0, 0) for x in range(16)] for y in range(16)]
         self.grid.allow_process = 1
+        self.grid.save_history_tile()
 
     def save_map(self):
         """save a map"""
@@ -172,12 +174,14 @@ class button_class():
             self.grid.tile_surf = pygame.image.load("saves/maps/" + name + ".png")
             self.grid.allow_process = 1
             self.grid.tile_offset = (0, 0)
+            self.grid.save_history_map()
 
     def new_map(self):
         self.grid.set = None
         self.grid.tile_surf = pygame.Surface((self.grid.tile_size, self.grid.tile_size), pygame.SRCALPHA) # create a starting surface of tile size
         self.grid.tile_surf.fill((0, 0, 0, 0))
         self.grid.allow_process = 1
+        self.grid.save_history_map()
 
     def delete_tile(self):
         """delete a tile"""
