@@ -77,14 +77,7 @@ class tab_class():
         self.surf.fill((250, 250, 250)) # Fill background color
 
         if self.selected_tab == 1:
-            """Display tiles in the "Tiles" tab"""
-            count = 0
-            for tile in self.tiles:
-                self.surf.blit(tile, ((count %TILES_PER_LINE) * 40 + 4, 30 + int(count /TILES_PER_LINE) * 40 + 4)) #remplacer par height
-                count += 1
-            for tile in self.user_tiles:
-                self.surf.blit(tile, ((count %TILES_PER_LINE) * 40 + 4, 30 + int(count /TILES_PER_LINE) * 40 + 4)) #remplacer par height
-                count += 1
+            self.draw_map_mode()
         if self.selected_tab == 2:
             """Display color palette in the "Tools" tab"""
             x = 0
@@ -118,20 +111,8 @@ class tab_class():
     def click(self, x, y):
         """Handle a click event on the tab"""
 
-        """Calculate the index of the clicked tile in the "Tiles" tab"""
-        if self.selected_tab == 1: # tiles
-            index_x = int (x / 40)
-            index_y = int ((y - __class__.height) /40)
-            index = index_y * TILES_PER_LINE + index_x
-
-            """Update the selected tile based on the clicked tile"""
-            if index == 0:
-                self.selected_tile = None
-            elif index < len(self.tiles):
-                self.selected_tile = self.tiles[index]
-            elif index - len(self.tiles) < len(self.user_tiles):
-                index -= len(self.tiles)
-                self.selected_tile = self.user_tiles[index]
+        if self.selected_tab == 1: # map
+            self.click_map_mode(x, y)
 
         elif self.selected_tab == 2: # tools
             for i in range(20):
@@ -198,4 +179,32 @@ class tab_class():
         for index in range(len(self.user_tiles)):
             self.user_tiles[index] = pygame.transform.scale(self.user_tiles[index], (32, 32))
         self.process_tab(self.screen)
+
+    def draw_map_mode(self):
+        """Display tiles in the "Tiles" tab"""
+        count = 0
+        for tile in self.tiles:
+            self.surf.blit(tile, ((count %TILES_PER_LINE) * 40 + 4, 60 + int(count /TILES_PER_LINE) * 40 + 4)) #remplacer par height
+            count += 1
+        for tile in self.user_tiles:
+            self.surf.blit(tile, ((count %TILES_PER_LINE) * 40 + 4, 60 + int(count /TILES_PER_LINE) * 40 + 4)) #remplacer par height
+            count += 1
+
+    def click_map_mode(self, x, y):
+        """Calculate the index of the clicked tile in the map mode"""
+        if y < self.menu.height:
+            self.selected_tile = None
+            return
+        index_x = int (x / 40)
+        index_y = int ((y - self.menu.height) /40)
+        index = index_y * TILES_PER_LINE + index_x
+
+        """Update the selected tile based on the clicked tile"""
+        if index == 0:
+            self.selected_tile = None
+        elif index < len(self.tiles):
+            self.selected_tile = self.tiles[index]
+        elif index - len(self.tiles) < len(self.user_tiles):
+            index -= len(self.tiles)
+            self.selected_tile = self.user_tiles[index]
 
