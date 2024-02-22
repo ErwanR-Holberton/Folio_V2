@@ -26,7 +26,15 @@ class tab_class():
         self.create_settings_variables()
         self.selected_color = (255, 255, 255, 0)
         self.reload_user_tiles()
+        self.create_color()
+        self.selected_tile = None
 
+        """Set the initial state with the "Tiles" tab selected"""
+        self.menu.buttons[0].state = 1
+        self.menu.buttons[0].color = (120, 120, 120)
+        self.process_tab(screen)
+
+    def create_color(self):
         """Predefined color palette for drawing tools"""
         self.colors = [
             (255, 0, 0),   # Red
@@ -42,12 +50,7 @@ class tab_class():
         ]
         for x in range(10):
             self.colors.append((255, 255, 255))
-        self.selected_tile = None
 
-        """Set the initial state with the "Tiles" tab selected"""
-        self.menu.buttons[0].state = 1
-        self.menu.buttons[0].color = (120, 120, 120)
-        self.process_tab(screen)
 
     def create_tool_variables(self):
         self.tools_obj = []
@@ -115,67 +118,47 @@ class tab_class():
     def click(self, x, y):
         """Handle a click event on the tab"""
 
-        """Reset the state of all tab menus"""
-        click_detected = 0
-        for button in self.menu.buttons:
-            button.state = 0
+        """Calculate the index of the clicked tile in the "Tiles" tab"""
+        if self.selected_tab == 1: # tiles
+            index_x = int (x / 40)
+            index_y = int ((y - __class__.height) /40)
+            index = index_y * TILES_PER_LINE + index_x
 
-            """Check which tab menu is clicked and set the selected tab accordingly"""
-            if button.click(x, y):
-                click_detected = 1
-                if button.label == "Tiles":
-                    self.selected_tab = 1
-                    self.grid.mode = 0
-                    self.grid.allow_process = 1
-                if button.label == "Tools":
-                    self.selected_tab = 2
-                    self.grid.mode = 1
-                    self.grid.allow_process = 1
-                if button.label == "Settings":
-                    self.selected_tab = 3
+            """Update the selected tile based on the clicked tile"""
+            if index == 0:
+                self.selected_tile = None
+            elif index < len(self.tiles):
+                self.selected_tile = self.tiles[index]
+            elif index - len(self.tiles) < len(self.user_tiles):
+                index -= len(self.tiles)
+                self.selected_tile = self.user_tiles[index]
 
-        if click_detected == 0:
-            """Calculate the index of the clicked tile in the "Tiles" tab"""
-            if self.selected_tab == 1: # tiles
-                index_x = int (x / 40)
-                index_y = int ((y - __class__.height) /40)
-                index = index_y * TILES_PER_LINE + index_x
+        elif self.selected_tab == 2: # tools
+            for i in range(20):
+                center_x = 20 + (i % 10) * 30
+                center_y = 60 + int(i / 10) * 35
+                temp = (x - center_x) ** 2
+                temp2 = (y - center_y) ** 2
+                distance = math.sqrt(temp + temp2)
+                if distance <= 12:
+                    self.selected_color = self.colors[i]
 
-                """Update the selected tile based on the clicked tile"""
-                if index == 0:
-                    self.selected_tile = None
-                elif index < len(self.tiles):
-                    self.selected_tile = self.tiles[index]
-                elif index - len(self.tiles) < len(self.user_tiles):
-                    index -= len(self.tiles)
-                    self.selected_tile = self.user_tiles[index]
-
-            elif self.selected_tab == 2: # tools
-                for i in range(20):
-                    center_x = 20 + (i % 10) * 30
-                    center_y = 60 + int(i / 10) * 35
-                    temp = (x - center_x) ** 2
-                    temp2 = (y - center_y) ** 2
-                    distance = math.sqrt(temp + temp2)
-                    if distance <= 12:
-                        self.selected_color = self.colors[i]
-
-                for button in self.tools_obj:
-                    button.state = 0
-                    if button.label == "":
-                        button.label = button.name
-                        button.text_surface = create_text_surface(button.label)
-                    if button.click(x, y):
-                        if button.name == "Validate":
-                            if self.selected_color not in self.colors:
-                                for i in range(18, 9, -1):
-                                    self.colors[i +1] = self.colors[i]
-                                self.colors[10] = self.selected_color
+            for button in self.tools_obj:
+                button.state = 0
+                if button.label == "":
+                    button.label = button.name
+                    button.text_surface = create_text_surface(button.label)
+                if button.click(x, y):
+                    if button.name == "Validate":
+                        if self.selected_color not in self.colors:
+                            for i in range(18, 9, -1):
+                                self.colors[i +1] = self.colors[i]
+                            self.colors[10] = self.selected_color
 
 
-            elif self.selected_tab == 3: # settings
-                for button in self.settings_obj:
-                    button.click(x, y)
+        elif self.selected_tab == 3: # settings
+            for button in self.settings_obj:
+                button.click(x, y)
 
         self.process_tab(self.screen)
 
@@ -215,3 +198,4 @@ class tab_class():
         for index in range(len(self.user_tiles)):
             self.user_tiles[index] = pygame.transform.scale(self.user_tiles[index], (32, 32))
         self.process_tab(self.screen)
+

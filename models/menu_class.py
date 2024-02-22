@@ -7,8 +7,10 @@ class menu_class():
         """Initialize class menu"""
         self.width = 0
         self.height = 30
+        self.line_height = 30
         self.buttons = []
         self.screen = screen
+        self.current_width = 0
 
     def create_top_menu(self):
         "create a list of drop_down menus"
@@ -35,18 +37,25 @@ class menu_class():
         "create a menu for the tab section"
 
         self.button_width = 107
-        self.expand("Tiles")
-        self.expand("Tools")
+        self.width = 320
+        self.expand("Map mode")
+        self.expand("Tile mode")
         self.expand("Settings")
+        self.current_width = 0
+        self.height = 60
+        self.expand("Project", newline=1)
 
-    def expand(self, button_name, sub_buttons = None):
+    def expand(self, button_name, sub_buttons = None, newline = 0):
         """add a button to the object menu"""
 
         new_button = button_class(button_name)
-        new_button.set_position(self.width, 0, self.button_width, self.height)
+        new_button.set_position(self.current_width, newline * self.line_height, self.button_width, self.line_height)
         new_button.create_sub_buttons(sub_buttons)
+        new_button.function = new_button.change_tab
         self.buttons.append(new_button)
-        self.width += self.button_width
+        self.current_width += self.button_width
+        if self.current_width > self.width:
+            self.width = self.current_width
 
     def hover(self, x, y):
         """"""

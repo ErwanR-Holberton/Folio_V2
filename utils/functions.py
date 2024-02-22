@@ -36,7 +36,7 @@ def load_tiles(path = "./base_assets/tiles/"):
 
     return tiles
 
-def create_text_surface(text, size = 22):
+def create_text_surface(text, size = 20):
     """Render text for the menu using calibri font"""
     font = pygame.font.Font("./base_assets/CALIBRI.TTF", size)
     return font.render(text, True, (0, 0, 0))

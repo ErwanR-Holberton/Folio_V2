@@ -5,6 +5,7 @@ import os
 from utils.popups import popup
 from utils.functions import create_text_surface, draw_screen
 import copy
+import inspect
 
 class button_class():
     def __init__(self, label, parent=None):
@@ -94,6 +95,10 @@ class button_class():
                     self.grid.process_surface(self.grid.screen)
                     draw_screen(self.grid.screen, self.tab, self.grid, self.top)
                 self.function()
+                caller = inspect.stack()[1]
+                function = caller.function
+                module = inspect.getmodule(caller[0]).__name__
+                print (self.label, "click", function, module)
         if clicked_sub_button:
             return True
         return hover
@@ -254,3 +259,16 @@ class button_class():
         if target is None:
             return None
         return (target[0], target[1])
+
+    def change_tab(self):
+        """Check which tab menu is clicked and set the selected tab accordingly"""
+        if self.label == "Map mode":
+            self.tab.selected_tab = 1
+            self.grid.mode = 0
+            self.grid.allow_process = 1
+        if self.label == "Tile mode":
+            self.tab.selected_tab = 2
+            self.grid.mode = 1
+            self.grid.allow_process = 1
+        if self.label == "Settings":
+            self.tab.selected_tab = 3
