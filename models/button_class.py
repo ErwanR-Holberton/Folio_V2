@@ -54,6 +54,8 @@ class button_class():
 
         self.position_text = (text_x, text_y)
 
+        return self
+
     def draw(self, screen):
         """Draw the menu on the screen"""
 
@@ -228,6 +230,23 @@ class button_class():
             if self.grid.undo_index_tile != 0:
                 self.grid.undo_index_tile -= 1
                 self.grid.tile_grid = copy.deepcopy(self.grid.history_tile[self.grid.undo_index_tile])
+        self.grid.allow_process = 1
+
+    def activate_grid(self):
+        self.grid.grid_status += 1  # status changes in a loop
+        self.grid.grid_status %= 3  # 0 -> 1 -> 2 -> 0
+
+        if self.grid.grid_status == 0:
+            self.label = "Grid OFF"
+        if self.grid.grid_status == 1:
+            self.label = "Grid UNDER"
+        if self.grid.grid_status == 2:
+            self.label = "Grid ON"
+
+        self.text_surface = create_text_surface(self.label)
+        self.set_position(*self.rect_value)
+
+        self.tab.process_tab(self.tab.screen)
         self.grid.allow_process = 1
 
     @staticmethod

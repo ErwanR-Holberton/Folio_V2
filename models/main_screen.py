@@ -9,6 +9,7 @@ class main_screen():
 
     def __init__(self, screen):
         """Initialize the main screen instance"""
+        self.grid_status = 1
         self.selected_tile = None # Currently selected tile
         self.coordinates = {} # Dictionary to store coordinates and corresponding tiles
         self.tile_size = 32 # Size of each tile
@@ -33,25 +34,30 @@ class main_screen():
     def process_surface(self, screen, offset = None):
         """process one frame of the grid """
 
-        if offset != None:
+        if offset != None:          #check offset for unitialised value
             self.offset = offset
         else:
             offset = self.offset
-        self.width = screen.get_width() - tab_class.width
+
+        self.width = screen.get_width() - tab_class.width   #update tab size
         height = screen.get_height()
         if self.width <= 0:
             return
         self.surf = pygame.Surface((self.width, height), pygame.SRCALPHA)
 
-        if self.mode == 0:
-            """Map grid mode"""
+        if self.mode == 0:          #Map grid mode
+
             self.surf.fill((54, 57, 63)) # Background color
-            self.draw_grid(offset, height)
+            if self.grid_status == 1:           #draw grid under
+                self.draw_grid(offset, height)
             if self.tile_offset is not None:
                 dx, dy = self.tile_offset
             else:
                 dx = dy = 0
             self.surf.blit(self.tile_surf, (offset[0] + dx * self.tile_size, offset[1] + dy * self.tile_size))
+            if self.grid_status == 2:           #draw grid over
+                self.draw_grid(offset, height)
+
         else:
             """ Tile grid mode"""
             pixel_size_x = (self.width - 20) / PIXEL_NUMBER

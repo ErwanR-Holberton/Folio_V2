@@ -22,15 +22,8 @@ class tab_class():
         self.create_list_of_tiles()
         self.menu = menu_class("tab_menu", screen)
         self.menu.create_tab_menu()
-        self.tools_obj = []
-        self.tools_obj.append(button_class("R"))
-        self.tools_obj.append(button_class("G"))
-        self.tools_obj.append(button_class("B"))
-        self.tools_obj.append(button_class("Validate"))
-        self.tools_obj[0].set_position(20, 175, 70, 30)
-        self.tools_obj[1].set_position(110, 175, 70, 30)
-        self.tools_obj[2].set_position(200, 175, 70, 30)
-        self.tools_obj[3].set_position(200, 125, 100, 30)
+        self.create_tool_variables()
+        self.create_settings_variables()
         self.selected_color = (255, 255, 255, 0)
         self.reload_user_tiles()
 
@@ -55,6 +48,23 @@ class tab_class():
         self.menu.buttons[0].state = 1
         self.menu.buttons[0].color = (120, 120, 120)
         self.process_tab(screen)
+
+    def create_tool_variables(self):
+        self.tools_obj = []
+        self.tools_obj.append(button_class("R"))
+        self.tools_obj.append(button_class("G"))
+        self.tools_obj.append(button_class("B"))
+        self.tools_obj.append(button_class("Validate"))
+        self.tools_obj[0].set_position(20, 175, 70, 30)
+        self.tools_obj[1].set_position(110, 175, 70, 30)
+        self.tools_obj[2].set_position(200, 175, 70, 30)
+        self.tools_obj[3].set_position(200, 125, 100, 30)
+
+    def create_settings_variables(self):
+        self.settings_obj = [
+            button_class("Grid Under").set_position(20, 50, 130, 30)
+        ]
+        self.settings_obj[0].function = self.settings_obj[0].activate_grid
 
     def process_tab(self, screen):
         """Calculate the appearance of the tab based on the selected tab"""
@@ -85,14 +95,15 @@ class tab_class():
             pygame.draw.rect(self.surf, (0, 0, 0), (10, 125, 180, 30), 1)
         if self.selected_tab == 3:
             """Display a yellow background in the "Settings" tab"""
-            self.surf.fill((250, 250, 0))
+            self.surf.fill((250, 250, 250))
+            for button in self.settings_obj:
+                button.draw(self.surf)
 
         """Draw each tab menu"""
         for button in self.menu.buttons:
             button.draw(self.surf)
 
-        """Draw the tab on the screen"""
-        self.draw(screen)
+        pygame.draw.line(self.surf, (150,150,150), (0,0), (0, screen.get_height()))
 
     def draw(self, screen):
         """Draw the tab on the screen"""
@@ -162,13 +173,13 @@ class tab_class():
                                 self.colors[10] = self.selected_color
 
 
-            else: # settings
-                pass
+            elif self.selected_tab == 3: # settings
+                for button in self.settings_obj:
+                    button.click(x, y)
 
         self.process_tab(self.screen)
 
         return self.selected_tile
-
 
     def create_list_of_tiles(self):
         """Duplicate tiles for demonstration purposes
@@ -180,7 +191,6 @@ class tab_class():
         self.tiles.append(delete_tile)
         for tile in load_tiles():
             self.tiles.append(tile)
-
 
     def handle_key_input(self, key):
         """handle user input to change RGB values"""
