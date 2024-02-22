@@ -164,33 +164,27 @@ class main_screen():
         else:
             offset_copy = None
         if self.undo_index_map == 0:
-            self.history_map.insert(0, [self.tile_surf.copy(), offset_copy])
+            if self.dragging == 2:
+                self.history_map[0] = [self.tile_surf.copy(), offset_copy]
+            else:
+                self.history_map.insert(0, [self.tile_surf.copy(), offset_copy])
         else:
             self.history_map.insert(self.undo_index_map, [self.tile_surf.copy(), offset_copy])
             self.history_map = self.history_map[self.undo_index_map:]
             self.undo_index_map = 0
+        if self.dragging == 1:
+            self.dragging = 2
 
     def save_history_tile(self):
         """save the history of the tile"""
-        print ("save", self.undo_index_tile)
-        for bjnk in self.history_tile:
-            print(bjnk[0][:5])
         if self.undo_index_tile == 0:
             if self.dragging == 2:
                 self.history_tile[0] = copy.deepcopy(self.tile_grid)
             else:
                 self.history_tile.insert(0, copy.deepcopy(self.tile_grid))
         else:
-            print("hello")
-            for bjnk in self.history_tile:
-                print(bjnk[0][:5])
             self.history_tile[self.undo_index_tile -1] = copy.deepcopy(self.tile_grid)
-            print("------------------------------")
-            for bjnk in self.history_tile:
-                print(bjnk[0][:5])
             self.history_tile = self.history_tile[self.undo_index_tile -1:]
             self.undo_index_tile = 0
         if self.dragging == 1:
-            self.dragging = 1
-        for bjnk in self.history_tile:
-            print(bjnk[0][:5])
+            self.dragging = 2

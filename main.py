@@ -79,15 +79,9 @@ while running:
     if grid.allow_process:
         grid.process_surface(screen, offset)
         grid.allow_process = 0
-    screen.fill((255, 255, 255))  #Fill the screen with a white background
 
-    # Draw the menus tab and grid
-    tab.draw(screen)
-    grid.draw(screen)
 
-    # Draw menus and submenus
-    top.draw()
+    draw_screen(screen, tab, grid, top)
 
-    pygame.display.flip() # Refresh the display
 
 pygame.quit() # Quit Pygame when the game loop exits

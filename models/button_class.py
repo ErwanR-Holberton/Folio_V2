@@ -3,10 +3,11 @@ import json
 from pygame.locals import *
 import os
 from utils.popups import popup
-from utils.functions import create_text_surface
+from utils.functions import create_text_surface, draw_screen
+import copy
 
 class button_class():
-    def __init__(self, label):
+    def __init__(self, label, parent=None):
         """Initialize class button with name"""
 
         self.label = label
@@ -18,6 +19,7 @@ class button_class():
         self.name = label
         self.function = None
         self.function = self.function_1
+        self.parent = parent
 
     def hover(self, x, y):
         """Check if the given coordinates are within the menu area for hover effect"""
@@ -70,6 +72,7 @@ class button_class():
                 if button.click(x, y):
                     clicked_sub_button = 1
                 button.state = 0
+
         hover = self.hover(x, y)
         if hover:
             if self.state == 0:
@@ -83,20 +86,25 @@ class button_class():
                 self.state = 0
                 self.color = (150, 150, 150)
             if self.function is not None:
+
+                if self.parent is not None:
+                    self.parent.state = 0
+                    self.grid.process_surface(self.grid.screen)
+                    draw_screen(self.grid.screen, self.tab, self.grid, self.top)
                 self.function()
         if clicked_sub_button:
             return True
         return hover
 
     def create_sub_buttons(self, sub_buttons):
-        """create the subbutons"""
+        """create the sub buttons"""
         if sub_buttons is None:
             return
         count = 0
         x, y, w, h = self.rect_value
         for button_name in sub_buttons:
             count += 1
-            new = button_class(button_name)
+            new = button_class(button_name, self)
             new.set_position(x, (y + count * h), w, h)
             self.sub_buttons.append(new)
 
@@ -204,7 +212,7 @@ class button_class():
         elif self.grid.mode == 1:
             if self.grid.undo_index_tile != len(self.grid.history_tile) -1:
                 self.grid.undo_index_tile += 1
-                self.grid.tile_grid = self.grid.history_tile[self.grid.undo_index_tile].copy()
+                self.grid.tile_grid = copy.deepcopy(self.grid.history_tile[self.grid.undo_index_tile])
         self.grid.allow_process = 1
         print ("undo")
         for bjnk in self.grid.history_tile:
@@ -219,11 +227,8 @@ class button_class():
         elif self.grid.mode == 1:
             if self.grid.undo_index_tile != 0:
                 self.grid.undo_index_tile -= 1
-                self.grid.tile_grid = self.grid.history_tile[self.grid.undo_index_tile].copy()
+                self.grid.tile_grid = copy.deepcopy(self.grid.history_tile[self.grid.undo_index_tile])
         self.grid.allow_process = 1
-        print ("redo")
-        for bjnk in self.grid.history_tile:
-            print(bjnk[0][:5])
 
     @staticmethod
     def copy_tuple(target):

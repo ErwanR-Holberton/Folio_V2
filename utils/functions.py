@@ -40,3 +40,16 @@ def create_text_surface(text, size = 22):
     """Render text for the menu using calibri font"""
     font = pygame.font.Font("./base_assets/CALIBRI.TTF", size)
     return font.render(text, True, (0, 0, 0))
+
+
+def draw_screen(screen, tab, grid, top):
+    screen.fill((255, 255, 255))  #Fill the screen with a white background
+
+    # Draw the menus tab and grid
+    tab.draw(screen)
+    grid.draw(screen)
+
+    # Draw menus and submenus
+    top.draw()
+
+    pygame.display.flip() # Refresh the display
