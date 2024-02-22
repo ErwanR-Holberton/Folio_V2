@@ -21,14 +21,17 @@ class menu_class():
         self.expand("Tile", ["New", "Load", "Save", "Delete"])
         self.expand("Edit", ["Undo", "Redo"])
         self.expand("Help", [])
-        self.buttons[2].sub_buttons[0].function = self.buttons[2].sub_buttons[0].new_tile
-        self.buttons[2].sub_buttons[1].function = self.buttons[2].sub_buttons[1].load_tile
-        self.buttons[2].sub_buttons[2].function = self.buttons[2].sub_buttons[2].save_tile
-        self.buttons[2].sub_buttons[3].function = self.buttons[2].sub_buttons[3].delete_tile
+        self.buttons[0].sub_buttons[0].function = self.buttons[0].sub_buttons[0].new_project
+        self.buttons[0].sub_buttons[1].function = self.buttons[0].sub_buttons[1].load_project
+        self.buttons[0].sub_buttons[3].function = self.buttons[0].sub_buttons[3].delete_project
         self.buttons[1].sub_buttons[0].function = self.buttons[1].sub_buttons[0].new_map
         self.buttons[1].sub_buttons[1].function = self.buttons[1].sub_buttons[1].load_map
         self.buttons[1].sub_buttons[2].function = self.buttons[1].sub_buttons[2].save_map
         self.buttons[1].sub_buttons[3].function = self.buttons[1].sub_buttons[3].delete_map
+        self.buttons[2].sub_buttons[0].function = self.buttons[2].sub_buttons[0].new_tile
+        self.buttons[2].sub_buttons[1].function = self.buttons[2].sub_buttons[1].load_tile
+        self.buttons[2].sub_buttons[2].function = self.buttons[2].sub_buttons[2].save_tile
+        self.buttons[2].sub_buttons[3].function = self.buttons[2].sub_buttons[3].delete_tile
         self.buttons[3].sub_buttons[0].function = self.buttons[3].sub_buttons[0].undo
         self.buttons[3].sub_buttons[1].function = self.buttons[3].sub_buttons[1].redo
 

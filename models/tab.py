@@ -4,7 +4,8 @@ from models.menu_class import menu_class
 from models.button_class import button_class
 from pygame.locals import *
 import math
-
+from utils.popups import popup
+import os
 TILES_PER_LINE = 8
 
 class tab_class():
@@ -28,6 +29,11 @@ class tab_class():
         self.reload_user_tiles()
         self.create_color()
         self.selected_tile = None
+        self.project_name = None
+        self.map_list = []
+        self.linking_button = button_class("Link map to the project")
+        self.linking_button.set_position(10, 70, 300, 30)
+        self.linking_button.function = self.linking_button.link_map_to_project
 
         """Set the initial state with the "Tiles" tab selected"""
         self.menu.buttons[0].state = 1
@@ -51,21 +57,20 @@ class tab_class():
         for x in range(10):
             self.colors.append((255, 255, 255))
 
-
     def create_tool_variables(self):
         self.tools_obj = []
         self.tools_obj.append(button_class("R"))
         self.tools_obj.append(button_class("G"))
         self.tools_obj.append(button_class("B"))
         self.tools_obj.append(button_class("Validate"))
-        self.tools_obj[0].set_position(20, 175, 70, 30)
-        self.tools_obj[1].set_position(110, 175, 70, 30)
-        self.tools_obj[2].set_position(200, 175, 70, 30)
-        self.tools_obj[3].set_position(200, 125, 100, 30)
+        self.tools_obj[0].set_position(20, 205, 70, 30)
+        self.tools_obj[1].set_position(110, 205, 70, 30)
+        self.tools_obj[2].set_position(200, 205, 70, 30)
+        self.tools_obj[3].set_position(200, 155, 100, 30)
 
     def create_settings_variables(self):
         self.settings_obj = [
-            button_class("Grid Under").set_position(20, 50, 130, 30)
+            button_class("Grid Under").set_position(20, 80, 130, 30)
         ]
         self.settings_obj[0].function = self.settings_obj[0].activate_grid
 
@@ -79,21 +84,11 @@ class tab_class():
         if self.selected_tab == 1:
             self.draw_map_mode()
         if self.selected_tab == 2:
-            """Display color palette in the "Tools" tab"""
-            x = 0
-            for color in self.colors:
-                pygame.draw.circle(self.surf, color, (20 + (x % 10) * 30, 60 + int(x / 10) * 35), 12)
-                pygame.draw.circle(self.surf, (0, 0, 0), (20 + (x % 10) * 30, 60 + int(x / 10) * 35), 12, 1)
-                x += 1
-            for button in self.tools_obj:
-                button.draw(self.surf)
-            pygame.draw.rect(self.surf, self.selected_color, (10, 125, 180, 30))
-            pygame.draw.rect(self.surf, (0, 0, 0), (10, 125, 180, 30), 1)
+            self.draw_tile_mode()
         if self.selected_tab == 3:
-            """Display a yellow background in the "Settings" tab"""
-            self.surf.fill((250, 250, 250))
-            for button in self.settings_obj:
-                button.draw(self.surf)
+            self.draw_settings()
+        if self.selected_tab == 4:
+            self.draw_project()
 
         """Draw each tab menu"""
         for button in self.menu.buttons:
@@ -115,31 +110,14 @@ class tab_class():
             self.click_map_mode(x, y)
 
         elif self.selected_tab == 2: # tools
-            for i in range(20):
-                center_x = 20 + (i % 10) * 30
-                center_y = 60 + int(i / 10) * 35
-                temp = (x - center_x) ** 2
-                temp2 = (y - center_y) ** 2
-                distance = math.sqrt(temp + temp2)
-                if distance <= 12:
-                    self.selected_color = self.colors[i]
-
-            for button in self.tools_obj:
-                button.state = 0
-                if button.label == "":
-                    button.label = button.name
-                    button.text_surface = create_text_surface(button.label)
-                if button.click(x, y):
-                    if button.name == "Validate":
-                        if self.selected_color not in self.colors:
-                            for i in range(18, 9, -1):
-                                self.colors[i +1] = self.colors[i]
-                            self.colors[10] = self.selected_color
-
+            self.click_tile_mode(x, y)
 
         elif self.selected_tab == 3: # settings
             for button in self.settings_obj:
                 button.click(x, y)
+
+        elif self.selected_tab == 4: # project
+            self.click_project(x, y)
 
         self.process_tab(self.screen)
 
@@ -207,4 +185,62 @@ class tab_class():
         elif index - len(self.tiles) < len(self.user_tiles):
             index -= len(self.tiles)
             self.selected_tile = self.user_tiles[index]
+
+    def draw_tile_mode(self):
+        """Display color palette in the "Tools" tab"""
+        x = 0
+        for color in self.colors:
+            pygame.draw.circle(self.surf, color, (20 + (x % 10) * 30, 90 + int(x / 10) * 35), 12)
+            pygame.draw.circle(self.surf, (0, 0, 0), (20 + (x % 10) * 30, 90 + int(x / 10) * 35), 12, 1)
+            x += 1
+        for button in self.tools_obj:
+            button.draw(self.surf)
+        pygame.draw.rect(self.surf, self.selected_color, (10, 155, 180, 30))
+        pygame.draw.rect(self.surf, (0, 0, 0), (10, 155, 180, 30), 1)
+
+    def draw_settings(self):
+        """Display buttons in the settings tab"""
+        self.surf.fill((250, 250, 250))
+        for button in self.settings_obj:
+            button.draw(self.surf)
+
+    def draw_project(self):
+        if self.project_name is None:
+            surface = create_text_surface("Please create or load a project")
+            self.surf.blit(surface, (10, 70))
+        else:
+            self.linking_button.draw(self.surf)
+            surface = create_text_surface(self.project_name)
+            self.surf.blit(surface, (10, 110))
+            count = 0
+            for names in self.map_list:
+                surface = create_text_surface(names)
+                self.surf.blit(surface, (10, 140 + 40 * count))
+                count += 1
+
+    def click_tile_mode(self, x, y):
+        """detect where the click happened in tile mode"""
+        for i in range(20): #test the circles
+            center_x = 20 + (i % 10) * 30
+            center_y = 90 + int(i / 10) * 35
+            temp = (x - center_x) ** 2
+            temp2 = (y - center_y) ** 2
+            distance = math.sqrt(temp + temp2)
+            if distance <= 12:
+                self.selected_color = self.colors[i]
+
+        for button in self.tools_obj: # go through the buttons
+            button.state = 0
+            if button.label == "":
+                button.label = button.name
+                button.text_surface = create_text_surface(button.label)
+            if button.click(x, y):
+                if button.name == "Validate":
+                    if self.selected_color not in self.colors:
+                        for i in range(18, 9, -1):
+                            self.colors[i +1] = self.colors[i]
+                        self.colors[10] = self.selected_color
+
+    def click_project(self, x, y):
+        self.linking_button.click(x, y)
 

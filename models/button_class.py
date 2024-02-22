@@ -4,8 +4,8 @@ from pygame.locals import *
 import os
 from utils.popups import popup
 from utils.functions import create_text_surface, draw_screen
-import copy
-import inspect
+from copy import deepcopy
+import shutil
 
 class button_class():
     def __init__(self, label, parent=None):
@@ -19,7 +19,6 @@ class button_class():
         self.radius_bottom_right = -1
         self.name = label
         self.function = None
-        self.function = self.function_1
         self.parent = parent
 
     def hover(self, x, y):
@@ -95,10 +94,6 @@ class button_class():
                     self.grid.process_surface(self.grid.screen)
                     draw_screen(self.grid.screen, self.tab, self.grid, self.top)
                 self.function()
-                caller = inspect.stack()[1]
-                function = caller.function
-                module = inspect.getmodule(caller[0]).__name__
-                print (self.label, "click", function, module)
         if clicked_sub_button:
             return True
         return hover
@@ -130,9 +125,6 @@ class button_class():
         self.text_surface = create_text_surface(self.label)
         x, y, width, height = self.rect_value
         self.set_position(x, y, width, height)
-
-    def function_1(self):
-        print(self.label, "clicked")
 
     def save_tile(self):
         """save a tile as a png file"""
@@ -219,7 +211,7 @@ class button_class():
         elif self.grid.mode == 1:
             if self.grid.undo_index_tile != len(self.grid.history_tile) -1:
                 self.grid.undo_index_tile += 1
-                self.grid.tile_grid = copy.deepcopy(self.grid.history_tile[self.grid.undo_index_tile])
+                self.grid.tile_grid = deepcopy(self.grid.history_tile[self.grid.undo_index_tile])
         self.grid.allow_process = 1
         print ("undo")
         for bjnk in self.grid.history_tile:
@@ -234,7 +226,7 @@ class button_class():
         elif self.grid.mode == 1:
             if self.grid.undo_index_tile != 0:
                 self.grid.undo_index_tile -= 1
-                self.grid.tile_grid = copy.deepcopy(self.grid.history_tile[self.grid.undo_index_tile])
+                self.grid.tile_grid = deepcopy(self.grid.history_tile[self.grid.undo_index_tile])
         self.grid.allow_process = 1
 
     def activate_grid(self):
@@ -272,3 +264,39 @@ class button_class():
             self.grid.allow_process = 1
         if self.label == "Settings":
             self.tab.selected_tab = 3
+        if self.label == "Project":
+            self.tab.selected_tab = 4
+
+    def new_project(self):
+        name = popup("Please choose a name for the project:", "New project", self.grid, self.tab, self.top)
+        if name is not None and not os.path.exists("./saves/projects/" + name):
+            self.tab.project_name = name
+            os.makedirs("./saves/projects/" + name)
+            os.makedirs("./saves/projects/" + name + "/maps/")
+            self.tab.process_tab(self.tab.screen)
+
+    def delete_project(self):
+        """delete a project"""
+        name = popup("Please choose a project to delete:", "Project delete", self.grid, self.tab, self.top)
+        if name is not None and os.path.exists("./saves/projects/" + name):
+            shutil.rmtree("./saves/projects/" + name)
+
+    def load_project(self):
+        """load a project"""
+        name = popup("Please choose a project to load:", "Project load", self.grid, self.tab, self.top)
+        if name is not None and os.path.exists("./saves/projects/" + name):
+            self.tab.project_name = name
+            self.tab.map_list = []
+            for map in os.listdir("./saves/projects/" + self.tab.project_name + "/maps/"):
+                self.tab.map_list.append(map)
+            self.tab.process_tab(self.tab.screen)
+
+    def link_map_to_project(self):
+
+        name = popup("Please choose a map to link:", "Map link", self.grid, self.tab, self.top)
+
+        source = "./saves/maps/" + name + ".png"
+        dest = "./saves/projects/" + self.tab.project_name + "/maps/" + name + ".png"
+
+        if name is not None and os.path.exists(source):
+            shutil.copy(source, dest)
