@@ -42,5 +42,5 @@ Contributions are welcome! Feel free to submit pull requests or report issues.
 
 ## Authors
 
-- Erwan Rocal [![github icon](https://github.com/ErwanR-Holberton/Folio_V2/blob/427898b9dffcb153d4bf7af90e167d926ca43ba5/github-icon-256x251-vnq6knd3.png)](https://github.com/ErwanR-Holberton)
+- Erwan Rocal [![github icon](https://github.com/ErwanR-Holberton/Folio_V2/blob/a19454c079da3de1f68037ae743f0715d02322b0/github%20icon.png)](https://github.com/ErwanR-Holberton)
 - Nathalie Metreau (https://github.com/NathalieMet)
