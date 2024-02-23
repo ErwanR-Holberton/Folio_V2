@@ -16,14 +16,15 @@ class menu_class():
         "create a list of drop_down menus"
 
         self.button_width = 100
-        self.expand("Project", ["New", "Load", "Save", "Delete"])
+        self.expand("Project", ["New", "Load", "Delete"])
         self.expand("Map", ["New", "Load", "Save", "Delete"])
         self.expand("Tile", ["New", "Load", "Save", "Delete"])
+        self.expand("Blueprint", ["New", "Load", "Save", "Delete"])
         self.expand("Edit", ["Undo", "Redo"])
         self.expand("Help", [])
         self.buttons[0].sub_buttons[0].function = self.buttons[0].sub_buttons[0].new_project
         self.buttons[0].sub_buttons[1].function = self.buttons[0].sub_buttons[1].load_project
-        self.buttons[0].sub_buttons[3].function = self.buttons[0].sub_buttons[3].delete_project
+        self.buttons[0].sub_buttons[2].function = self.buttons[0].sub_buttons[2].delete_project
         self.buttons[1].sub_buttons[0].function = self.buttons[1].sub_buttons[0].new_map
         self.buttons[1].sub_buttons[1].function = self.buttons[1].sub_buttons[1].load_map
         self.buttons[1].sub_buttons[2].function = self.buttons[1].sub_buttons[2].save_map
@@ -32,8 +33,12 @@ class menu_class():
         self.buttons[2].sub_buttons[1].function = self.buttons[2].sub_buttons[1].load_tile
         self.buttons[2].sub_buttons[2].function = self.buttons[2].sub_buttons[2].save_tile
         self.buttons[2].sub_buttons[3].function = self.buttons[2].sub_buttons[3].delete_tile
-        self.buttons[3].sub_buttons[0].function = self.buttons[3].sub_buttons[0].undo
-        self.buttons[3].sub_buttons[1].function = self.buttons[3].sub_buttons[1].redo
+        self.buttons[3].sub_buttons[0].function = self.buttons[3].sub_buttons[0].new_blueprint
+        self.buttons[3].sub_buttons[1].function = self.buttons[3].sub_buttons[1].load_blueprint
+        self.buttons[3].sub_buttons[2].function = self.buttons[3].sub_buttons[2].save_blueprint
+        self.buttons[3].sub_buttons[3].function = self.buttons[3].sub_buttons[3].delete_blueprint
+        self.buttons[4].sub_buttons[0].function = self.buttons[4].sub_buttons[0].undo
+        self.buttons[4].sub_buttons[1].function = self.buttons[4].sub_buttons[1].redo
 
 
     def create_tab_menu(self):

@@ -300,3 +300,4 @@ class button_class():
 
         if name is not None and os.path.exists(source):
             shutil.copy(source, dest)
+            self.tab.map_list.append(name)

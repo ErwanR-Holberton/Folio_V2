@@ -217,6 +217,7 @@ class tab_class():
                 surface = create_text_surface(names)
                 self.surf.blit(surface, (10, 140 + 40 * count))
                 count += 1
+                print(names)
 
     def click_tile_mode(self, x, y):
         """detect where the click happened in tile mode"""

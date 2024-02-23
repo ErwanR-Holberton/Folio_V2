@@ -1,6 +1,6 @@
 # RPG Map Builder V0
 
-### Welcome to our RPG Map Builder project! This project is designed as part of our end-of-study Fundamentals of Computer Programming demo at Holberton school. It's a software that allows the user to create a map using pre-built or custom tiles.
+### Welcome to our RPG Map Builder project! This project is designed as part of our end-of-study Fundamentals of Computer Programming demo at Holberton school. It's a versatile tool that empowers users to craft custom maps and effortlessly save them for integration into various applications, particularly games. This user-friendly program allows seamless management of map collections organized into projects. The feature of creating personalized tiles offers unparalleled design freedom, making it an ideal choice for creative minds seeking a dynamic and customizable mapping solution."
 
 ## Dependencies
 
@@ -42,5 +42,5 @@ Contributions are welcome! Feel free to submit pull requests or report issues.
 
 ## Authors
 
-- Erwan Rocal (https://github.com/ErwanR-Holberton)
+- Erwan Rocal [![github icon](github-icon-256x251-vnq6knd3.png)](https://github.com/ErwanR-Holberton)
 - Nathalie Metreau (https://github.com/NathalieMet)
