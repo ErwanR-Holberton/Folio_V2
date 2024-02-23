@@ -178,7 +178,7 @@ class button_class():
         """load a map"""
         name = popup("Please choose a map to load:", "Map load", self.grid, self.tab, self.top)
         if name is not None and os.path.exists("./saves/maps/" + name + ".png"):
-            self.grid.tile_surf = pygame.image.load("saves/maps/" + name + ".png")
+            self.grid.tile_surf = pygame.image.load("./saves/maps/" + name + ".png")
             self.grid.allow_process = 1
             self.grid.tile_offset = (0, 0)
             self.grid.save_history_map()
@@ -301,3 +301,44 @@ class button_class():
         if name is not None and os.path.exists(source):
             shutil.copy(source, dest)
             self.tab.map_list.append(name)
+
+    def new_blueprint(self):
+        self.new_map()
+
+    def load_blueprint(self):
+        """loads a blueprint"""
+        name = popup("Please choose a blueprint to load:", "Blueprint load", self.grid, self.tab, self.top)
+        if name is not None and os.path.exists("./saves/blueprints/" + name + ".png"):
+            self.grid.tile_surf = pygame.image.load("./saves/blueprints/" + name + ".png")
+            self.grid.allow_process = 1
+            self.grid.tile_offset = (0, 0)
+            self.grid.save_history_map()
+
+    def save_blueprint(self):
+        """saves a blueprint"""
+        name = popup("Please choose a name for the blueprint:", "Blueprint save", self.grid, self.tab, self.top)
+        if name is not None:
+            pygame.image.save(self.grid.tile_surf, "./saves/blueprints/" + name + ".png")
+
+    def delete_blueprint(self):
+        """deletes a blueprint"""
+        name = popup("Please choose a blueprint to delete:", "Blueprint delete", self.grid, self.tab, self.top)
+        if name is not None and os.path.exists("./saves/blueprints/" + name + ".png"):
+            os.remove("./saves/blueprints/" + name + ".png")
+
+    def dropdown_function(self):
+        if self.label.startswith("Base tiles"):
+            self.tab.dropdown_base_tiles = not self.tab.dropdown_base_tiles
+        elif self.label.startswith("User tiles"):
+            self.tab.dropdown_user_tiles = not self.tab.dropdown_user_tiles
+        elif self.label.startswith("Blueprints"):
+            self.tab.dropdown_blueprints = not self.tab.dropdown_blueprints
+
+        number_of_tiles = len(self.tab.tiles)
+        lines = number_of_tiles // 8
+        if number_of_tiles % 8 != 0:
+            lines += 1
+        if self.tab.dropdown_base_tiles:
+            self.tab.drop_downs[1].set_position(10, 100 + 40 * lines, 300, 20)
+        else:
+            self.tab.drop_downs[1].set_position(10, 100, 300, 20)

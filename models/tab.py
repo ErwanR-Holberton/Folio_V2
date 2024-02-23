@@ -1,5 +1,5 @@
 import pygame
-from utils.functions import load_tiles, create_text_surface
+from utils.functions import load_tiles, create_text_surface, count_lines
 from models.menu_class import menu_class
 from models.button_class import button_class
 from pygame.locals import *
@@ -23,6 +23,7 @@ class tab_class():
         self.create_list_of_tiles()
         self.menu = menu_class("tab_menu", screen)
         self.menu.create_tab_menu()
+        self.create_map_mode_variables()
         self.create_tool_variables()
         self.create_settings_variables()
         self.selected_color = (255, 255, 255, 0)
@@ -56,6 +57,17 @@ class tab_class():
         ]
         for x in range(10):
             self.colors.append((255, 255, 255))
+
+    def create_map_mode_variables(self):
+        self.dropdown_base_tiles = 0
+        self.dropdown_user_tiles = 0
+        self.dropdown_blueprints = 0
+        self.drop_downs = [
+            button_class("Base tiles                                  ↓").set_position(10, 70, 300, 20),
+            button_class("User tiles                                  ↓").set_position(10, 100, 300, 20)
+        ]
+        self.drop_downs[0].function = self.drop_downs[0].dropdown_function
+        self.drop_downs[1].function = self.drop_downs[1].dropdown_function
 
     def create_tool_variables(self):
         self.tools_obj = []
@@ -161,30 +173,81 @@ class tab_class():
     def draw_map_mode(self):
         """Display tiles in the "Tiles" tab"""
         count = 0
-        for tile in self.tiles:
-            self.surf.blit(tile, ((count %TILES_PER_LINE) * 40 + 4, 60 + int(count /TILES_PER_LINE) * 40 + 4)) #remplacer par height
-            count += 1
-        for tile in self.user_tiles:
-            self.surf.blit(tile, ((count %TILES_PER_LINE) * 40 + 4, 60 + int(count /TILES_PER_LINE) * 40 + 4)) #remplacer par height
-            count += 1
+
+        for dropdown in self.drop_downs:
+            dropdown.draw(self.surf)
+
+        if self.dropdown_base_tiles:    #draw base tiles
+            for tile in self.tiles:
+                self.surf.blit(tile, ((count %TILES_PER_LINE) * 40 + 4, 90 + int(count /TILES_PER_LINE) * 40 + 4)) #remplacer par height
+                count += 1
+
+        lines = len(self.tiles) // 8    # count lines of tiles
+        if len(self.tiles) % 8 != 0:
+            lines += 1
+        if self.dropdown_base_tiles:                # if we show the tiles
+            offset = lines * 40 + 20 + 90 + 10      #shift everything down by n lines
+        else:                                       #else dont shift
+            offset = 20 + 90 + 10                   #20 button height 10 margin 90 menu height + margin
+
+        count = 0
+        if self.dropdown_user_tiles:    #draw user tiles
+            for tile in self.user_tiles:
+                self.surf.blit(tile, ((count %TILES_PER_LINE) * 40 + 4, offset + int(count /TILES_PER_LINE) * 40 + 4)) #remplacer par height
+                count += 1
 
     def click_map_mode(self, x, y):
         """Calculate the index of the clicked tile in the map mode"""
-        if y < self.menu.height:
+        cliked = 0
+        for button in self.drop_downs:
+            if button.click(x, y):
+                cliked = 1
+
+        if y < self.menu.height or cliked:
             self.selected_tile = None
             return
-        index_x = int (x / 40)
-        index_y = int ((y - self.menu.height) /40)
-        index = index_y * TILES_PER_LINE + index_x
+
+        lines = 0
+        if self.dropdown_base_tiles:
+            index_x = int (x / 40)
+            index_y = int ((y - (self.menu.height + 60)) /40)
+            index = index_y * TILES_PER_LINE + index_x
+
+            if index == 0:
+                self.selected_tile = None
+            elif index >= len(self.tiles):
+                self.selected_tile = None
+            elif index > 0:
+                self.selected_tile = self.tiles[index]
+
+            lines = len(self.tiles) // 8    # count lines of tiles
+            if len(self.tiles) % 8 != 0:
+                lines += 1
+
+        if self.dropdown_user_tiles:
+            index_x = int (x / 40)
+            index_y = int ((y - (self.menu.height + 60 + (lines * 40))) /40)
+            index = index_y * TILES_PER_LINE + index_x
+
+            if index >= len(self.user_tiles):
+                self.selected_tile = None
+            elif index >= 0:
+                self.selected_tile = self.user_tiles[index]
+
+            lines += count_lines(self.user_tiles)
+
+        """index_x = int (x / 40)
+        index_y = int ((y - (self.menu.height + 30)) /40)
+        index = index_y * TILES_PER_LINE + index_x"""
 
         """Update the selected tile based on the clicked tile"""
-        if index == 0:
+        """if index == 0:
             self.selected_tile = None
         elif index < len(self.tiles):
             self.selected_tile = self.tiles[index]
         elif index - len(self.tiles) < len(self.user_tiles):
             index -= len(self.tiles)
-            self.selected_tile = self.user_tiles[index]
+            self.selected_tile = self.user_tiles[index]"""
 
     def draw_tile_mode(self):
         """Display color palette in the "Tools" tab"""
@@ -244,4 +307,5 @@ class tab_class():
 
     def click_project(self, x, y):
         self.linking_button.click(x, y)
+
 

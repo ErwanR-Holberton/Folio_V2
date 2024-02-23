@@ -194,3 +194,4 @@ class main_screen():
             self.undo_index_tile = 0
         if self.dragging == 1:
             self.dragging = 2
+

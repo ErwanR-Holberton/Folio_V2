@@ -40,7 +40,6 @@ class menu_class():
         self.buttons[4].sub_buttons[0].function = self.buttons[4].sub_buttons[0].undo
         self.buttons[4].sub_buttons[1].function = self.buttons[4].sub_buttons[1].redo
 
-
     def create_tab_menu(self):
         "create a menu for the tab section"
 

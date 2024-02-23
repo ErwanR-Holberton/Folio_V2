@@ -53,3 +53,10 @@ def draw_screen(screen, tab, grid, top):
     top.draw()
 
     pygame.display.flip() # Refresh the display
+
+
+def count_lines(array,items_by_lines=8):
+    lines = len(array) // items_by_lines    # count lines of tiles
+    if len(array) % items_by_lines != 0:
+        lines += 1
+    return lines
