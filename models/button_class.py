@@ -3,7 +3,7 @@ import json
 from pygame.locals import *
 import os
 from utils.popups import popup
-from utils.functions import create_text_surface, draw_screen
+from utils.functions import create_text_surface, draw_screen, count_lines
 from copy import deepcopy
 import shutil
 
@@ -319,6 +319,7 @@ class button_class():
         name = popup("Please choose a name for the blueprint:", "Blueprint save", self.grid, self.tab, self.top)
         if name is not None:
             pygame.image.save(self.grid.tile_surf, "./saves/blueprints/" + name + ".png")
+            self.grid.tab.reload_blueprints()
 
     def delete_blueprint(self):
         """deletes a blueprint"""
@@ -334,11 +335,16 @@ class button_class():
         elif self.label.startswith("Blueprints"):
             self.tab.dropdown_blueprints = not self.tab.dropdown_blueprints
 
-        number_of_tiles = len(self.tab.tiles)
-        lines = number_of_tiles // 8
-        if number_of_tiles % 8 != 0:
-            lines += 1
+        position_0 = 100
+        lines = 0
+        position_1 = position_0 + 30
+
         if self.tab.dropdown_base_tiles:
-            self.tab.drop_downs[1].set_position(10, 100 + 40 * lines, 300, 20)
-        else:
-            self.tab.drop_downs[1].set_position(10, 100, 300, 20)
+            lines = count_lines(self.tab.tiles)
+            position_0 += 40 * lines
+            position_1 = position_0
+        self.tab.drop_downs[1].set_position(10, position_0, 300, 20)
+        if self.tab.dropdown_user_tiles:
+            lines += count_lines(self.tab.user_tiles)
+            position_1 += 40 * lines
+        self.tab.drop_downs[2].set_position(10, position_1 , 300, 20)

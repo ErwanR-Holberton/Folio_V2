@@ -28,6 +28,7 @@ class tab_class():
         self.create_settings_variables()
         self.selected_color = (255, 255, 255, 0)
         self.reload_user_tiles()
+        self.reload_blueprints()
         self.create_color()
         self.selected_tile = None
         self.project_name = None
@@ -64,10 +65,11 @@ class tab_class():
         self.dropdown_blueprints = 0
         self.drop_downs = [
             button_class("Base tiles                                  ↓").set_position(10, 70, 300, 20),
-            button_class("User tiles                                  ↓").set_position(10, 100, 300, 20)
+            button_class("User tiles                                  ↓").set_position(10, 100, 300, 20),
+            button_class("Blueprints                                  ↓").set_position(10, 130, 300, 20)
         ]
-        self.drop_downs[0].function = self.drop_downs[0].dropdown_function
-        self.drop_downs[1].function = self.drop_downs[1].dropdown_function
+        for button in self.drop_downs:
+            button.function = button.dropdown_function
 
     def create_tool_variables(self):
         self.tools_obj = []
@@ -170,6 +172,13 @@ class tab_class():
             self.user_tiles[index] = pygame.transform.scale(self.user_tiles[index], (32, 32))
         self.process_tab(self.screen)
 
+    def reload_blueprints(self):
+        """load user blueprints"""
+        self.blueprints = load_tiles("./saves/blueprints/")
+        for index in range(len(self.blueprints)):
+            self.blueprints[index] = pygame.transform.scale(self.blueprints[index], (96, 96))
+        self.process_tab(self.screen)
+
     def draw_map_mode(self):
         """Display tiles in the "Tiles" tab"""
         count = 0
@@ -182,18 +191,18 @@ class tab_class():
                 self.surf.blit(tile, ((count %TILES_PER_LINE) * 40 + 4, 90 + int(count /TILES_PER_LINE) * 40 + 4)) #remplacer par height
                 count += 1
 
-        lines = len(self.tiles) // 8    # count lines of tiles
-        if len(self.tiles) % 8 != 0:
-            lines += 1
-        if self.dropdown_base_tiles:                # if we show the tiles
-            offset = lines * 40 + 20 + 90 + 10      #shift everything down by n lines
-        else:                                       #else dont shift
-            offset = 20 + 90 + 10                   #20 button height 10 margin 90 menu height + margin
+        offset = self.drop_downs[1].rect_value[1] + 20
 
         count = 0
         if self.dropdown_user_tiles:    #draw user tiles
             for tile in self.user_tiles:
                 self.surf.blit(tile, ((count %TILES_PER_LINE) * 40 + 4, offset + int(count /TILES_PER_LINE) * 40 + 4)) #remplacer par height
+                count += 1
+        offset = self.drop_downs[2].rect_value[1] + 20
+        count = 0
+        if self.dropdown_blueprints:    #draw blueprints
+            for tile in self.blueprints:
+                self.surf.blit(tile, ((count %3) * 106 + 6, offset + int(count /3) * 106 + 6))
                 count += 1
 
     def click_map_mode(self, x, y):
@@ -209,45 +218,29 @@ class tab_class():
 
         lines = 0
         if self.dropdown_base_tiles:
-            index_x = int (x / 40)
-            index_y = int ((y - (self.menu.height + 60)) /40)
-            index = index_y * TILES_PER_LINE + index_x
+            index = self.calcul_index(self.menu.height + 30, x, y)
 
             if index == 0:
                 self.selected_tile = None
-            elif index >= len(self.tiles):
-                self.selected_tile = None
-            elif index > 0:
+            elif len(self.tiles) > index > 0:
                 self.selected_tile = self.tiles[index]
 
-            lines = len(self.tiles) // 8    # count lines of tiles
-            if len(self.tiles) % 8 != 0:
-                lines += 1
+            lines = count_lines(self.tiles)
 
         if self.dropdown_user_tiles:
-            index_x = int (x / 40)
-            index_y = int ((y - (self.menu.height + 60 + (lines * 40))) /40)
-            index = index_y * TILES_PER_LINE + index_x
+            index = self.calcul_index(self.menu.height + 60 + (lines * 40), x, y)
 
-            if index >= len(self.user_tiles):
-                self.selected_tile = None
-            elif index >= 0:
+            if len(self.user_tiles) > index > 0:
                 self.selected_tile = self.user_tiles[index]
 
             lines += count_lines(self.user_tiles)
 
-        """index_x = int (x / 40)
-        index_y = int ((y - (self.menu.height + 30)) /40)
-        index = index_y * TILES_PER_LINE + index_x"""
+        if self.dropdown_blueprints:
+            index = self.calcul_index(self.drop_downs[1].rect_value[1] + 20, x, y, 106)
+            print (index)
 
-        """Update the selected tile based on the clicked tile"""
-        """if index == 0:
-            self.selected_tile = None
-        elif index < len(self.tiles):
-            self.selected_tile = self.tiles[index]
-        elif index - len(self.tiles) < len(self.user_tiles):
-            index -= len(self.tiles)
-            self.selected_tile = self.user_tiles[index]"""
+            if len(self.blueprints) > index > 0:
+                self.selected_tile = self.blueprints[index]
 
     def draw_tile_mode(self):
         """Display color palette in the "Tools" tab"""
@@ -308,4 +301,11 @@ class tab_class():
     def click_project(self, x, y):
         self.linking_button.click(x, y)
 
+    def calcul_index(self, offset, x, y, size = 40):
 
+        index_x = int (x / size)
+        index_y = int ((y - offset) /size)
+        if y - offset < 0:
+            index_x = -1
+        print(index_x, index_y)
+        return index_y * TILES_PER_LINE + index_x

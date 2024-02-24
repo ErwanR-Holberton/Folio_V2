@@ -52,6 +52,12 @@ def draw_screen(screen, tab, grid, top):
     # Draw menus and submenus
     top.draw()
 
+    # Draw a square with the selected tile
+    pygame.draw.rect(screen, (100, 100, 100), (grid.width - 32, 0, 32, 32))
+    pygame.draw.rect(screen, (0, 0, 0), (grid.width - 32, 0, 32, 32), 1)
+    if grid.selected_tile is not None:
+        screen.blit(grid.selected_tile, (grid.width - 32, 0))
+
     pygame.display.flip() # Refresh the display
 
 
