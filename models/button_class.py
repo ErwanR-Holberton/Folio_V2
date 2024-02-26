@@ -335,16 +335,16 @@ class button_class():
         elif self.label.startswith("Blueprints"):
             self.tab.dropdown_blueprints = not self.tab.dropdown_blueprints
 
-        position_0 = 100
         lines = 0
-        position_1 = position_0 + 30
-
         if self.tab.dropdown_base_tiles:
             lines = count_lines(self.tab.tiles)
-            position_0 += 40 * lines
-            position_1 = position_0
-        self.tab.drop_downs[1].set_position(10, position_0, 300, 20)
+
+        position = 100 + 40 * lines
+        self.tab.drop_downs[1].set_position(10, position, 300, 20)
+        lines = 0
+
         if self.tab.dropdown_user_tiles:
-            lines += count_lines(self.tab.user_tiles)
-            position_1 += 40 * lines
-        self.tab.drop_downs[2].set_position(10, position_1 , 300, 20)
+            lines = count_lines(self.tab.user_tiles)
+
+        position += 30 + 40 * lines
+        self.tab.drop_downs[2].set_position(10, position , 300, 20)

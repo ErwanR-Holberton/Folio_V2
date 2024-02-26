@@ -216,30 +216,24 @@ class tab_class():
             self.selected_tile = None
             return
 
-        lines = 0
         if self.dropdown_base_tiles:
-            index = self.calcul_index(self.menu.height + 30, x, y)
+            index = self.calcul_index(self.drop_downs[0].rect_value[1] + 20, x, y)
 
             if index == 0:
                 self.selected_tile = None
             elif len(self.tiles) > index > 0:
                 self.selected_tile = self.tiles[index]
 
-            lines = count_lines(self.tiles)
-
         if self.dropdown_user_tiles:
-            index = self.calcul_index(self.menu.height + 60 + (lines * 40), x, y)
+            index = self.calcul_index(self.drop_downs[1].rect_value[1] + 20, x, y)
 
-            if len(self.user_tiles) > index > 0:
+            if len(self.user_tiles) > index >= 0:
                 self.selected_tile = self.user_tiles[index]
 
-            lines += count_lines(self.user_tiles)
-
         if self.dropdown_blueprints:
-            index = self.calcul_index(self.drop_downs[1].rect_value[1] + 20, x, y, 106)
-            print (index)
+            index = self.calcul_index(self.drop_downs[2].rect_value[1] + 20, x, y, 106)
 
-            if len(self.blueprints) > index > 0:
+            if len(self.blueprints) > index >= 0:
                 self.selected_tile = self.blueprints[index]
 
     def draw_tile_mode(self):
@@ -307,5 +301,5 @@ class tab_class():
         index_y = int ((y - offset) /size)
         if y - offset < 0:
             index_x = -1
-        print(index_x, index_y)
+        """print(index_x, index_y)"""
         return index_y * TILES_PER_LINE + index_x
