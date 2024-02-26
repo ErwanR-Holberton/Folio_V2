@@ -26,6 +26,7 @@ class main_screen():
         self.undo_index_tile = 0
         self.undo_index_map = 0
         self.dragging = 0
+        self.old_index = None
         self.save_history_map()
         self.save_history_tile()
 
@@ -95,38 +96,61 @@ class main_screen():
         """Handle a click event on the main screen"""
         x -= offset[0]
         y -= offset[1]
-        if x < 0:
+        if x < 0: #remove ghost column
             x -= self.tile_size
-        if y < 0:
+        if y < 0: #remove ghost line
             y -= self.tile_size
-        index_x = int(x/self.tile_size)
+
+        index_x = int(x/self.tile_size) # get index from coordinates
         index_y = int(y/self.tile_size)
         index = "{}.{}".format (index_x, index_y)
-        if self.selected_tile is None:
-            if index in self.coordinates:
-                del self.coordinates[index]
-                self.save_history_map()
-            if self.tile_offset is not None:
-                for x in range(self.tile_size):
-                    for y in range(self.tile_size):
-                        self.tile_surf.set_at(((index_x - self.tile_offset[0]) * self.tile_size + x, (index_y - self.tile_offset[1]) * self.tile_size + y), (0, 0, 0, 0))
-        else:
-            if index not in self.coordinates or self.coordinates[index] != self.selected_tile:
-                self.coordinates[index] = self.selected_tile
-                self.append_surface(index_x, index_y)
-                self.save_history_map()
+
+        if self.old_index != index:
+            self.old_index = index
+            self.set_tile(index, index_x, index_y)
         return index
 
-    def append_surface(self, index_x, index_y):
+    def set_tile(self, index, index_x, index_y):
+        if self.selected_tile is None: # None is the value to delete a tile
+            if index in self.coordinates: # so we delete it from the list
+                del self.coordinates[index]
+                self.save_history_map()
+
+            if self.tile_offset is not None:
+                for x in range(self.tile_size): #erase pixel by pixel
+                    for y in range(self.tile_size):
+                        self.tile_surf.set_at(((index_x - self.tile_offset[0]) * self.tile_size + x, (index_y - self.tile_offset[1]) * self.tile_size + y), (0, 0, 0, 0))
+        else:   # if we don't erase we place the tile
+            width = self.selected_tile.get_width() // 32
+            height = self.selected_tile.get_height() // 32
+
+            if width > 1 or height > 1: #handle blueprint
+                print(width, height)
+                for x in range(width):
+                    for y in range(height):
+                        tile = self.selected_tile.subsurface((x * 32, y * 32, 32, 32))
+                        self.append_surface(index_x + x, index_y + y, tile)
+
+            elif index not in self.coordinates or self.coordinates[index] != self.selected_tile:
+                self.coordinates[index] = self.selected_tile
+                self.append_surface(index_x, index_y, self.selected_tile)
+                self.save_history_map()
+
+    def append_surface(self, index_x, index_y, tile):
         """"append the background surface with the new tile"""
+
+        #Calculate the size of the background surface in tiles
         size_x = int(self.tile_surf.get_width() /self.tile_size)
         size_y = int(self.tile_surf.get_height() /self.tile_size)
-        if self.tile_offset is None:
+
+        if self.tile_offset is None: #adjust the index according to the offset
             self.tile_offset = (index_x, index_y)
         index_x -= self.tile_offset[0]
         index_y -= self.tile_offset[1]
+
         if index_x >= 0 and size_x > index_x and index_y >= 0 and size_y > index_y:
-            self.tile_surf.blit(self.selected_tile, ((index_x) * self.tile_size, (index_y) * self.tile_size))
+            #the tile fits so no need to append
+            self.tile_surf.blit(tile, ((index_x) * self.tile_size, (index_y) * self.tile_size))
         else:
             new_size_x = self.tile_surf.get_width()
             new_size_y = self.tile_surf.get_height()
@@ -136,17 +160,19 @@ class main_screen():
             elif index_x < 0:
                 new_size_x -= index_x * self.tile_size
                 modified_offset = (modified_offset[0] - index_x, modified_offset[1])
+
             if index_y >= size_y:
                 new_size_y = (index_y +1) * self.tile_size
             elif index_y < 0:
                 new_size_y -= index_y * self.tile_size
                 modified_offset = (modified_offset[0], modified_offset[1] - index_y)
             self.tile_offset = (self.tile_offset[0] - modified_offset[0], self.tile_offset[1] - modified_offset[1])
-            new_surface = pygame.Surface((new_size_x, new_size_y), pygame.SRCALPHA)
+
+            new_surface = pygame.Surface((new_size_x, new_size_y), pygame.SRCALPHA) #create a new background with new size
             new_surface.fill((255, 0, 0, 0))
             new_surface.blit(self.tile_surf, (modified_offset[0] * self.tile_size, modified_offset[1] * self.tile_size))
             self.tile_surf = new_surface
-            self.tile_surf.blit(self.selected_tile, ((index_x + modified_offset[0]) * self.tile_size, (index_y + modified_offset[1]) * self.tile_size))
+            self.tile_surf.blit(tile, ((index_x + modified_offset[0]) * self.tile_size, (index_y + modified_offset[1]) * self.tile_size))
 
     def set_color(self, x, y, color, screen):
         height = screen.get_height()

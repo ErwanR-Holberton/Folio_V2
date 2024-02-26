@@ -175,8 +175,6 @@ class tab_class():
     def reload_blueprints(self):
         """load user blueprints"""
         self.blueprints = load_tiles("./saves/blueprints/")
-        for index in range(len(self.blueprints)):
-            self.blueprints[index] = pygame.transform.scale(self.blueprints[index], (96, 96))
         self.process_tab(self.screen)
 
     def draw_map_mode(self):
@@ -202,7 +200,13 @@ class tab_class():
         count = 0
         if self.dropdown_blueprints:    #draw blueprints
             for tile in self.blueprints:
-                self.surf.blit(tile, ((count %3) * 106 + 6, offset + int(count /3) * 106 + 6))
+                w = tile.get_width()
+                h = tile.get_height()
+                maxi = max(w, h)
+                blueprint = tile
+                if maxi > 96:
+                    blueprint = pygame.transform.scale(tile, (int(w / maxi * 96), int(h / maxi * 96)))
+                self.surf.blit(blueprint, ((count %3) * 106 + 6, offset + int(count /3) * 106 + 6))
                 count += 1
 
     def click_map_mode(self, x, y):
@@ -232,9 +236,11 @@ class tab_class():
 
         if self.dropdown_blueprints:
             index = self.calcul_index(self.drop_downs[2].rect_value[1] + 20, x, y, 106)
+            print(index)
 
             if len(self.blueprints) > index >= 0:
                 self.selected_tile = self.blueprints[index]
+                """self.selected_blueprint ="""
 
     def draw_tile_mode(self):
         """Display color palette in the "Tools" tab"""
@@ -302,4 +308,6 @@ class tab_class():
         if y - offset < 0:
             index_x = -1
         """print(index_x, index_y)"""
-        return index_y * TILES_PER_LINE + index_x
+        if size == 40:
+            return index_y * TILES_PER_LINE + index_x
+        return index_y * 3 + index_x
