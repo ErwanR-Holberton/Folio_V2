@@ -332,11 +332,12 @@ class button_class():
         elif self.label.startswith("Blueprints"):
             self.tab.dropdown_blueprints = not self.tab.dropdown_blueprints
 
+        position = self.tab.drop_downs[0].rect_value[1]
         lines = 0
         if self.tab.dropdown_base_tiles:
             lines = count_lines(self.tab.tiles)
 
-        position = 100 + 40 * lines
+        position += 30 + 40 * lines
         self.tab.drop_downs[1].set_position(10, position, 300, 20)
         lines = 0
 

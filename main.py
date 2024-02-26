@@ -53,6 +53,10 @@ while running:
                         elif tab.selected_tab == 2:
                             grid.set_color(mouse_x, mouse_y, tab.selected_color, screen)
                         grid.allow_process = 1
+            elif event.button == 4: #scroll up
+                tab.update_scroll(-32)
+            elif event.button == 5: #scroll down
+                tab.update_scroll(32)
             dragging = 0
             grid.dragging = 0
 

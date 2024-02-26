@@ -18,6 +18,7 @@ class tab_class():
     def __init__(self, screen):
         """Initialize the tab class"""
 
+        self.scroll = 0
         self.screen = screen
         self.selected_tab = 1
         self.create_list_of_tiles()
@@ -183,10 +184,10 @@ class tab_class():
 
         for dropdown in self.drop_downs:
             dropdown.draw(self.surf)
-
+        offset = self.drop_downs[0].rect_value[1] + 20
         if self.dropdown_base_tiles:    #draw base tiles
             for tile in self.tiles:
-                self.surf.blit(tile, ((count %TILES_PER_LINE) * 40 + 4, 90 + int(count /TILES_PER_LINE) * 40 + 4)) #remplacer par height
+                self.surf.blit(tile, ((count %TILES_PER_LINE) * 40 + 4, offset + int(count /TILES_PER_LINE) * 40 + 4)) #remplacer par height
                 count += 1
 
         offset = self.drop_downs[1].rect_value[1] + 20
@@ -311,3 +312,11 @@ class tab_class():
         if size == 40:
             return index_y * TILES_PER_LINE + index_x
         return index_y * 3 + index_x
+
+    def update_scroll(self, value):
+        if self.selected_tab == 1 and self.scroll + value <= 0 :
+            self.scroll += value
+            for button in self.drop_downs:
+                x, y, width, height = button.rect_value
+                button.set_position(x, y + value, width, height)
+            self.process_tab(self.screen)
