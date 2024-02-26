@@ -48,6 +48,7 @@ while running:
                         grid.selected_tile = tab.click(mouse_x - grid.width, mouse_y)
                     else:
                         if tab.selected_tab == 1:
+                            grid.old_index = None
                             grid.click(mouse_x, mouse_y, offset)
                         elif tab.selected_tab == 2:
                             grid.set_color(mouse_x, mouse_y, tab.selected_color, screen)

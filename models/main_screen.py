@@ -125,7 +125,6 @@ class main_screen():
             height = self.selected_tile.get_height() // 32
 
             if width > 1 or height > 1: #handle blueprint
-                print(width, height)
                 for x in range(width):
                     for y in range(height):
                         tile = self.selected_tile.subsurface((x * 32, y * 32, 32, 32))

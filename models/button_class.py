@@ -213,9 +213,6 @@ class button_class():
                 self.grid.undo_index_tile += 1
                 self.grid.tile_grid = deepcopy(self.grid.history_tile[self.grid.undo_index_tile])
         self.grid.allow_process = 1
-        print ("undo")
-        for bjnk in self.grid.history_tile:
-            print(bjnk[0][:5])
 
     def redo(self):
         if self.grid.mode == 0:
