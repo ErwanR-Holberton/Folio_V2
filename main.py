@@ -26,6 +26,11 @@ while running:
             tab.handle_key_input(event.key)
             tab.process_tab(screen)
 
+        elif event.type == KEYDOWN:
+            keys = pygame.key.get_pressed()
+            if keys[K_LCTRL] and keys[K_z]:
+                top.buttons[4].sub_buttons[0].function()
+
         elif event.type == MOUSEBUTTONDOWN:
             mouse_x, mouse_y = event.pos
             if mouse_x < grid.width and not top.hover(mouse_x, mouse_y):
