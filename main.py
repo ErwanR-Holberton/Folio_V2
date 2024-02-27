@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-import sys
-sys.dont_write_bytecode = True  #prevent __pycache__ creation
 from models import *
+import sys
+sys.dont_write_bytecode = True  # prevent __pycache__ creation
 
 old_key = None
 
@@ -17,7 +17,7 @@ while running:
 
     """Event handling loop"""
     for event in pygame.event.get():
-        if event.type == QUIT: # Check for quit event (click on red cross or press Esc key)
+        if event.type == QUIT:  # Check for quit event (click on red cross or press Esc key)
             """response = popup("Are you sure you want to quit? (yes or no)", "Quitting the app :(", grid, tab, top)
             if response == "yes":"""
             running = 0
@@ -37,7 +37,7 @@ while running:
                 dragging = 1
                 grid.dragging = 1
 
-        elif event.type == MOUSEBUTTONUP: # Check for mouse button click event
+        elif event.type == MOUSEBUTTONUP:  # Check for mouse button click event
             mouse_x, mouse_y = event.pos
             if event.button == 1:
                 click = 0
@@ -53,15 +53,14 @@ while running:
                         elif tab.selected_tab == 2:
                             grid.set_color(mouse_x, mouse_y, tab.selected_color, screen)
                         grid.allow_process = 1
-            elif event.button == 4: #scroll up
+            elif event.button == 4:  # scroll up
                 tab.update_scroll(-32)
-            elif event.button == 5: #scroll down
+            elif event.button == 5:  # scroll down
                 tab.update_scroll(32)
             dragging = 0
             grid.dragging = 0
 
-
-        elif event.type == MOUSEMOTION: # Check for mouse motion event
+        elif event.type == MOUSEMOTION:  # Check for mouse motion event
             mouse_x, mouse_y = event.pos
             if dragging == 1:
                 if event.buttons[0] and mouse_x < grid.width:
@@ -82,7 +81,7 @@ while running:
             top.hover(mouse_x, mouse_y)
             tab.menu.hover(mouse_x - grid.width, mouse_y)
 
-        elif event.type == VIDEORESIZE: # Check for window resize event
+        elif event.type == VIDEORESIZE:  # Check for window resize event
             tab.process_tab(screen)
             grid.allow_process = 1
 
@@ -90,8 +89,6 @@ while running:
         grid.process_surface(screen, offset)
         grid.allow_process = 0
 
-
     draw_screen(screen, tab, grid, top)
 
-
-pygame.quit() # Quit Pygame when the game loop exits
+pygame.quit()  # Quit Pygame when the game loop exits

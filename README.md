@@ -20,6 +20,10 @@ sudo apt-get install python3
 ```
 pip install pygame
 ```
+- Install wslview:
+```
+sudo apt install wslu
+```
 - Run the program:
 ```
 ./main.py
