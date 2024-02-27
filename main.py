@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-from models import *
 import sys
 sys.dont_write_bytecode = True  # prevent __pycache__ creation
+from models import *
 
 old_key = None
 
