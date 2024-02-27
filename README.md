@@ -46,7 +46,5 @@ Contributions are welcome! Feel free to submit pull requests or report issues.
 
 ## Authors
 
-- Erwan Rocal [![github icon](https://github.com/ErwanR-Holberton/Folio_V2/blob/a19454c079da3de1f68037ae743f0715d02322b0/github%20icon.png)](https://github.com/ErwanR-Holberton)
-[![linkedin icon](/base_assets/linkedin%20icon.png)](https://www.linkedin.com/in/erwan-rocal-15828725a/)
-- Nathalie Metreau [![github icon](https://github.com/ErwanR-Holberton/Folio_V2/blob/a19454c079da3de1f68037ae743f0715d02322b0/github%20icon.png)](https://github.com/NathalieMet)
-[![linkedin icon](/base_assets/linkedin%20icon.png)](https://www.linkedin.com/in/nathalie-metreau/)
+- Erwan Rocal [![github icon](/base_assets/github_icon.png)](https://github.com/ErwanR-Holberton) [![linkedin icon](/base_assets/linkedin_icon.png)](https://www.linkedin.com/in/erwan-rocal-15828725a/)
+- Nathalie Metreau [![github icon](/base_assets/github_icon.png)](https://github.com/NathalieMet) [![linkedin icon](/base_assets/linkedin_icon.png)](https://www.linkedin.com/in/nathalie-metreau/)
