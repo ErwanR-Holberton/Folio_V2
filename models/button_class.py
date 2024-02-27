@@ -25,8 +25,12 @@ class button_class():
         """Check if the given coordinates are within the menu area for hover effect"""
 
         if x < self.rect_value[0] or x > self.rect_value[0] + self.rect_value[2]:
+            if self.state != 1:
+                self.color = (150, 150, 150)
             return False
         if y < self.rect_value[1] or y > self.rect_value[1] + self.rect_value[3]:
+            if self.state != 1:
+                self.color = (150, 150, 150)
             return False
         if self.state != 1:
             self.color = (160, 160, 160)
@@ -35,13 +39,13 @@ class button_class():
     def hover_subbuttons(self, x, y):
         """hover the subbutons"""
         button_hovered = 0
-        if self.state != 1:
-            self.color = (150, 150, 150)
-        else:
+        if self.state == 1:
             if self.sub_buttons is not None:
                 for button in self.sub_buttons:
                     if button.hover(x, y):
                         button_hovered = 1
+                    else:
+                        button.color = (150, 150, 150)
         if button_hovered:
             return True
 
@@ -164,8 +168,11 @@ class button_class():
 
     def new_tile(self):
         """creates a new tile"""
-        self.grid.tile_grid = [[(0, 0, 0, 0) for x in range(16)] for y in range(16)]
+        self.tab.selected_tab = 2
         self.grid.allow_process = 1
+        self.grid.mode = 1
+        self.grid.tile_grid = [[(0, 0, 0, 0) for x in range(16)] for y in range(16)]
+        self.tab.process_tab(self.tab.screen)
         self.grid.save_history_tile()
 
     def save_map(self):
@@ -292,12 +299,13 @@ class button_class():
 
         name = popup("Please choose a map to link:", "Map link", self.grid, self.tab, self.top)
 
-        source = "./saves/maps/" + name + ".png"
-        dest = "./saves/projects/" + self.tab.project_name + "/maps/" + name + ".png"
+        if name is not None:
+            source = "./saves/maps/" + name + ".png"
+            dest = "./saves/projects/" + self.tab.project_name + "/maps/" + name + ".png"
 
-        if name is not None and os.path.exists(source):
-            shutil.copy(source, dest)
-            self.tab.map_list.append(name)
+            if os.path.exists(source):
+                shutil.copy(source, dest)
+                self.tab.map_list.append(name)
 
     def new_blueprint(self):
         self.new_map()
@@ -323,6 +331,7 @@ class button_class():
         name = popup("Please choose a blueprint to delete:", "Blueprint delete", self.grid, self.tab, self.top)
         if name is not None and os.path.exists("./saves/blueprints/" + name + ".png"):
             os.remove("./saves/blueprints/" + name + ".png")
+            self.grid.tab.reload_blueprints()
 
     def dropdown_function(self):
         if self.label.startswith("Base tiles"):
@@ -346,3 +355,14 @@ class button_class():
 
         position += 30 + 40 * lines
         self.tab.drop_downs[2].set_position(10, position , 300, 20)
+
+    @staticmethod
+    def help():
+        import subprocess
+        try:# Run the wslpath command and capture the output
+            path = './base_assets/index.html'
+            result = subprocess.run(['wslpath', '-w', path], capture_output=True, text=True, check=True)
+            windows_path = result.stdout.strip()
+            subprocess.run(['wslview', windows_path])
+        except subprocess.CalledProcessError as e:
+            print(f"Error: {e}")

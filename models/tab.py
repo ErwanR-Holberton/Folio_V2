@@ -67,7 +67,7 @@ class tab_class():
         self.drop_downs = [
             button_class("Base tiles                                  ↓").set_position(10, 70, 300, 20),
             button_class("User tiles                                  ↓").set_position(10, 100, 300, 20),
-            button_class("Blueprints                                  ↓").set_position(10, 130, 300, 20)
+            button_class("Blueprints                                 ↓").set_position(10, 130, 300, 20)
         ]
         for button in self.drop_downs:
             button.function = button.dropdown_function

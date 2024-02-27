@@ -39,6 +39,7 @@ class menu_class():
         self.buttons[3].sub_buttons[3].function = self.buttons[3].sub_buttons[3].delete_blueprint
         self.buttons[4].sub_buttons[0].function = self.buttons[4].sub_buttons[0].undo
         self.buttons[4].sub_buttons[1].function = self.buttons[4].sub_buttons[1].redo
+        self.buttons[5].function = self.buttons[4].help
 
     def create_tab_menu(self):
         "create a menu for the tab section"

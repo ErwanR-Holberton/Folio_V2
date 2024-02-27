@@ -1,0 +1,26 @@
+nav #Holberton {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+header nav {
+    text-align: center;
+}
+h2 {
+    text-align: center;
+}
+footer {
+    background-color: white;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: fit-content;
+    text-align: center;
+}
+#top li, #side li{
+    padding: 5px;
+}
+body {
+    line-height: 25px;
+}

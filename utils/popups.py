@@ -1,10 +1,10 @@
 import pygame
 from pygame.locals import *
 
-def popup(message, title, grid, tab, top):
+def popup(message, title, grid, tab, top, size=(400, 110)):
     """create a popup loop"""
     from utils.functions import create_text_surface
-    size = (400, 110)
+
     radius = 5
     loop = 1
     popup = pygame.Surface(size, pygame.SRCALPHA)
@@ -13,7 +13,8 @@ def popup(message, title, grid, tab, top):
     draw_popup(popup, size, radius, title, message)
     answer = ""
     while loop:
-        for event in pygame.event.get():
+
+        for event in pygame.event.get(): # handle events
             if event.type == QUIT: # Check for quit event (click on red cross or press Esc key)
                 loop = 0
             if event.type == MOUSEBUTTONUP: # Check for mouse button click event
@@ -23,30 +24,37 @@ def popup(message, title, grid, tab, top):
                 if mouse_x >= size[0] - 28 and mouse_x <= size[0] -8:
                     if mouse_y >= 0 and mouse_y <= 15:
                         loop = 0
-            if event.type == WINDOWRESIZED:
+
+            if event.type == WINDOWRESIZED: # process and dranw when size changes
                 grid.process_surface(grid.screen)
                 grid.draw(grid.screen)
                 tab.process_tab(tab.screen)
                 tab.draw(tab.screen)
                 top.draw()
                 popup_rect = popup.get_rect(center=grid.surf.get_rect().center)
-            if event.type == KEYUP:
-                if 'a' <= event.unicode <= 'z' or 'A' <= event.unicode <= 'Z':
+
+            if event.type == KEYUP: # if a key was pressed
+                if 'a' <= event.unicode <= 'z' or 'A' <= event.unicode <= 'Z': # from a to z
                     answer += event.unicode
                     answer_surface = create_text_surface(answer)
                     pygame.draw.rect(popup, (240, 240, 240), (10, 70, size[0] -20, 20))
                     popup.blit(answer_surface, (15, 70))
-                elif event.unicode == '\x08':
+
+                elif event.unicode == '\x08': #delete
                     if len(answer) > 0:
                         answer = answer[:-1]
                         answer_surface = create_text_surface(answer)
                         pygame.draw.rect(popup, (240, 240, 240), (10, 70, size[0] -20, 20))
                         popup.blit(answer_surface, (15, 70))
-                elif event.unicode == '\r':
+
+                elif event.unicode == '\r': #enter
                     if len(answer) > 0:
                         return answer
+
         grid.screen.blit(popup, (popup_rect.topleft))
         pygame.display.flip()
+
+    #leave the popup after this line/loop
 
 def draw_popup(popup, size, radius, title, message):
     """draws a popup"""
