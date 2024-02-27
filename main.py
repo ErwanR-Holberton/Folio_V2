@@ -1,11 +1,8 @@
 #!/usr/bin/env python3
-import sys
-sys.dont_write_bytecode = True  #prevent __pycache__ creation
 from models import *
+import sys
+sys.dont_write_bytecode = True  # prevent __pycache__ creation
 
-top = menu_class("top_menu")
-top.create_top_menu()
-top.buttons[-1].radius_bottom_right = 10
 old_key = None
 
 """Initialize the game state"""
@@ -16,70 +13,82 @@ clock = pygame.time.Clock()
 
 """Main game loop"""
 while running:
-    clock.tick(10)
+    clock.tick(30)
 
     """Event handling loop"""
     for event in pygame.event.get():
-        if event.type == QUIT: # Check for quit event (click on red cross or press Esc key)
+        if event.type == QUIT:  # Check for quit event (click on red cross or press Esc key)
+            """response = popup("Are you sure you want to quit? (yes or no)", "Quitting the app :(", grid, tab, top)
+            if response == "yes":"""
             running = 0
 
         elif event.type == KEYUP:
-            if event.key == pygame.K_ESCAPE:
-                running = 0
             tab.handle_key_input(event.key)
-            tab.calculate(screen)
+            tab.process_tab(screen)
+
+        elif event.type == KEYDOWN:
+            keys = pygame.key.get_pressed()
+            if keys[K_LCTRL] and keys[K_z]:
+                top.buttons[4].sub_buttons[0].function()
 
         elif event.type == MOUSEBUTTONDOWN:
             mouse_x, mouse_y = event.pos
-            dragging = 1
+            if mouse_x < grid.width and not top.hover(mouse_x, mouse_y):
+                dragging = 1
+                grid.dragging = 1
 
-        elif event.type == MOUSEBUTTONUP: # Check for mouse button click event
+        elif event.type == MOUSEBUTTONUP:  # Check for mouse button click event
             mouse_x, mouse_y = event.pos
             if event.button == 1:
-                click, name = 0, None
-                click, name = top.click(mouse_x, mouse_y)
+                click = 0
+                click = top.click(mouse_x, mouse_y)
                 tab.menu.click(mouse_x - grid.width, mouse_y)
                 if not click:
                     if mouse_x > grid.width:
                         grid.selected_tile = tab.click(mouse_x - grid.width, mouse_y)
                     else:
                         if tab.selected_tab == 1:
+                            grid.old_index = None
                             grid.click(mouse_x, mouse_y, offset)
                         elif tab.selected_tab == 2:
                             grid.set_color(mouse_x, mouse_y, tab.selected_color, screen)
-                        grid.calculate(screen)
+                        grid.allow_process = 1
+            elif event.button == 4:  # scroll up
+                tab.update_scroll(-32)
+            elif event.button == 5:  # scroll down
+                tab.update_scroll(32)
             dragging = 0
+            grid.dragging = 0
 
-
-        elif event.type == MOUSEMOTION: # Check for mouse motion event
+        elif event.type == MOUSEMOTION:  # Check for mouse motion event
             mouse_x, mouse_y = event.pos
             if dragging == 1:
-                if event.buttons[0]:
-                    key_index = grid.click(mouse_x, mouse_y, offset)
-                    if key_index is not None and key_index != old_key:
-                        grid.calculate(screen, offset)
-                        old_key = key_index
+                if event.buttons[0] and mouse_x < grid.width:
+                    if not(top.hover(mouse_x, mouse_y)):
+                        """if not click on top menu"""
+                        if tab.selected_tab == 1:
+                            key_index = grid.click(mouse_x, mouse_y, offset)
+                            if key_index is not None and key_index != old_key:
+                                grid.allow_process = 1
+                                old_key = key_index
+                        elif tab.selected_tab == 2:
+                            grid.set_color(mouse_x, mouse_y, tab.selected_color, screen)
+                            grid.allow_process = 1
 
                 elif event.buttons[2]:
                     offset = (offset[0] + event.rel[0], offset[1] + event.rel[1])
-                    grid.calculate(screen, offset)
+                    grid.allow_process = 1
             top.hover(mouse_x, mouse_y)
             tab.menu.hover(mouse_x - grid.width, mouse_y)
 
-        elif event.type == VIDEORESIZE: # Check for window resize event
-            tab.calculate(screen)
-            grid.calculate(screen)
+        elif event.type == VIDEORESIZE:  # Check for window resize event
+            tab.process_tab(screen)
+            grid.allow_process = 1
 
-    screen.fill((255, 255, 255))  #Fill the screen with a white background
+    if grid.allow_process:
+        grid.process_surface(screen, offset)
+        grid.allow_process = 0
 
-    # Draw the menus tab and grid
-    tab.draw(screen)
-    grid.draw(screen)
+    draw_screen(screen, tab, grid, top)
 
-    # Draw menus and submenus
-    for button in top.buttons:
-        button.draw(screen)
-
-    pygame.display.flip() # Refresh the display
-
-pygame.quit() # Quit Pygame when the game loop exits
+pygame.quit()  # Quit Pygame when the game loop exits
