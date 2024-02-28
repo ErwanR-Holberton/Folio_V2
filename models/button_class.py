@@ -262,14 +262,18 @@ class button_class():
             self.tab.selected_tab = 1
             self.grid.mode = 0
             self.grid.allow_process = 1
-        if self.label == "Tile mode":
+        elif self.label == "Tile mode":
             self.tab.selected_tab = 2
             self.grid.mode = 1
             self.grid.allow_process = 1
-        if self.label == "Settings":
+        elif self.label == "Settings":
             self.tab.selected_tab = 3
-        if self.label == "Project":
+        elif self.label == "Project":
             self.tab.selected_tab = 4
+        elif self.label == "Entities":
+            self.tab.selected_tab = 5
+        elif self.label == "Events":
+            self.tab.selected_tab = 6
 
     def new_project(self):
         name = popup("Please choose a name for the project:", "New project", self.grid, self.tab, self.top)
@@ -366,3 +370,26 @@ class button_class():
             subprocess.run(['wslview', windows_path])
         except subprocess.CalledProcessError as e:
             print(f"Error: {e}")
+
+    def new_entity(self):
+        pass
+
+    def new_event(self):
+        pass
+
+    def play(self):
+        import subprocess
+        self.autosave()
+        subprocess.run(['./utils/game_template.py', './saves/autosave_map.png'])
+
+    def autosave(self):
+        """save the map"""
+        pygame.image.save(self.grid.tile_surf, "saves/autosave_map.png")
+
+        """save the tile"""
+        new_tile = pygame.Surface((len(self.grid.tile_grid), len(self.grid.tile_grid)), pygame.SRCALPHA)
+        new_tile.fill((0, 0, 0, 0))
+        for line in range (len(self.grid.tile_grid)):
+            for column in range (len(self.grid.tile_grid[line])):
+                new_tile.set_at((column, line), self.grid.tile_grid[column][line])
+        pygame.image.save(new_tile, "saves/autosave_tile.png")

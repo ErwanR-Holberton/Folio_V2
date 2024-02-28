@@ -21,6 +21,7 @@ class menu_class():
         self.expand("Tile", ["New", "Load", "Save", "Delete"])
         self.expand("Blueprint", ["New", "Load", "Save", "Delete"])
         self.expand("Edit", ["Undo", "Redo"])
+        self.expand("Play", [])
         self.expand("Help", [])
         self.buttons[0].sub_buttons[0].function = self.buttons[0].sub_buttons[0].new_project
         self.buttons[0].sub_buttons[1].function = self.buttons[0].sub_buttons[1].load_project
@@ -39,7 +40,8 @@ class menu_class():
         self.buttons[3].sub_buttons[3].function = self.buttons[3].sub_buttons[3].delete_blueprint
         self.buttons[4].sub_buttons[0].function = self.buttons[4].sub_buttons[0].undo
         self.buttons[4].sub_buttons[1].function = self.buttons[4].sub_buttons[1].redo
-        self.buttons[5].function = self.buttons[4].help
+        self.buttons[5].function = self.buttons[5].play
+        self.buttons[6].function = self.buttons[6].help
 
     def create_tab_menu(self):
         "create a menu for the tab section"
@@ -52,6 +54,8 @@ class menu_class():
         self.current_width = 0
         self.height = 60
         self.expand("Project", newline=1)
+        self.expand("Entities", newline=1)
+        self.expand("Events", newline=1)
 
     def expand(self, button_name, sub_buttons = None, newline = 0):
         """add a button to the object menu"""

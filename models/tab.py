@@ -27,6 +27,8 @@ class tab_class():
         self.create_map_mode_variables()
         self.create_tool_variables()
         self.create_settings_variables()
+        self.create_entities_variables()
+        self.create_events_variables()
         self.selected_color = (255, 255, 255, 0)
         self.reload_user_tiles()
         self.reload_blueprints()
@@ -89,6 +91,18 @@ class tab_class():
         ]
         self.settings_obj[0].function = self.settings_obj[0].activate_grid
 
+    def create_entities_variables(self):
+        self.entities_obj = [
+            button_class("New entity").set_position(20, 80, 130, 30)
+        ]
+        self.entities_obj[0].function = self.entities_obj[0].new_entity
+
+    def create_events_variables(self):
+        self.events_obj = [
+            button_class("New event").set_position(20, 80, 130, 30)
+        ]
+        self.events_obj[0].function = self.events_obj[0].new_event
+
     def process_tab(self, screen):
         """Calculate the appearance of the tab based on the selected tab"""
 
@@ -104,6 +118,10 @@ class tab_class():
             self.draw_settings()
         if self.selected_tab == 4:
             self.draw_project()
+        if self.selected_tab == 5:
+            self.draw_entities()
+        if self.selected_tab == 6:
+            self.draw_events()
 
         """Draw each tab menu"""
         for button in self.menu.buttons:
@@ -133,6 +151,12 @@ class tab_class():
 
         elif self.selected_tab == 4: # project
             self.click_project(x, y)
+
+        elif self.selected_tab == 5: # entities
+            self.click_entities(x, y)
+
+        elif self.selected_tab == 6: # events
+            self.click_events(x, y)
 
         self.process_tab(self.screen)
 
@@ -274,7 +298,14 @@ class tab_class():
                 surface = create_text_surface(names)
                 self.surf.blit(surface, (10, 140 + 40 * count))
                 count += 1
-                print(names)
+
+    def draw_entities(self):
+        for button in self.entities_obj:
+            button.draw(self.surf)
+
+    def draw_events(self):
+        for button in self.events_obj:
+            button.draw(self.surf)
 
     def click_tile_mode(self, x, y):
         """detect where the click happened in tile mode"""
@@ -301,6 +332,14 @@ class tab_class():
 
     def click_project(self, x, y):
         self.linking_button.click(x, y)
+
+    def click_entities(self, x, y):
+        for button in self.entities_obj:
+            button.click(x, y)
+
+    def click_events(self, x, y):
+        for button in self.events_obj:
+            button.click(x, y)
 
     def calcul_index(self, offset, x, y, size = 40):
 
