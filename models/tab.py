@@ -261,7 +261,6 @@ class tab_class():
 
         if self.dropdown_blueprints:
             index = self.calcul_index(self.drop_downs[2].rect_value[1] + 20, x, y, 106)
-            print(index)
 
             if len(self.blueprints) > index >= 0:
                 self.selected_tile = self.blueprints[index]
@@ -347,7 +346,6 @@ class tab_class():
         index_y = int ((y - offset) /size)
         if y - offset < 0:
             index_x = -1
-        """print(index_x, index_y)"""
         if size == 40:
             return index_y * TILES_PER_LINE + index_x
         return index_y * 3 + index_x

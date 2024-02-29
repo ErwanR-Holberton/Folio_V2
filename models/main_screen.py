@@ -129,6 +129,7 @@ class main_screen():
                     for y in range(height):
                         tile = self.selected_tile.subsurface((x * 32, y * 32, 32, 32))
                         self.append_surface(index_x + x, index_y + y, tile)
+                self.save_history_map()
 
             elif index not in self.coordinates or self.coordinates[index] != self.selected_tile:
                 self.coordinates[index] = self.selected_tile

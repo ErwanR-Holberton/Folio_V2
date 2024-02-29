@@ -3,7 +3,7 @@ import json
 from pygame.locals import *
 import os
 from utils.popups import popup
-from utils.functions import create_text_surface, draw_screen, count_lines
+from utils.functions import create_text_surface, draw_screen, count_lines, load_tiles
 from copy import deepcopy
 import shutil
 
@@ -156,10 +156,10 @@ class button_class():
             self.grid.allow_process = 1
             self.grid.save_history_tile()
 
-    def save_tile_json(self):
-        """saves a tile to a json file"""
-        with open ("dump.json", "w") as file:
-            json.dump(self.grid.tile_grid, file)
+    def save_json(self, path, object):
+        """saves an object to a json file"""
+        with open (path, "w") as file:
+            json.dump(object, file)
 
     def load_tile_json(self):
         """loads a tile from a json file"""
@@ -179,7 +179,48 @@ class button_class():
         """save a map"""
         name = popup("Please choose a name for the map:", "Map save", self.grid, self.tab, self.top)
         if name is not None:
+            tiles = {}
             pygame.image.save(self.grid.tile_surf, "saves/maps/" + name + ".png")
+            for key, value in self.grid.coordinates.items():
+                tiles[key] = self.get_path_from_img(value)
+            self.save_json("saves/maps/" + name + ".json", tiles)
+
+    def get_path_from_img(self, image):
+        """get the path from an image"""
+        path = "./base_assets/tiles/"  #list base tiles
+        tile_files = [f for f in os.listdir(path) if os.path.isfile(path + f)]
+
+        new_list = []
+        for tile in tile_files:  #create an array with images and names
+            img = pygame.image.load(path + tile)
+            new_list.append([tile, pygame.transform.scale(img, (32, 32))])
+
+        for tile in new_list:  #compare each image to the source image
+            if self.compare_surfaces(tile[1], image):
+                return tile[0]
+
+        path = "./saves/tiles/"  #list user tiles
+        tile_files = [f for f in os.listdir(path) if os.path.isfile(path + f)]
+
+        new_list = []
+        for tile in tile_files:  #create an array with images and names
+            img = pygame.image.load(path + tile)
+            new_list.append([tile, pygame.transform.scale(img, (32, 32))])
+
+        for tile in new_list:  #compare each image to the source image
+            if self.compare_surfaces(tile[1], image):
+                return tile[0]
+
+    def compare_surfaces(self, s1, s2):
+        """compare two surfaces"""
+        if s1.get_width() != s2.get_width() or s1.get_height() != s2.get_height():
+            return False
+
+        for x in range(s1.get_width()):  #compare each pixel
+            for y in range(s1.get_height()):
+                if s1.get_at((x, y)) != s2.get_at((x, y)):
+                    return False
+        return True
 
     def load_map(self):
         """load a map"""

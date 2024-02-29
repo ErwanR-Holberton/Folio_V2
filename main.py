@@ -28,8 +28,11 @@ while running:
 
         elif event.type == KEYDOWN:
             keys = pygame.key.get_pressed()
-            if keys[K_LCTRL] and keys[K_z]:
-                top.buttons[4].sub_buttons[0].function()
+            if (keys[K_LCTRL] or keys[K_RCTRL]) and keys[K_z]:
+                top.buttons[4].sub_buttons[0].function() #call undo
+            elif (keys[K_LCTRL] or keys[K_RCTRL]) and keys[K_y]:
+                top.buttons[4].sub_buttons[1].function() #call redo
+
 
         elif event.type == MOUSEBUTTONDOWN:
             mouse_x, mouse_y = event.pos
@@ -53,10 +56,10 @@ while running:
                         elif tab.selected_tab == 2:
                             grid.set_color(mouse_x, mouse_y, tab.selected_color, screen)
                         grid.allow_process = 1
-            elif event.button == 4:  # scroll up
-                tab.update_scroll(-32)
-            elif event.button == 5:  # scroll down
+            elif event.button == 4:  # scroll down
                 tab.update_scroll(32)
+            elif event.button == 5:  # scroll up
+                tab.update_scroll(-32)
             dragging = 0
             grid.dragging = 0
 
