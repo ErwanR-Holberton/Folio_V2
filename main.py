@@ -18,8 +18,7 @@ while running:
     """Event handling loop"""
     for event in pygame.event.get():
         if event.type == QUIT:  # Check for quit event (click on red cross or press Esc key)
-            """response = popup("Are you sure you want to quit? (yes or no)", "Quitting the app :(", grid, tab, top)
-            if response == "yes":"""
+            top.buttons[5].autosave()
             running = 0
 
         elif event.type == KEYUP:

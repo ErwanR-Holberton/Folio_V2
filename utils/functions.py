@@ -59,11 +59,6 @@ def draw_screen(screen, tab, grid, top):
         scaled = pygame.transform.scale(grid.selected_tile, (32, 32))
         screen.blit(scaled, (grid.width - 32, 0))
 
-    count = 0
-    for k, v in grid.coordinates.items():
-        screen.blit(v, (0, 32 + count))
-        count += 32
-
     pygame.display.flip() # Refresh the display
 
 
