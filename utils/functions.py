@@ -29,8 +29,8 @@ def load_tiles(path = "./base_assets/tiles/"):
 
         """Use the get_tile function to scale the loaded tile and append it to the list"""
         if path == "./base_assets/tiles/":
-            center = get_tile(1, 1, loaded_image)
-            tiles.append(center)
+            scaled_image = pygame.transform.scale(loaded_image, (32, 32))
+            tiles.append(scaled_image)
         else:
             tiles.append(loaded_image)
 
@@ -58,6 +58,11 @@ def draw_screen(screen, tab, grid, top):
     if grid.selected_tile is not None:
         scaled = pygame.transform.scale(grid.selected_tile, (32, 32))
         screen.blit(scaled, (grid.width - 32, 0))
+
+    count = 0
+    for k, v in grid.coordinates.items():
+        screen.blit(v, (0, 32 + count))
+        count += 32
 
     pygame.display.flip() # Refresh the display
 
