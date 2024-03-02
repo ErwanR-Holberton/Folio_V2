@@ -4,6 +4,10 @@ sys.dont_write_bytecode = True  # prevent __pycache__ creation
 import pygame
 from pygame.locals import *
 import json
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))  # change the path
+from models.map_class import map_class
+from models.entities_class import entities_class
 
 pygame.init()                   #initialise pygame library
 
@@ -11,55 +15,14 @@ screen = pygame.display.set_mode((1200,800), pygame.RESIZABLE | pygame.FULLSCREE
 
 map_name = sys.argv[1]
 map = pygame.image.load(map_name)
+map_object = map_class("./saves/autosave_map.json")
 
 """Initialize the game state"""
 running = 1
 clock = pygame.time.Clock()
 
-class entities:
 
-    all = []
-    def __init__(self, ent_dict):
-
-        for key, value in ent_dict.items():
-            if key == "icon":
-                self.icon = self.load_icon(value)
-            elif key == "position":
-                self.position = [x * 32 for x in value]
-            else:
-                setattr(self, key, value)
-        __class__.all.append(self)
-
-    def move(self, key):
-        """move the entity player"""
-        if hasattr(self, "keys"):
-            if key == self.keys[0]:
-                self.position[1] -= 32
-            elif key == self.keys[1]:
-                self.position[0] += 32
-            elif key == self.keys[2]:
-                self.position[1] += 32
-            elif key == self.keys[3]:
-                self.position[0] -= 32
-
-    @staticmethod
-    def load_entities():
-        """loads an entity from a json file"""
-        with open ("./saves/autosave_entities.json", "r") as file:
-            entities = json.load(file)
-        for dict in entities:
-            __class__(dict)
-
-    def load_icon(self, path):
-        """loads an icon from a string"""
-        icon = pygame.image.load(path)
-        return pygame.transform.scale(icon, (32, 32))
-
-    def draw(self, screen):
-        """draw the entity on the map"""
-        screen.blit(self.icon, self.position)
-
-entities.load_entities()
+entities_class.load_entities()
 
 """Main game loop"""
 while running:
@@ -73,7 +36,7 @@ while running:
         elif event.type == KEYUP:
             if event.key == K_ESCAPE:
                 running = 0
-            for entity in entities.all:
+            for entity in entities_class.all:
                 entity.move(event.key)
 
         elif event.type == KEYDOWN:
@@ -93,10 +56,15 @@ while running:
 
     screen.fill((255, 255, 255))  #Fill the screen with a white background
 
-    screen.blit(map, (0, 0))
+    screen.blit(map, (map_object.offset[0] * 32, map_object.offset[1] * 32))
 
-    for entity in entities.all:
+    for entity in entities_class.all:
         entity.draw(screen)
+
+    for tile in map_object.tiles.keys():
+        x, y = tile.split(".")
+        x, y = int(x), int(y)
+        pygame.draw.rect(screen, (0, 0, 0), (x * 32, y * 32, 32, 32), 1)
 
     pygame.display.flip() # Refresh the display
 

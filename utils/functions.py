@@ -1,5 +1,6 @@
 import pygame
 import os
+import json
 
 tileset = pygame.image.load("tileset.png") #Load the tileset image
 
@@ -16,7 +17,7 @@ def load_tiles(path = "./base_assets/tiles/"):
     """Load individual tiles from the desired directory and return a list of scaled tiles."""
 
     """Get a list of file names in the desired directory"""
-    tile_list = [f for f in os.listdir(path) if os.path.isfile(path + '/' + f)]
+    tile_list = list_png(path)
 
     tile_list.sort()
 
@@ -67,3 +68,15 @@ def count_lines(array,items_by_lines=8):
     if len(array) % items_by_lines != 0:
         lines += 1
     return lines
+
+def load_json(path):
+    """loads a json file"""
+    with open(path, "r") as file:
+        object = json.load(file)
+    return object
+
+def list_png(path):
+    """list all pngs in the folder"""
+    png_list = [f for f in os.listdir(path) if os.path.isfile(path + '/' + f)]
+
+    return [f for f in png_list if not f.endswith(".json")]  #filter json files from the list

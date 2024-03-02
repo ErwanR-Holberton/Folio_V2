@@ -25,7 +25,7 @@ class tab_class():
         self.menu = menu_class("tab_menu", screen)
         self.menu.create_tab_menu()
         self.create_map_mode_variables()
-        self.create_tool_variables()
+        self.create_tile_mode_variables()
         self.create_settings_variables()
         self.create_entities_variables()
         self.create_events_variables()
@@ -74,16 +74,22 @@ class tab_class():
         for button in self.drop_downs:
             button.function = button.dropdown_function
 
-    def create_tool_variables(self):
+    def create_tile_mode_variables(self):
+        self.traversable_status = 1
         self.tools_obj = []
         self.tools_obj.append(button_class("R"))
         self.tools_obj.append(button_class("G"))
         self.tools_obj.append(button_class("B"))
         self.tools_obj.append(button_class("Validate"))
+        self.tools_obj.append(button_class("Traversable ON"))
         self.tools_obj[0].set_position(20, 205, 70, 30)
         self.tools_obj[1].set_position(110, 205, 70, 30)
         self.tools_obj[2].set_position(200, 205, 70, 30)
         self.tools_obj[3].set_position(200, 155, 100, 30)
+        self.tools_obj[4].set_position(20, 255, 280, 30)
+
+        self.tools_obj[4].function = self.tools_obj[4].activate_traversable
+
 
     def create_settings_variables(self):
         self.settings_obj = [
