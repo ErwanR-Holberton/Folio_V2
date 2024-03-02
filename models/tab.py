@@ -99,9 +99,12 @@ class tab_class():
 
     def create_entities_variables(self):
         self.entities_obj = [
-            button_class("New entity").set_position(20, 80, 130, 30)
+            button_class("Select skin").set_position(20, 80, 130, 30),
+            button_class("Add stat").set_position(170, 80, 130, 30)
         ]
-        self.entities_obj[0].function = self.entities_obj[0].new_entity
+        self.entities_obj[0].function = self.entities_obj[0].select_skin
+        self.entities_obj[1].function = self.entities_obj[1].add_stat
+        self.selected_entity = None
 
     def create_events_variables(self):
         self.events_obj = [
@@ -305,8 +308,12 @@ class tab_class():
                 count += 1
 
     def draw_entities(self):
-        for button in self.entities_obj:
-            button.draw(self.surf)
+        if self.selected_entity is not None:
+            for button in self.entities_obj:
+                button.draw(self.surf)
+        else:
+            surface = create_text_surface("Please create or select an entity")
+            self.surf.blit(surface, (10, 70))
 
     def draw_events(self):
         for button in self.events_obj:

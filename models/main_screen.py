@@ -29,34 +29,37 @@ class main_screen():
         self.old_index = None
         self.save_history_map()
         self.save_history_tile()
+        self.entities = []
 
-        self.process_surface(screen) # process the initial grid
+        self.process_surface(screen)  # process the initial grid
 
     def process_surface(self, screen, offset = None):
         """process one frame of the grid """
 
-        if offset != None:          #check offset for unitialised value
+        if offset != None:          # check offset for unitialised value
             self.offset = offset
         else:
             offset = self.offset
 
-        self.width = screen.get_width() - tab_class.width   #update tab size
+        self.width = screen.get_width() - tab_class.width   # update tab size
         height = screen.get_height()
         if self.width <= 0:
             return
         self.surf = pygame.Surface((self.width, height), pygame.SRCALPHA)
 
-        if self.mode == 0:          #Map grid mode
+        if self.mode == 0:          # Map grid mode
 
             self.surf.fill((54, 57, 63)) # Background color
-            if self.grid_status == 1:           #draw grid under
+            if self.grid_status == 1:           # draw grid under
                 self.draw_grid(offset, height)
             if self.tile_offset is not None:
                 dx, dy = self.tile_offset
             else:
                 dx = dy = 0
             self.surf.blit(self.tile_surf, (offset[0] + dx * self.tile_size, offset[1] + dy * self.tile_size))
-            if self.grid_status == 2:           #draw grid over
+            for entity in self.entities:
+                pygame.draw.rect(self.surf, (255, 0, 0), (offset[0] + (entity["position"][0] + dx) * 32, offset[1] + (entity["position"][1] + dy) * 32, 32, 32))
+            if self.grid_status == 2:           # draw grid over
                 self.draw_grid(offset, height)
 
         else:
@@ -220,4 +223,27 @@ class main_screen():
             self.undo_index_tile = 0
         if self.dragging == 1:
             self.dragging = 2
+
+    def new_entity(self, x, y, offset):
+        """creates a new entity when the user clicks on the grid"""
+        x -= offset[0]
+        y -= offset[1]
+        if x < 0: #remove ghost column
+            x -= self.tile_size
+        if y < 0: #remove ghost line
+            y -= self.tile_size
+
+        index_x = int(x/self.tile_size) # get index from coordinates
+        index_y = int(y/self.tile_size)
+        index = "{}.{}".format (index_x, index_y)
+
+        new_entity = {"skin": None, "stats": {},"name": "Enter_name", "position": [index_x, index_y] }
+        self.entities.append(new_entity)
+        self.allow_process = 1
+
+        self.tab.selected_entity = new_entity
+        self.tab.process_tab(self.screen)
+
+
+
 

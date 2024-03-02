@@ -429,9 +429,6 @@ class button_class():
         except subprocess.CalledProcessError as e:
             print(f"Error: {e}")
 
-    def new_entity(self):
-        pass
-
     def new_event(self):
         pass
 
@@ -451,3 +448,9 @@ class button_class():
             for column in range(len(self.grid.tile_grid[line])):
                 new_tile.set_at((column, line), self.grid.tile_grid[column][line])
         pygame.image.save(new_tile, "saves/autosave_tile.png")
+
+    def select_skin(self):
+        pass
+
+    def add_stat(self):
+        pass

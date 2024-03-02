@@ -53,6 +53,8 @@ while running:
                             grid.click(mouse_x, mouse_y, offset)
                         elif tab.selected_tab == 2:
                             grid.set_color(mouse_x, mouse_y, tab.selected_color, screen)
+                        elif tab.selected_tab == 5:
+                            grid.new_entity(mouse_x, mouse_y, offset)
                         grid.allow_process = 1
             elif event.button == 4:  # scroll down
                 tab.update_scroll(32)

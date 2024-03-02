@@ -24,5 +24,4 @@ class tile_class():
         elif name[0] == "u":
             folder = "./saves/tiles/"
 
-        print(folder + name[1:] + ".json")
         return load_json(folder + name[1:] + ".json")
