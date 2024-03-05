@@ -8,7 +8,7 @@ class entities_class:
     def __init__(self, ent_dict):
 
         for key, value in ent_dict.items():
-            if key == "icon":
+            if key == "skin":
                 self.icon = self.load_icon(value)
             elif key == "position":
                 self.position = [x * 32 for x in value]
@@ -50,9 +50,13 @@ class entities_class:
 
     def load_icon(self, path):
         """loads an icon from a string"""
-        icon = pygame.image.load(path)
+        if path is None:
+            return None
+        icon = pygame.image.load("./saves/tiles/" + path + ".png")
         return pygame.transform.scale(icon, (32, 32))
 
     def draw(self, screen):
         """draw the entity on the map"""
+        if self.icon is None:
+            return
         screen.blit(self.icon, self.position)

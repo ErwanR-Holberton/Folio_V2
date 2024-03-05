@@ -8,9 +8,10 @@ from utils.popups import popup
 import pygame                   # import pygame and variables
 from pygame.locals import *
 
-pygame.init()                   # initialise pygame library
+pygame.init()                   # initialize pygame library
 
 screen = pygame.display.set_mode((1200, 800), pygame.RESIZABLE)  # create the screen
+pygame.display.set_caption("RPG Map Builder")
 system("clear")  # clear terminal (linux)
 
 top = menu_class("top_menu", screen)  # create menu object

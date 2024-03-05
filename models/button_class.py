@@ -3,7 +3,7 @@ import json
 from pygame.locals import *
 import os
 from utils.popups import popup
-from utils.functions import create_text_surface, draw_screen, count_lines, list_png
+from utils.functions import create_text_surface, draw_screen, count_lines, list_png, load_json
 from copy import deepcopy
 import shutil
 
@@ -185,7 +185,8 @@ class button_class():
         pygame.image.save(self.grid.tile_surf, destination + ".png")
         for key, value in self.grid.coordinates.items():
             tiles[key] = self.get_path_from_img(value)[:-4]
-        map_dict = {"offset": self.grid.tile_offset, "tiles": tiles}
+        offset = self.grid.tile_offset or [0, 0]
+        map_dict = {"offset": offset, "tiles": tiles}
         self.save_json(destination + ".json", map_dict)
 
     def get_path_from_img(self, image):
@@ -233,6 +234,20 @@ class button_class():
             self.grid.allow_process = 1
             self.grid.tile_offset = (0, 0)
             self.grid.save_history_map()
+            if os.path.exists("./saves/maps/" + name + ".json"):
+                map = load_json("./saves/maps/" + name + ".json")
+                self.grid.tile_offset = map["offset"]
+                self.grid.coordinates = {}
+                for key, value in map["tiles"].items():
+                    if value[0] == "b":
+                        path = "./base_assets/tiles/" + value[1:] + ".png"
+                    elif value[0] == "u":
+                        path = "./saves/tiles/" + value[1:] + ".png"
+                    if os.path.exists(path):
+                        image = pygame.image.load(path)
+                        scaled_image = pygame.transform.scale(image, (32, 32))
+                        self.grid.coordinates[key] = scaled_image
+
 
     def new_map(self):
         self.grid.set = None
@@ -240,6 +255,7 @@ class button_class():
         self.grid.tile_surf.fill((0, 0, 0, 0))
         self.grid.allow_process = 1
         self.grid.save_history_map()
+        self.grid.coordinates = {}
 
     def delete_tile(self):
         """delete a tile"""
@@ -448,9 +464,20 @@ class button_class():
             for column in range(len(self.grid.tile_grid[line])):
                 new_tile.set_at((column, line), self.grid.tile_grid[column][line])
         pygame.image.save(new_tile, "saves/autosave_tile.png")
+        """save entities"""
+        self.save_entities("./saves/autosave_entities.json")
 
     def select_skin(self):
-        pass
+        name = popup("Please choose a tile as a skin for the entity", "Change skin", self.grid, self.tab, self.top)
+        if name is not None and os.path.exists("./saves/tiles/" + name + ".png"):
+            self.tab.selected_entity["skin"] = name
+            self.grid.allow_process = 1
 
     def add_stat(self):
         pass
+
+    def save_entities(self, path):
+        """save the entities in json file"""
+        entities = self.grid.entities.copy()
+        entities.append({"skin": "rabbit", "position": [5, 5], "keys": [1073741906, 1073741903, 1073741905, 1073741904]})
+        self.save_json(path, entities)

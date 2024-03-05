@@ -58,7 +58,12 @@ class main_screen():
                 dx = dy = 0
             self.surf.blit(self.tile_surf, (offset[0] + dx * self.tile_size, offset[1] + dy * self.tile_size))
             for entity in self.entities:
-                pygame.draw.rect(self.surf, (255, 0, 0), (offset[0] + (entity["position"][0] + dx) * 32, offset[1] + (entity["position"][1] + dy) * 32, 32, 32))
+                if entity["skin"] is not None:
+                    image = pygame.image.load("./saves/tiles/" + entity["skin"] + ".png")
+                    scaled_image = pygame.transform.scale(image, (32, 32))
+                    self.surf.blit(scaled_image, (offset[0] + (entity["position"][0]) * 32, offset[1] + (entity["position"][1] * 32)))
+                else:
+                    pygame.draw.rect(self.surf, (255, 0, 0), (offset[0] + (entity["position"][0]) * 32, offset[1] + (entity["position"][1]) * 32, 32, 32))
             if self.grid_status == 2:           # draw grid over
                 self.draw_grid(offset, height)
 
@@ -235,8 +240,12 @@ class main_screen():
 
         index_x = int(x/self.tile_size) # get index from coordinates
         index_y = int(y/self.tile_size)
-        index = "{}.{}".format (index_x, index_y)
 
+        for entity in self.entities:
+            if entity["position"] == [index_x, index_y]:
+                self.tab.selected_entity = entity
+                self.allow_process = 1
+                return
         new_entity = {"skin": None, "stats": {},"name": "Enter_name", "position": [index_x, index_y] }
         self.entities.append(new_entity)
         self.allow_process = 1
