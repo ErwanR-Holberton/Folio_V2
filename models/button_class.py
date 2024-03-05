@@ -248,7 +248,6 @@ class button_class():
                         scaled_image = pygame.transform.scale(image, (32, 32))
                         self.grid.coordinates[key] = scaled_image
 
-
     def new_map(self):
         self.grid.set = None
         self.grid.tile_surf = pygame.Surface((self.grid.tile_size, self.grid.tile_size), pygame.SRCALPHA)  # create a starting surface of tile size
@@ -445,9 +444,6 @@ class button_class():
         except subprocess.CalledProcessError as e:
             print(f"Error: {e}")
 
-    def new_event(self):
-        pass
-
     def play(self):
         import subprocess
         self.autosave()
@@ -465,7 +461,9 @@ class button_class():
                 new_tile.set_at((column, line), self.grid.tile_grid[column][line])
         pygame.image.save(new_tile, "saves/autosave_tile.png")
         """save entities"""
-        self.save_entities("./saves/autosave_entities.json")
+        self.save_json("./saves/autosave_entities.json", self.grid.entities)
+        """save events"""
+        self.save_json("./saves/autosave_events.json", self.grid.events)
 
     def select_skin(self):
         name = popup("Please choose a tile as a skin for the entity", "Change skin", self.grid, self.tab, self.top)
@@ -473,14 +471,19 @@ class button_class():
             self.tab.selected_entity["skin"] = name
             self.grid.allow_process = 1
 
-    def add_stat(self):
+    def set_playable_mode(self):
+        if "keys" in self.tab.selected_entity:
+            del self.tab.selected_entity["keys"]
+        else:
+            keys = [None, None, None, None]
+            keys[0] = popup("Please press the Up key for this entity", "Choosing the keys", self.grid, self.tab, self.top, get_key=1)
+            keys[1] = popup("Please press the Right key for this entity", "Choosing the keys", self.grid, self.tab, self.top, get_key=1)
+            keys[2] = popup("Please press the Down key for this entity", "Choosing the keys", self.grid, self.tab, self.top, get_key=1)
+            keys[3] = popup("Please press the Left key for this entity", "Choosing the keys", self.grid, self.tab, self.top, get_key=1)
+            self.tab.selected_entity["keys"] = keys
+
+    def new_event(self):
         pass
 
-    def save_entities(self, path):
-        """save the entities in json file"""
-        entities = self.grid.entities.copy()
-        entities.append({"skin": "rabbit", "position": [5, 5], "keys": [1073741906, 1073741903, 1073741905, 1073741904]})
-        self.save_json(path, entities)
-
-    def set_playable_mode(self):
+    def add_stat(self):
         pass

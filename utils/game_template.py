@@ -3,11 +3,11 @@ import sys
 sys.dont_write_bytecode = True  # prevent __pycache__ creation
 import pygame
 from pygame.locals import *
-import json
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))  # change the path
 from models.map_class import map_class
 from models.entities_class import entities_class
+from models.events_class import event_class
 
 pygame.init()                   #initialise pygame library
 
@@ -23,6 +23,8 @@ clock = pygame.time.Clock()
 
 
 entities_class.load_entities()
+event_class.entities = entities_class.all
+event_class.load_events()
 
 """Main game loop"""
 while running:
@@ -65,6 +67,10 @@ while running:
         x, y = tile.split(".")
         x, y = int(x), int(y)
         pygame.draw.rect(screen, (0, 0, 0), (x * 32, y * 32, 32, 32), 1)
+
+    for event in event_class.all:
+        x, y = event.position
+        pygame.draw.rect(screen, (255, 255, 255), (x * 32, y * 32, 32, 32), 1)
 
     pygame.display.flip() # Refresh the display
 

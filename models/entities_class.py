@@ -1,6 +1,7 @@
 import pygame
 import json
 from models.map_class import map_class
+from models.events_class import event_class
 
 class entities_class:
 
@@ -33,12 +34,16 @@ class entities_class:
         x = pos[0]//32
         y = pos[1]//32
 
-        map = map_class.list_of_maps[map_class.current_map]
+        map = map_class.list_of_maps[map_class.current_map]  # get the current map
 
         index = "{}.{}".format(x, y)
         if index in map.tiles:  # moves the character only if tile is traversable
             if map.tiles[index].properties["traversable"] == 1:
                 self.position = [pos[0], pos[1]]
+                for event in event_class.all:
+                    if event.type == "walk_on":
+                        if event.position == [x, y]:
+                            event.trigger()
 
     @staticmethod
     def load_entities():

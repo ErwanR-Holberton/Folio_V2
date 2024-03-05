@@ -313,6 +313,17 @@ class tab_class():
         if self.selected_entity is not None:
             for button in self.entities_obj:
                 button.draw(self.surf)
+            if "keys" in self.selected_entity:
+                keys = self.selected_entity["keys"]
+                size = 18
+                surface = create_text_surface(pygame.key.name(keys[0]), size)
+                self.surf.blit(surface, (240 - surface.get_width()//2, 130 - surface.get_height()//2))
+                surface = create_text_surface(pygame.key.name(keys[1]), size)
+                self.surf.blit(surface, (310 - surface.get_width() , 145 - surface.get_height()//2))
+                surface = create_text_surface(pygame.key.name(keys[2]), size)
+                self.surf.blit(surface, (240 - surface.get_width()//2, 160 - surface.get_height() // 2))
+                surface = create_text_surface(pygame.key.name(keys[3]), size)
+                self.surf.blit(surface, (170, 145 - surface.get_height()//2))
         else:
             surface = create_text_surface("Please create or select an entity")
             self.surf.blit(surface, (10, 70))

@@ -11,7 +11,7 @@ def popup(message, title, grid, tab, top, size=(400, 110), get_key=0):
     popup_rect = popup.get_rect(center=grid.surf.get_rect().center)
     popup.fill((10, 8, 50, 0))
 
-    draw_popup(popup, size, radius, title, message)
+    draw_popup(popup, size, radius, title, message, get_key)
     answer = ""
     while loop:
 
@@ -36,7 +36,7 @@ def popup(message, title, grid, tab, top, size=(400, 110), get_key=0):
 
             if event.type == KEYUP: # if a key was pressed
                 if get_key:
-                    return event.unicode
+                    return event.key
                 if 'a' <= event.unicode <= 'z' or 'A' <= event.unicode <= 'Z': # from a to z
                     answer += event.unicode
                     answer_surface = create_text_surface(answer)

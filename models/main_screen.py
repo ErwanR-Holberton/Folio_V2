@@ -30,6 +30,7 @@ class main_screen():
         self.save_history_map()
         self.save_history_tile()
         self.entities = []
+        self.events = [{"position": [5,5], "type": "walk_on", "target": "players", "area": 1, "action": "move", "dest": [10,10]}]
 
         self.process_surface(screen)  # process the initial grid
 
@@ -52,18 +53,26 @@ class main_screen():
             self.surf.fill((54, 57, 63)) # Background color
             if self.grid_status == 1:           # draw grid under
                 self.draw_grid(offset, height)
+
             if self.tile_offset is not None:
                 dx, dy = self.tile_offset
             else:
                 dx = dy = 0
+
             self.surf.blit(self.tile_surf, (offset[0] + dx * self.tile_size, offset[1] + dy * self.tile_size))
+
             for entity in self.entities:
-                if entity["skin"] is not None:
+                if entity["skin"] is not None:  # draws entity
                     image = pygame.image.load("./saves/tiles/" + entity["skin"] + ".png")
                     scaled_image = pygame.transform.scale(image, (32, 32))
                     self.surf.blit(scaled_image, (offset[0] + (entity["position"][0]) * 32, offset[1] + (entity["position"][1] * 32)))
-                else:
+                else:  # or red square
                     pygame.draw.rect(self.surf, (255, 0, 0), (offset[0] + (entity["position"][0]) * 32, offset[1] + (entity["position"][1]) * 32, 32, 32))
+
+                if self.tab.selected_entity == entity:  # draws white square around the selected entity
+                    pygame.draw.rect(self.surf, (255, 255, 255), (offset[0] + (entity["position"][0]) * 32, offset[1] + (entity["position"][1]) * 32, 32, 32), 2)
+
+
             if self.grid_status == 2:           # draw grid over
                 self.draw_grid(offset, height)
 
