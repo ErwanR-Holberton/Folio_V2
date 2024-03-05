@@ -1,7 +1,7 @@
 import pygame
 from pygame.locals import *
 
-def popup(message, title, grid, tab, top, size=(400, 110)):
+def popup(message, title, grid, tab, top, size=(400, 110), get_key=0):
     """create a popup loop"""
     from utils.functions import create_text_surface
 
@@ -10,6 +10,7 @@ def popup(message, title, grid, tab, top, size=(400, 110)):
     popup = pygame.Surface(size, pygame.SRCALPHA)
     popup_rect = popup.get_rect(center=grid.surf.get_rect().center)
     popup.fill((10, 8, 50, 0))
+
     draw_popup(popup, size, radius, title, message)
     answer = ""
     while loop:
@@ -25,7 +26,7 @@ def popup(message, title, grid, tab, top, size=(400, 110)):
                     if mouse_y >= 0 and mouse_y <= 15:
                         loop = 0
 
-            if event.type == WINDOWRESIZED: # process and dranw when size changes
+            if event.type == WINDOWRESIZED: # process and draw when size changes
                 grid.process_surface(grid.screen)
                 grid.draw(grid.screen)
                 tab.process_tab(tab.screen)
@@ -34,6 +35,8 @@ def popup(message, title, grid, tab, top, size=(400, 110)):
                 popup_rect = popup.get_rect(center=grid.surf.get_rect().center)
 
             if event.type == KEYUP: # if a key was pressed
+                if get_key:
+                    return event.unicode
                 if 'a' <= event.unicode <= 'z' or 'A' <= event.unicode <= 'Z': # from a to z
                     answer += event.unicode
                     answer_surface = create_text_surface(answer)
@@ -56,7 +59,7 @@ def popup(message, title, grid, tab, top, size=(400, 110)):
 
     #leave the popup after this line/loop
 
-def draw_popup(popup, size, radius, title, message):
+def draw_popup(popup, size, radius, title, message, get_key=0):
     """draws a popup"""
     from utils.functions import create_text_surface
     pygame.draw.rect(popup, (240, 240, 240), (0, 0, size[0], 20),border_top_left_radius= radius, border_top_right_radius=radius)# top border
@@ -80,4 +83,5 @@ def draw_popup(popup, size, radius, title, message):
     question = create_text_surface(message, 20)
     popup.blit(question, (10, 40))
 
-    pygame.draw.rect(popup, (240, 240, 240), (10, 69, size[0] -20, 25))
+    if get_key == 0:
+        pygame.draw.rect(popup, (240, 240, 240), (10, 69, size[0] -20, 25))

@@ -481,3 +481,6 @@ class button_class():
         entities = self.grid.entities.copy()
         entities.append({"skin": "rabbit", "position": [5, 5], "keys": [1073741906, 1073741903, 1073741905, 1073741904]})
         self.save_json(path, entities)
+
+    def set_playable_mode(self):
+        pass

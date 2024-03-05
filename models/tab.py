@@ -100,10 +100,12 @@ class tab_class():
     def create_entities_variables(self):
         self.entities_obj = [
             button_class("Select skin").set_position(20, 80, 130, 30),
-            button_class("Add stat").set_position(170, 80, 130, 30)
+            button_class("Add stat").set_position(170, 80, 130, 30),
+            button_class("Playable").set_position(20, 130, 130, 30)
         ]
         self.entities_obj[0].function = self.entities_obj[0].select_skin
         self.entities_obj[1].function = self.entities_obj[1].add_stat
+        self.entities_obj[2].function = self.entities_obj[2].set_playable_mode
         self.selected_entity = None
 
     def create_events_variables(self):
