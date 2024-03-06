@@ -1,5 +1,3 @@
-import pygame
-
 from models.button_class import button_class
 
 class menu_class():

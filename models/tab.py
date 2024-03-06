@@ -1,11 +1,13 @@
 import pygame
-from utils.functions import load_tiles, create_text_surface, count_lines
+from pygame.locals import *
+
+from utils.functions import load_tiles, create_text_surface
+
 from models.menu_class import menu_class
 from models.button_class import button_class
-from pygame.locals import *
+
 import math
-from utils.popups import popup
-import os
+
 TILES_PER_LINE = 8
 
 class tab_class():
@@ -89,7 +91,6 @@ class tab_class():
         self.tools_obj[4].set_position(20, 255, 280, 30)
 
         self.tools_obj[4].function = self.tools_obj[4].activate_traversable
-
 
     def create_settings_variables(self):
         self.settings_obj = [

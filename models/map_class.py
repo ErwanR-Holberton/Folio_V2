@@ -1,4 +1,3 @@
-import pygame
 from utils.functions import load_json
 from models.tile_class import tile_class
 

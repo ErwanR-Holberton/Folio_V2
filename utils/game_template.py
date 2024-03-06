@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 import sys
 sys.dont_write_bytecode = True  # prevent __pycache__ creation
+
 import pygame
 from pygame.locals import *
+
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))  # change the path
-from models.map_class import map_class
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))  # change the path because of subprocess
+
+from models.map_class import map_class  # import models after the path change
 from models.entities_class import entities_class
 from models.events_class import event_class
 
@@ -41,34 +45,19 @@ while running:
             for entity in entities_class.all:
                 entity.move(event.key)
 
-        elif event.type == KEYDOWN:
-            pass
-
-        elif event.type == MOUSEBUTTONDOWN:
-            mouse_x, mouse_y = event.pos
-
-        elif event.type == MOUSEBUTTONUP:  # Check for mouse button click event
-            mouse_x, mouse_y = event.pos
-
-        elif event.type == MOUSEMOTION:  # Check for mouse motion event
-            mouse_x, mouse_y = event.pos
-
-        elif event.type == VIDEORESIZE:  # Check for window resize event
-            pass
-
     screen.fill((255, 255, 255))  #Fill the screen with a white background
 
     screen.blit(map, (map_object.offset[0] * 32, map_object.offset[1] * 32))
 
-    for entity in entities_class.all:
+    for entity in entities_class.all:  # draws entities
         entity.draw(screen)
 
-    for tile in map_object.tiles.keys():
+    for tile in map_object.tiles.keys():  # draws border around tiles (temporary)
         x, y = tile.split(".")
         x, y = int(x), int(y)
         pygame.draw.rect(screen, (0, 0, 0), (x * 32, y * 32, 32, 32), 1)
 
-    for event in event_class.all:
+    for event in event_class.all:  # draws border around events (temporary)
         x, y = event.position
         pygame.draw.rect(screen, (255, 255, 255), (x * 32, y * 32, 32, 32), 1)
 

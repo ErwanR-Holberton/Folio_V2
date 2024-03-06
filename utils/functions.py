@@ -16,19 +16,13 @@ def get_tile(x, y, set = tileset):
 def load_tiles(path = "./base_assets/tiles/"):
     """Load individual tiles from the desired directory and return a list of scaled tiles."""
 
-    """Get a list of file names in the desired directory"""
-    tile_list = list_png(path)
-
+    tile_list = list_png(path)  # lists the png files
     tile_list.sort()
 
-    """Initialize an empty list to store loaded and scaled tiles"""
-    tiles = []
-
-    """Load each image from the desired directory"""
-    for file in tile_list:
+    tiles = []  # Initialize an empty list to store loaded and scaled tiles
+    for file in tile_list:  # Load each image from the desired directory
         loaded_image = pygame.image.load(path + file)
 
-        """Use the get_tile function to scale the loaded tile and append it to the list"""
         if path == "./base_assets/tiles/":
             scaled_image = pygame.transform.scale(loaded_image, (32, 32))
             tiles.append(scaled_image)
@@ -42,31 +36,30 @@ def create_text_surface(text, size = 20):
     font = pygame.font.Font("./base_assets/CALIBRI.TTF", size)
     return font.render(text, True, (0, 0, 0))
 
-
 def draw_screen(screen, tab, grid, top):
+    """fills the screen and redraw it"""
+
     screen.fill((255, 255, 255))  #Fill the screen with a white background
 
-    # Draw the menus tab and grid
-    tab.draw(screen)
+    tab.draw(screen)  # Draw the menus tab and grid
     grid.draw(screen)
-
-    # Draw menus and submenus
-    top.draw()
+    top.draw()  # Draw menus and submenus
 
     # Draw a square with the selected tile
-    pygame.draw.rect(screen, (100, 100, 100), (grid.width - 32, 0, 32, 32))
-    pygame.draw.rect(screen, (0, 0, 0), (grid.width - 32, 0, 32, 32), 1)
+    pygame.draw.rect(screen, (100, 100, 100), (grid.width - 32, 0, 32, 32))  # background
+    pygame.draw.rect(screen, (0, 0, 0), (grid.width - 32, 0, 32, 32), 1)  # border
     if grid.selected_tile is not None:
-        scaled = pygame.transform.scale(grid.selected_tile, (32, 32))
-        screen.blit(scaled, (grid.width - 32, 0))
+        scaled = pygame.transform.scale(grid.selected_tile, (32, 32))  # scale selected tile
+        screen.blit(scaled, (grid.width - 32, 0))  # draw it
 
     pygame.display.flip() # Refresh the display
 
 
 def count_lines(array,items_by_lines=8):
+    """counts number of lines of tiles in an given array"""
     lines = len(array) // items_by_lines    # count lines of tiles
     if len(array) % items_by_lines != 0:
-        lines += 1
+        lines += 1  # if there is a rest add a line
     return lines
 
 def load_json(path):

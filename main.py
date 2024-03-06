@@ -21,20 +21,21 @@ while running:
             top.buttons[5].autosave()
             running = 0
 
-        elif event.type == KEYUP:
+        elif event.type == KEYUP:  # when a key is released
             tab.handle_key_input(event.key)
             tab.process_tab(screen)
 
-        elif event.type == KEYDOWN:
+        elif event.type == KEYDOWN:  # when a key is pressed down
             keys = pygame.key.get_pressed()
             if (keys[K_LCTRL] or keys[K_RCTRL]) and keys[K_z]:
                 top.buttons[4].sub_buttons[0].function()  # call undo
             elif (keys[K_LCTRL] or keys[K_RCTRL]) and keys[K_y]:
                 top.buttons[4].sub_buttons[1].function()  # call redo
 
-        elif event.type == MOUSEBUTTONDOWN:
+        elif event.type == MOUSEBUTTONDOWN:  # when user presses mouse button
             mouse_x, mouse_y = event.pos
             if mouse_x < grid.width and not top.hover(mouse_x, mouse_y):
+                """not on tab or top menu then start dragging"""
                 dragging = 1
                 grid.dragging = 1
 
