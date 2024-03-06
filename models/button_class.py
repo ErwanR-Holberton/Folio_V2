@@ -23,6 +23,7 @@ class button_class():
         self.name = label
         self.function = None
         self.parent = parent
+        self.label_number = 0
 
     def hover(self, x, y):
         """Check if the given coordinates are within the menu area for hover effect"""
@@ -337,11 +338,9 @@ class button_class():
         if self.label == "Map mode":
             self.tab.selected_tab = 1
             self.grid.mode = 0
-            self.grid.allow_process = 1
         elif self.label == "Tile mode":
             self.tab.selected_tab = 2
             self.grid.mode = 1
-            self.grid.allow_process = 1
         elif self.label == "Settings":
             self.tab.selected_tab = 3
         elif self.label == "Project":
@@ -350,6 +349,7 @@ class button_class():
             self.tab.selected_tab = 5
         elif self.label == "Events":
             self.tab.selected_tab = 6
+        self.grid.allow_process = 1
 
     def new_project(self):
         name = popup("Please choose a name for the project:", "New project", self.grid, self.tab, self.top)
@@ -485,8 +485,66 @@ class button_class():
             keys[3] = popup("Please press the Left key for this entity", "Choosing the keys", self.grid, self.tab, self.top, get_key=1)
             self.tab.selected_entity["keys"] = keys
 
-    def new_event(self):
-        pass
-
     def add_stat(self):
         pass
+
+    def show_entities(self):
+        """switch between showing entities always or only on the tab"""
+        self.grid.show_entities = not self.grid.show_entities
+
+        if self.grid.show_entities == 1:
+            self.label = "Show entities: always"
+        elif self.grid.show_entities == 0:
+            self.label = "Show entities: on tab"
+
+        self.text_surface = create_text_surface(self.label)
+        self.set_position(*self.rect_value)
+
+        self.tab.process_tab(self.tab.screen)
+        self.grid.allow_process = 1
+
+    def show_events(self):
+        """switch between showing events always or only on the tab"""
+        self.grid.show_events = not self.grid.show_events
+
+        if self.grid.show_events == 1:
+            self.label = "Show events: always"
+        elif self.grid.show_events == 0:
+            self.label = "Show events: on tab"
+
+        self.text_surface = create_text_surface(self.label)
+        self.set_position(*self.rect_value)
+
+        self.tab.process_tab(self.tab.screen)
+        self.grid.allow_process = 1
+
+    def cycle_labels(self, names):
+        """change label of button with an array of names"""
+        self.label_number += 1
+        if self.label_number >= len(names):
+            self.label_number = 0
+        self.text_surface = create_text_surface(names[self.label_number])
+        self.set_position(*self.rect_value)
+
+        self.tab.process_tab(self.tab.screen)
+        self.grid.allow_process = 1
+
+    def select_event_type(self):
+        self.cycle_labels(["Type: walk on", "Type: map start"])
+        if self.label_number == 0:
+            self.tab.selected_event["type"] = "walk_on"
+        elif self.label_number == 1:
+            self.tab.selected_event["type"] = "map_start"
+
+    def select_event_action(self):
+        self.cycle_labels(["Action: move", "Action: change stat", "Action: create entity", "Action: win", "Action: loose"])
+        if self.label_number == 0:
+            self.tab.selected_event["action"] = "move"
+        elif self.label_number == 1:
+            self.tab.selected_event["action"] = "change_stat"
+        elif self.label_number == 2:
+            self.tab.selected_event["action"] = "create_entity"
+        elif self.label_number == 3:
+            self.tab.selected_event["action"] = "win"
+        elif self.label_number == 4:
+            self.tab.selected_event["action"] = "loose"

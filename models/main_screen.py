@@ -31,8 +31,9 @@ class main_screen():
         self.save_history_tile()
         self.entities = []
         self.events = [{"position": [5,5], "type": "walk_on", "target": "players", "area": 1, "action": "move", "dest": [10,10]}]
+        self.show_entities = 1
+        self.show_events = 1
 
-        self.process_surface(screen)  # process the initial grid
 
     def process_surface(self, screen, offset = None):
         """process one frame of the grid """
@@ -61,17 +62,25 @@ class main_screen():
 
             self.surf.blit(self.tile_surf, (offset[0] + dx * self.tile_size, offset[1] + dy * self.tile_size))
 
-            for entity in self.entities:
-                if entity["skin"] is not None:  # draws entity
-                    image = pygame.image.load("./saves/tiles/" + entity["skin"] + ".png")
-                    scaled_image = pygame.transform.scale(image, (32, 32))
-                    self.surf.blit(scaled_image, (offset[0] + (entity["position"][0]) * 32, offset[1] + (entity["position"][1] * 32)))
-                else:  # or red square
-                    pygame.draw.rect(self.surf, (255, 0, 0), (offset[0] + (entity["position"][0]) * 32, offset[1] + (entity["position"][1]) * 32, 32, 32))
+            if self.show_entities or self.tab.selected_tab == 5:
+                for entity in self.entities:
+                    if entity["skin"] is not None:  # draws entity
+                        image = pygame.image.load("./saves/tiles/" + entity["skin"] + ".png")
+                        scaled_image = pygame.transform.scale(image, (32, 32))
+                        self.surf.blit(scaled_image, (offset[0] + (entity["position"][0]) * 32, offset[1] + (entity["position"][1] * 32)))
+                    else:  # or red square
+                        pygame.draw.rect(self.surf, (255, 0, 0), (offset[0] + (entity["position"][0]) * 32, offset[1] + (entity["position"][1]) * 32, 32, 32))
 
-                if self.tab.selected_entity == entity:  # draws white square around the selected entity
-                    pygame.draw.rect(self.surf, (255, 255, 255), (offset[0] + (entity["position"][0]) * 32, offset[1] + (entity["position"][1]) * 32, 32, 32), 2)
+                    if self.tab.selected_entity == entity:  # draws white square around the selected entity
+                        pygame.draw.rect(self.surf, (255, 255, 255), (offset[0] + (entity["position"][0]) * 32, offset[1] + (entity["position"][1]) * 32, 32, 32), 2)
 
+            if self.show_events or self.tab.selected_tab == 6:
+                event_icon = pygame.image.load("./base_assets/Event_icon.png")
+                for event in self.events:
+                    self.surf.blit(event_icon, (offset[0] + (event["position"][0]) * 32, offset[1] + (event["position"][1] * 32)))
+
+                    if self.tab.selected_event == event:  # draws white square around the selected event
+                        pygame.draw.rect(self.surf, (255, 255, 255), (offset[0] + (event["position"][0]) * 32, offset[1] + (event["position"][1]) * 32, 32, 32), 2)
 
             if self.grid_status == 2:           # draw grid over
                 self.draw_grid(offset, height)
@@ -250,7 +259,7 @@ class main_screen():
         index_x = int(x/self.tile_size) # get index from coordinates
         index_y = int(y/self.tile_size)
 
-        for entity in self.entities:
+        for entity in self.entities:  # check if click on existing entity
             if entity["position"] == [index_x, index_y]:
                 self.tab.selected_entity = entity
                 self.allow_process = 1
@@ -262,6 +271,29 @@ class main_screen():
         self.tab.selected_entity = new_entity
         self.tab.process_tab(self.screen)
 
+    def new_event(self, x, y, offset):
+        """creates a new event when the user clicks on the grid"""
+        x -= offset[0]
+        y -= offset[1]
+        if x < 0: #remove ghost column
+            x -= self.tile_size
+        if y < 0: #remove ghost line
+            y -= self.tile_size
+
+        index_x = int(x/self.tile_size)  # get index from coordinates
+        index_y = int(y/self.tile_size)
+
+        for event in self.events:  # check if click on existing event
+            if event["position"] == [index_x, index_y]:
+                self.tab.selected_event = event
+                self.allow_process = 1
+                return
+        new_event = {"position": [index_x, index_y], "type": None, "target": "all", "area": 1, "action": None}
+        self.events.append(new_event)
+        self.allow_process = 1
+
+        self.tab.selected_event = new_event
+        self.tab.process_tab(self.screen)
 
 
 

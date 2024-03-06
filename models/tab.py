@@ -94,9 +94,13 @@ class tab_class():
 
     def create_settings_variables(self):
         self.settings_obj = [
-            button_class("Grid Under").set_position(20, 80, 130, 30)
+            button_class("Grid Under").set_position(20, 80, 130, 30),
+            button_class("Show entities: always").set_position(20, 120, 280, 30),
+            button_class("Show events: always").set_position(20, 160, 280, 30)
         ]
         self.settings_obj[0].function = self.settings_obj[0].activate_grid
+        self.settings_obj[1].function = self.settings_obj[1].show_entities
+        self.settings_obj[2].function = self.settings_obj[2].show_events
 
     def create_entities_variables(self):
         self.entities_obj = [
@@ -111,9 +115,12 @@ class tab_class():
 
     def create_events_variables(self):
         self.events_obj = [
-            button_class("New event").set_position(20, 80, 130, 30)
+            button_class("Type: walk on").set_position(20, 80, 280, 30),
+            button_class("Action: move").set_position(20, 120, 280, 30),
         ]
-        self.events_obj[0].function = self.events_obj[0].new_event
+        self.events_obj[0].function = self.events_obj[0].select_event_type
+        self.events_obj[1].function = self.events_obj[1].select_event_action
+        self.selected_event = None
 
     def process_tab(self, screen):
         """Calculate the appearance of the tab based on the selected tab"""
@@ -330,8 +337,12 @@ class tab_class():
             self.surf.blit(surface, (10, 70))
 
     def draw_events(self):
-        for button in self.events_obj:
-            button.draw(self.surf)
+        if self.selected_event is not None:
+            for button in self.events_obj:
+                button.draw(self.surf)
+        else:
+            surface = create_text_surface("Please create or select an event")
+            self.surf.blit(surface, (10, 70))
 
     def click_tile_mode(self, x, y):
         """detect where the click happened in tile mode"""

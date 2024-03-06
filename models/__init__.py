@@ -30,3 +30,5 @@ grid.tab = tab  # and vice versa
 button_class.grid = grid  # give access point to grid tab and top in button_class
 button_class.tab = tab
 button_class.top = top
+
+grid.process_surface(screen)  # process the initial grid
