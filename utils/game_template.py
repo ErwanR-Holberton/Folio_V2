@@ -12,6 +12,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))) 
 from models.map_class import map_class  # import models after the path change
 from models.entities_class import entities_class
 from models.events_class import event_class
+from utils.functions import create_text_surface
 
 pygame.init()                   #initialise pygame library
 
@@ -60,6 +61,11 @@ while running:
     for event in event_class.all:  # draws border around events (temporary)
         x, y = event.position
         pygame.draw.rect(screen, (255, 255, 255), (x * 32, y * 32, 32, 32), 1)
+
+    if event.win:
+        print("win")
+        message = create_text_surface("CONGRATS YOU WIN VICTORY HOURRA YEEEEEEEAAAAH")
+        screen.blit(message, screen.get_rect().center)
 
     pygame.display.flip() # Refresh the display
 

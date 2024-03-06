@@ -30,7 +30,9 @@ class main_screen():
         self.save_history_map()
         self.save_history_tile()
         self.entities = []
-        self.events = [{"position": [5,5], "type": "walk_on", "target": "players", "area": 1, "action": "move", "dest": [10,10]}]
+        self.events = [{"position": [5,5], "type": "walk_on", "target": "players", "area": 1, "action": "move", "dest": [10,10]},
+                       {"position": [1, 1], "type": "walk_on", "target": "players", "area": 1, "action": "win"},
+                        {"position": [1, 5], "type": "walk_on", "target": "players", "area": 1, "action": "loose"}]
         self.show_entities = 1
         self.show_events = 1
 

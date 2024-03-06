@@ -1,8 +1,12 @@
 import json
+import pygame
+from utils.functions import create_text_surface
 
 class event_class():
 
     all = []
+    win = 0
+    loose = 0
 
     def __init__(self, event_dict):
 
@@ -23,4 +27,7 @@ class event_class():
         if self.action == "move":
             for entity in selected_entities:
                 entity.position = [self.dest[0] * 32, self.dest[1] * 32]
-
+        if self.action == "win":
+            __class__.win = 1
+        if self.action == "loose":
+            __class__.loose = 1
