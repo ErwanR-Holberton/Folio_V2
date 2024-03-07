@@ -31,10 +31,10 @@ def load_tiles(path = "./base_assets/tiles/"):
 
     return tiles
 
-def create_text_surface(text, size = 20):
+def create_text_surface(text, size = 20, color=(0,0,0), font="CALIBRI.TTF"):
     """Render text for the menu using calibri font"""
-    font = pygame.font.Font("./base_assets/CALIBRI.TTF", size)
-    return font.render(text, True, (0, 0, 0))
+    font = pygame.font.Font("./base_assets/" + font, size)
+    return font.render(text, True, color)
 
 def draw_screen(screen, tab, grid, top):
     """fills the screen and redraw it"""

@@ -12,6 +12,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))) 
 from models.map_class import map_class  # import models after the path change
 from models.entities_class import entities_class
 from models.events_class import event_class
+from models.animation_class import animation_class
 from utils.functions import create_text_surface
 
 pygame.init()                   #initialise pygame library
@@ -26,7 +27,7 @@ map_object = map_class("./saves/autosave_map.json")
 running = 1
 clock = pygame.time.Clock()
 
-
+win_animations = animation_class.create_win_animations(screen)
 entities_class.load_entities()
 event_class.entities = entities_class.all
 event_class.load_events()
@@ -46,6 +47,7 @@ while running:
             for entity in entities_class.all:
                 entity.move(event.key)
 
+
     screen.fill((255, 255, 255))  #Fill the screen with a white background
 
     screen.blit(map, (map_object.offset[0] * 32, map_object.offset[1] * 32))
@@ -63,9 +65,30 @@ while running:
         pygame.draw.rect(screen, (255, 255, 255), (x * 32, y * 32, 32, 32), 1)
 
     if event.win:
-        print("win")
-        message = create_text_surface("CONGRATS YOU WIN VICTORY HOURRA YEEEEEEEAAAAH")
-        screen.blit(message, screen.get_rect().center)
+        rect = screen.get_rect()
+        transparent = pygame.Surface((rect[2], rect[3]), pygame.SRCALPHA)
+        transparent.fill((50, 50, 50, 200))
+        screen.blit(transparent, (0,0))
+        message = create_text_surface("VICTORY", 180, (250, 219, 13), "vinque rg.otf")
+        position = list(screen.get_rect().center)
+        position[0] -= message.get_width()//2
+        position[1] -= message.get_height()//2
+        screen.blit(message, position)
+        for anim in win_animations:
+            anim.draw_next_frame(screen)
+
+    if event.loose:
+        rect = screen.get_rect()
+        transparent = pygame.Surface((rect[2], rect[3]), pygame.SRCALPHA)
+        transparent.fill((50, 50, 50, 200))
+        screen.blit(transparent, (0,0))
+        message = create_text_surface("Defeat", 180, (255, 50, 50), "BloodyCamp.ttf")
+        position = list(screen.get_rect().center)
+        position[0] -= message.get_width()//2
+        position[1] -= message.get_height()//2
+        screen.blit(message, position)
+        for anim in win_animations:
+            anim.draw_next_frame(screen)
 
     pygame.display.flip() # Refresh the display
 
