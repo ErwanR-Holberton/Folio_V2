@@ -475,9 +475,11 @@ class button_class():
             self.grid.allow_process = 1
 
     def set_playable_mode(self):
-        if "keys" in self.tab.selected_entity:
-            del self.tab.selected_entity["keys"]
-        else:
+        self.cycle_labels(["Playable: no", "Playable: yes"])
+        if self.label_number == 0:
+            if "keys" in self.tab.selected_entity:
+                del self.tab.selected_entity["keys"]
+        elif self.label_number == 1:
             keys = [None, None, None, None]
             keys[0] = popup("Please press the Up key for this entity", "Choosing the keys", self.grid, self.tab, self.top, get_key=1)
             keys[1] = popup("Please press the Right key for this entity", "Choosing the keys", self.grid, self.tab, self.top, get_key=1)
@@ -562,23 +564,48 @@ class button_class():
 
     def choose_event_target(self):
         """choose the target of the event"""
+        result = self.require_user_click()
+        if result is not None:
+            x, y = result
+            for entity in self.grid.entities:
+                if entity["position"] == [x, y]:
+                    self.tab.selected_event["target"] = entity["id"]
+
+    def choose_destination(self):
+        """choose the destination for move event"""
+        result = self.require_user_click()
+        if result is not None:
+            x, y = result
+            self.tab.selected_event["dest"] = [x, y]
+            self.grid.allow_process = 1
+
+    def require_user_click(self):
+        """get user to click on the grid"""
         while True:
             for event in pygame.event.get():
                 if event.type == MOUSEBUTTONUP:
                     x, y = event.pos
                     if x < self.grid.width:
-                        x -= self.grid.offset[0]
-                        y -= self.grid.offset[1]
-                        if x < 0: #remove ghost column
-                            x -= self.grid.tile_size
-                        if y < 0: #remove ghost line
-                            y -= self.grid.tile_size
-                        index_x = int(x/self.grid.tile_size)  # get index from coordinates
-                        index_y = int(y/self.grid.tile_size)
-                        for entity in self.grid.entities:
-                            if entity["position"] == [index_x, index_y]:
-                                self.tab.selected_event["target"] = entity["id"]
+                        return self.grid.calculate_coordinates(x, y)
                     return
 
+    def set_mobility(self):
+        """choose if entity is mobile"""
+        self.cycle_labels(["Mobility: no", "Mobility: yes"])
+        if self.label_number == 0:
+            self.tab.selected_entity["mobility"] = 0
+        elif self.label_number == 1:
+            self.tab.selected_entity["mobility"] = 1
 
+    def choose_path(self):
+        """choose path for a mobile entity"""
+        result = self.require_user_click()
+        if result is not None:
+            x, y = result
+            if "path_tiles" in self.tab.selected_entity:
+                if [x, y] not in self.tab.selected_entity["path_tiles"]:
+                    self.tab.selected_entity["path_tiles"].append([x, y])
+            else:
+                self.tab.selected_entity["path_tiles"] = [[x, y]]
+            self.grid.allow_process = 1
 

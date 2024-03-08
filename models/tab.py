@@ -106,12 +106,16 @@ class tab_class():
         self.entities_obj = [
             button_class("Select skin").set_position(20, 80, 130, 30),
             button_class("Add stat").set_position(170, 80, 130, 30),
-            button_class("Playable").set_position(20, 130, 130, 30)
+            button_class("Playable: no").set_position(20, 120, 130, 30),
+            button_class("Mobility: no").set_position(20, 160, 130, 30),
+            button_class("Choose path").set_position(170, 160, 130, 30)
         ]
         self.entities_obj[0].function = self.entities_obj[0].select_skin
         self.entities_obj[1].function = self.entities_obj[1].add_stat
         self.entities_obj[2].function = self.entities_obj[2].set_playable_mode
         self.selected_entity = None
+        self.entities_obj[3].function = self.entities_obj[3].set_mobility
+        self.entities_obj[4].function = self.entities_obj[4].choose_path
 
     def create_events_variables(self):
         self.events_obj = [
@@ -120,11 +124,19 @@ class tab_class():
             button_class("Target: one").set_position(20, 160, 170, 30),
             button_class("Choose").set_position(200, 160, 100, 30)
         ]
+        self.events_action_buttons = [
+            [button_class("Choose destination").set_position(20, 200, 280, 30)],
+            [],
+            [],
+            [],
+            []
+        ]
         self.events_obj[0].function = self.events_obj[0].select_event_type
         self.events_obj[1].function = self.events_obj[1].select_event_action
         self.selected_event = None
         self.events_obj[2].function = self.events_obj[2].select_event_target
         self.events_obj[3].function = self.events_obj[3].choose_event_target
+        self.events_action_buttons[0][0].function = self.events_action_buttons[0][0].choose_destination
 
     def process_tab(self, screen):
         """Calculate the appearance of the tab based on the selected tab"""
@@ -329,20 +341,23 @@ class tab_class():
                 keys = self.selected_entity["keys"]
                 size = 18
                 surface = create_text_surface(pygame.key.name(keys[0]), size)
-                self.surf.blit(surface, (240 - surface.get_width()//2, 130 - surface.get_height()//2))
+                self.surf.blit(surface, (240 - surface.get_width()//2, 120 - surface.get_height()//2))
                 surface = create_text_surface(pygame.key.name(keys[1]), size)
-                self.surf.blit(surface, (310 - surface.get_width() , 145 - surface.get_height()//2))
+                self.surf.blit(surface, (310 - surface.get_width() , 135 - surface.get_height()//2))
                 surface = create_text_surface(pygame.key.name(keys[2]), size)
-                self.surf.blit(surface, (240 - surface.get_width()//2, 160 - surface.get_height() // 2))
+                self.surf.blit(surface, (240 - surface.get_width()//2, 150 - surface.get_height() // 2))
                 surface = create_text_surface(pygame.key.name(keys[3]), size)
-                self.surf.blit(surface, (170, 145 - surface.get_height()//2))
+                self.surf.blit(surface, (170, 135 - surface.get_height()//2))
         else:
             surface = create_text_surface("Please create or select an entity")
             self.surf.blit(surface, (10, 70))
 
     def draw_events(self):
         if self.selected_event is not None:
-            for button in self.events_obj:
+            for button in self.events_obj:  # draw permanent button
+                button.draw(self.surf)
+                """draw button according to the action"""
+            for button in self.events_action_buttons[self.events_obj[1].label_number]:
                 button.draw(self.surf)
         else:
             surface = create_text_surface("Please create or select an event")
@@ -382,8 +397,11 @@ class tab_class():
         for button in self.events_obj:
             button.click(x, y)
 
-    def calcul_index(self, offset, x, y, size = 40):
+        for button in self.events_action_buttons[self.events_obj[1].label_number]:
+            button.click(x, y)
 
+    def calcul_index(self, offset, x, y, size = 40):
+        """calculate the index"""
         index_x = int (x / size)
         index_y = int ((y - offset) /size)
         if y - offset < 0:
@@ -393,6 +411,7 @@ class tab_class():
         return index_y * 3 + index_x
 
     def update_scroll(self, value):
+        """update the scroll"""
         if self.selected_tab == 1 and self.scroll + value <= 0 :
             self.scroll += value
             for button in self.drop_downs:

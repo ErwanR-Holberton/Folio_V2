@@ -76,6 +76,8 @@ class main_screen():
 
                     if self.tab.selected_entity == entity:  # draws white square around the selected entity
                         pygame.draw.rect(self.surf, (255, 255, 255), (offset[0] + (entity["position"][0]) * 32, offset[1] + (entity["position"][1]) * 32, 32, 32), 2)
+                        for path_tile in entity["path_tiles"]:
+                            pygame.draw.rect(self.surf, (255, 255, 0), (offset[0] + path_tile[0] * 32, offset[1] + path_tile[1] * 32, 32, 32), 1)
 
             if self.show_events or self.tab.selected_tab == 6:
                 event_icon = pygame.image.load("./base_assets/Event_icon.png")
@@ -84,6 +86,9 @@ class main_screen():
 
                     if self.tab.selected_event == event:  # draws white square around the selected event
                         pygame.draw.rect(self.surf, (255, 255, 255), (offset[0] + (event["position"][0]) * 32, offset[1] + (event["position"][1]) * 32, 32, 32), 2)
+                        if "dest" in event:
+                            pygame.draw.rect(self.surf, (0, 255, 0), (offset[0] + (event["dest"][0]) * 32, offset[1] + (event["dest"][1]) * 32, 32, 32), 1)
+
 
             if self.grid_status == 2:           # draw grid over
                 self.draw_grid(offset, height)
@@ -267,7 +272,9 @@ class main_screen():
                 self.tab.selected_entity = entity
                 self.allow_process = 1
                 return
-        new_entity = {"id": str(uuid4()), "skin": None, "stats": {},"name": "Enter_name", "position": [index_x, index_y] }
+        new_entity = {"id": str(uuid4()), "skin": None, "stats": {},
+                      "name": "Enter_name", "position": [index_x, index_y],
+                      "path_tiles": [], "mobility": 0}
         self.entities.append(new_entity)
         self.allow_process = 1
 
@@ -321,4 +328,14 @@ class main_screen():
                 return count
             count += 1
 
-
+    def calculate_coordinates(self, x, y):
+        """convert pixel value to tile index"""
+        x -= self.offset[0]
+        y -= self.offset[1]
+        if x < 0: #remove ghost column
+            x -= self.tile_size
+        if y < 0: #remove ghost line
+            y -= self.tile_size
+        index_x = int(x/self.tile_size)  # get index from coordinates
+        index_y = int(y/self.tile_size)
+        return index_x, index_y

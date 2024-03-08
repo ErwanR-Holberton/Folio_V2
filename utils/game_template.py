@@ -47,6 +47,8 @@ while running:
                 running = 0
             for entity in entities_class.all:
                 entity.move(event.key)
+    for entity in entities_class.all:
+        entity.automove()
 
 
     screen.fill((255, 255, 255))  #Fill the screen with a white background
