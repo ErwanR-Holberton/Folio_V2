@@ -537,6 +537,7 @@ class button_class():
             self.tab.selected_event["type"] = "map_start"
 
     def select_event_action(self):
+        """change the label of the button and the value in the dictionnary"""
         self.cycle_labels(["Action: move", "Action: change stat", "Action: create entity", "Action: win", "Action: loose"])
         if self.label_number == 0:
             self.tab.selected_event["action"] = "move"
@@ -548,3 +549,36 @@ class button_class():
             self.tab.selected_event["action"] = "win"
         elif self.label_number == 4:
             self.tab.selected_event["action"] = "loose"
+
+    def select_event_target(self):
+        """change the label of the button and the value in the dictionnary"""
+        self.cycle_labels(["Target: one", "Target: all", "Target: choose"])
+        if self.label_number == 0:
+            self.tab.selected_event["target"] = "one"
+        elif self.label_number == 1:
+            self.tab.selected_event["target"] = "all"
+        elif self.label_number == 2:
+            self.tab.selected_event["target"] = "choose"
+
+    def choose_event_target(self):
+        """choose the target of the event"""
+        while True:
+            for event in pygame.event.get():
+                if event.type == MOUSEBUTTONUP:
+                    x, y = event.pos
+                    if x < self.grid.width:
+                        x -= self.grid.offset[0]
+                        y -= self.grid.offset[1]
+                        if x < 0: #remove ghost column
+                            x -= self.grid.tile_size
+                        if y < 0: #remove ghost line
+                            y -= self.grid.tile_size
+                        index_x = int(x/self.grid.tile_size)  # get index from coordinates
+                        index_y = int(y/self.grid.tile_size)
+                        for entity in self.grid.entities:
+                            if entity["position"] == [index_x, index_y]:
+                                self.tab.selected_event["target"] = entity["id"]
+                    return
+
+
+

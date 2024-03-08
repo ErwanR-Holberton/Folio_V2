@@ -34,3 +34,13 @@ class animation_class:
         array.append(__class__((400, 200), "Explosion2", 200))
         array.append(__class__((width - 600, 200), "Explosion2", 200))
         return array
+
+    @staticmethod
+    def create_loose_animations(screen):
+        width, height = screen.get_size()
+        array = []
+        array.append(__class__((25, height - 300 + 30), "Light outline Skull pack", 200))
+        array.append(__class__((width - 225, height - 300 + 30), "Light outline Skull pack", 200))
+        array.append(__class__((400, 200), "Explosion2", 200))
+        array.append(__class__((width - 600, 200), "Explosion2", 200))
+        return array

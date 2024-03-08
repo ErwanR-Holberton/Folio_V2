@@ -22,8 +22,17 @@ class event_class():
         for dict in events:
             __class__(dict)
 
-    def trigger(self):
-        selected_entities = self.entities
+    def trigger(self, obj):
+        """trigger the effect of the event"""
+        if self.target == "one":  # target the entity that triggered this event
+            selected_entities = [obj]
+        elif self.target == "all":  # target all entities
+            selected_entities = self.entities
+        else:  # target by a specific id
+            selected_entities = []
+            for entity in self.entities:
+                if entity.id == self.target:
+                    selected_entities = [entity]
         if self.action == "move":
             for entity in selected_entities:
                 entity.position = [self.dest[0] * 32, self.dest[1] * 32]
@@ -31,3 +40,4 @@ class event_class():
             __class__.win = 1
         if self.action == "loose":
             __class__.loose = 1
+

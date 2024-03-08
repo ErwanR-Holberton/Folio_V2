@@ -43,7 +43,7 @@ class entities_class:
                 for event in event_class.all:
                     if event.type == "walk_on":
                         if event.position == [x, y]:
-                            event.trigger()
+                            event.trigger(self)
 
     @staticmethod
     def load_entities():

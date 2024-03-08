@@ -2,6 +2,7 @@ import pygame
 from time import time
 from models.tab import *
 import copy
+from uuid import uuid4
 
 PIXEL_NUMBER = 16
 
@@ -266,7 +267,7 @@ class main_screen():
                 self.tab.selected_entity = entity
                 self.allow_process = 1
                 return
-        new_entity = {"skin": None, "stats": {},"name": "Enter_name", "position": [index_x, index_y] }
+        new_entity = {"id": str(uuid4()), "skin": None, "stats": {},"name": "Enter_name", "position": [index_x, index_y] }
         self.entities.append(new_entity)
         self.allow_process = 1
 
@@ -287,15 +288,37 @@ class main_screen():
 
         for event in self.events:  # check if click on existing event
             if event["position"] == [index_x, index_y]:
-                self.tab.selected_event = event
-                self.allow_process = 1
+                self.select_event(event)
                 return
-        new_event = {"position": [index_x, index_y], "type": None, "target": "all", "area": 1, "action": None}
+        new_event = {"position": [index_x, index_y], "type": "walk_on", "target": "all", "area": 1, "action": "move"}
         self.events.append(new_event)
+        self.select_event(new_event)
         self.allow_process = 1
 
         self.tab.selected_event = new_event
         self.tab.process_tab(self.screen)
 
+    def select_event(self, event):
+        """select an event and change the buttons according to the dictionnary"""
+        self.tab.selected_event = event
+        self.allow_process = 1
+        print(event)
+        """button type"""
+        index = self.find_index(event["type"], ["walk_on", "map_start"])
+        self.tab.events_obj[0].label_number = index - 1
+        self.tab.events_obj[0].cycle_labels(["Type: walk on", "Type: map start"])
+        """button action"""
+        index = self.find_index(event["action"], ["move", "change_stat", "create_entity", "win", "loose"])
+        self.tab.events_obj[1].label_number = index - 1
+        self.tab.events_obj[1].cycle_labels(["Action: move", "Action: change stat", "Action: create entity", "Action: win", "Action: loose"])
+        self.tab.process_tab(self.screen)
+
+    def find_index(self, value, array):
+        """find the position of the value in the array"""
+        count = 0
+        for item in array:
+            if value == item:
+                return count
+            count += 1
 
 

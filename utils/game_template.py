@@ -28,6 +28,7 @@ running = 1
 clock = pygame.time.Clock()
 
 win_animations = animation_class.create_win_animations(screen)
+loose_animations = animation_class.create_loose_animations(screen)
 entities_class.load_entities()
 event_class.entities = entities_class.all
 event_class.load_events()
@@ -80,14 +81,14 @@ while running:
     if event.loose:
         rect = screen.get_rect()
         transparent = pygame.Surface((rect[2], rect[3]), pygame.SRCALPHA)
-        transparent.fill((50, 50, 50, 200))
+        transparent.fill((255, 100, 100, 80))
         screen.blit(transparent, (0,0))
         message = create_text_surface("Defeat", 180, (255, 50, 50), "BloodyCamp.ttf")
         position = list(screen.get_rect().center)
         position[0] -= message.get_width()//2
         position[1] -= message.get_height()//2
         screen.blit(message, position)
-        for anim in win_animations:
+        for anim in loose_animations:
             anim.draw_next_frame(screen)
 
     pygame.display.flip() # Refresh the display

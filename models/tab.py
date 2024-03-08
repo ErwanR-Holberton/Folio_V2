@@ -117,10 +117,14 @@ class tab_class():
         self.events_obj = [
             button_class("Type: walk on").set_position(20, 80, 280, 30),
             button_class("Action: move").set_position(20, 120, 280, 30),
+            button_class("Target: one").set_position(20, 160, 170, 30),
+            button_class("Choose").set_position(200, 160, 100, 30)
         ]
         self.events_obj[0].function = self.events_obj[0].select_event_type
         self.events_obj[1].function = self.events_obj[1].select_event_action
         self.selected_event = None
+        self.events_obj[2].function = self.events_obj[2].select_event_target
+        self.events_obj[3].function = self.events_obj[3].choose_event_target
 
     def process_tab(self, screen):
         """Calculate the appearance of the tab based on the selected tab"""
