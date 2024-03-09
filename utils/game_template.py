@@ -50,10 +50,18 @@ while running:
     for entity in entities_class.all:
         entity.automove()
 
+    if entities_class.camera_focus is not None:
+        a, b = entities_class.camera_focus.position  # get position of the focused entity
+        center_x = screen.get_width() // 2
+        center_y = screen.get_height() // 2
+        cam = entities_class.camera_offset = [center_x - a, center_y - b]
+    else:
+        cam = entities_class.camera_offset = [0, 0]
 
-    screen.fill((255, 255, 255))  #Fill the screen with a white background
+    screen.fill((50, 50, 50))  #Fill the screen with a white background
 
-    screen.blit(map, (map_object.offset[0] * 32, map_object.offset[1] * 32))
+
+    screen.blit(map, (map_object.offset[0] * 32 + cam[0], map_object.offset[1] * 32 + cam[1]))
 
     for entity in entities_class.all:  # draws entities
         entity.draw(screen)

@@ -7,6 +7,8 @@ from random import randint
 class entities_class:
 
     all = []
+    camera_focus = None
+    camera_offset = [0, 0]
     def __init__(self, ent_dict):
 
         self.move_cooldown = 0
@@ -17,6 +19,7 @@ class entities_class:
                 self.position = [x * 32 for x in value]
             else:
                 setattr(self, key, value)
+        __class__.camera_focus = self
         __class__.all.append(self)
 
     def move(self, key):
@@ -92,4 +95,6 @@ class entities_class:
         """draw the entity on the map"""
         if self.icon is None:
             return
-        screen.blit(self.icon, self.position)
+        x = self.position[0] + self.camera_offset[0]
+        y = self.position[1] + self.camera_offset[1]
+        screen.blit(self.icon, [x, y])
