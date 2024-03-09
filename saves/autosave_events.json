@@ -1,1 +1,0 @@
-[{"position": [5, 5], "type": "walk_on", "target": "one", "area": 1, "action": "move", "dest": [10, 10]}, {"position": [1, 1], "type": "walk_on", "target": "players", "area": 1, "action": "win"}, {"position": [1, 5], "type": "walk_on", "target": "players", "area": 1, "action": "loose"}]
