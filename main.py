@@ -59,6 +59,9 @@ while running:
                         elif tab.selected_tab == 6:  # events
                             grid.new_event(mouse_x, mouse_y, offset)
                         grid.allow_process = 1
+            elif event.button == 3:  # right click
+                grid.delete_entity_or_event(*event.pos)
+
             elif event.button == 4:  # scroll down
                 tab.update_scroll(32)
             elif event.button == 5:  # scroll up

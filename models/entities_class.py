@@ -77,11 +77,9 @@ class entities_class:
                                 event.trigger(self)
 
     @staticmethod
-    def load_entities():
-        """loads an entity from a json file"""
-        with open ("./saves/autosave_entities.json", "r") as file:
-            entities = json.load(file)
-        for dict in entities:
+    def load_entities(entities_list):
+        """loads an entity from the list of entities in the map"""
+        for dict in entities_list:
             __class__(dict)
 
     def load_icon(self, path):

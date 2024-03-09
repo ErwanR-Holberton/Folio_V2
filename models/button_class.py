@@ -190,7 +190,7 @@ class button_class():
         for key, value in self.grid.coordinates.items():
             tiles[key] = self.get_path_from_img(value)[:-4]
         offset = self.grid.tile_offset or [0, 0]
-        map_dict = {"offset": offset, "tiles": tiles}
+        map_dict = {"offset": offset, "tiles": tiles, "events": self.grid.events, "entities": self.grid.entities}
         self.save_json(destination + ".json", map_dict)
 
     def get_path_from_img(self, image):
@@ -237,10 +237,11 @@ class button_class():
             self.grid.tile_surf = pygame.image.load("./saves/maps/" + name + ".png")
             self.grid.allow_process = 1
             self.grid.tile_offset = (0, 0)
-            self.grid.save_history_map()
             if os.path.exists("./saves/maps/" + name + ".json"):
                 map = load_json("./saves/maps/" + name + ".json")
                 self.grid.tile_offset = map["offset"]
+                self.grid.entities = map["entities"]
+                self.grid.events = map["events"]
                 self.grid.coordinates = {}
                 for key, value in map["tiles"].items():
                     if value[0] == "b":
@@ -251,8 +252,11 @@ class button_class():
                         image = pygame.image.load(path)
                         scaled_image = pygame.transform.scale(image, (32, 32))
                         self.grid.coordinates[key] = scaled_image
+            self.grid.save_history_map()
 
     def new_map(self):
+        self.grid.entities = []
+        self.grid.events = []
         self.grid.set = None
         self.grid.tile_surf = pygame.Surface((self.grid.tile_size, self.grid.tile_size), pygame.SRCALPHA)  # create a starting surface of tile size
         self.grid.tile_surf.fill((0, 0, 0, 0))

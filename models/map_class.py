@@ -7,6 +7,8 @@ class map_class():
     current_map = 0
     def __init__(self, path):
         map_dictionnary = load_json(path)
+        self.events = map_dictionnary["events"]
+        self.entities = map_dictionnary["entities"]
         self.offset = map_dictionnary["offset"]
         tiles_coordinates = map_dictionnary["tiles"]
         unique_tiles = set(tiles_coordinates.values())  # prepare to load tiles only once

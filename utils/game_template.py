@@ -15,9 +15,9 @@ from models.events_class import event_class
 from models.animation_class import animation_class
 from utils.functions import create_text_surface
 
-pygame.init()                   #initialise pygame library
+pygame.init()                   # initialise pygame library
 
-screen = pygame.display.set_mode((1200,800), pygame.RESIZABLE | pygame.FULLSCREEN) #create the screen
+screen = pygame.display.set_mode((1200,800), pygame.RESIZABLE | pygame.FULLSCREEN)  #create the screen
 
 map_name = sys.argv[1]
 map = pygame.image.load(map_name)
@@ -29,9 +29,9 @@ clock = pygame.time.Clock()
 
 win_animations = animation_class.create_win_animations(screen)
 loose_animations = animation_class.create_loose_animations(screen)
-entities_class.load_entities()
+entities_class.load_entities(map_object.entities)
 event_class.entities = entities_class.all
-event_class.load_events()
+event_class.load_events(map_object.events)
 
 """Main game loop"""
 while running:

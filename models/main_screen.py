@@ -31,9 +31,7 @@ class main_screen():
         self.save_history_map()
         self.save_history_tile()
         self.entities = []
-        self.events = [{"position": [5,5], "type": "walk_on", "target": "players", "area": 1, "action": "move", "dest": [10,10]},
-                       {"position": [1, 1], "type": "walk_on", "target": "players", "area": 1, "action": "win"},
-                        {"position": [1, 5], "type": "walk_on", "target": "players", "area": 1, "action": "loose"}]
+        self.events = []
         self.show_entities = 1
         self.show_events = 1
 
@@ -344,3 +342,23 @@ class main_screen():
         index_x = int(x/self.tile_size)  # get index from coordinates
         index_y = int(y/self.tile_size)
         return index_x, index_y
+
+    def delete_entity_or_event(self, x, y):
+        """delete an entity or an event"""
+        if x > self.width:
+            return
+        index_x, index_y = self.calculate_coordinates(x, y)
+        if self.tab.selected_tab == 5:  # entities
+            for entity in self.entities:
+                if [index_x, index_y] == entity["position"]:
+                    if entity == self.tab.selected_entity:
+                        self.tab.selected_entity = None
+                    self.entities.remove(entity)
+        elif self.tab.selected_tab == 6:  # events
+            for event in self.events:
+                if [index_x, index_y] == event["position"]:
+                    if event == self.tab.selected_event:
+                        self.tab.selected_event = None
+                    self.events.remove(event)
+        self.allow_process = 1
+        self.tab.process_tab(self.screen)

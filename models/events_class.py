@@ -15,11 +15,9 @@ class event_class():
         __class__.all.append(self)
 
     @staticmethod
-    def load_events():
-        """loads all events from a json file"""
-        with open ("./saves/autosave_events.json", "r") as file:
-            events = json.load(file)
-        for dict in events:
+    def load_events(events_list):
+        """loads all events from the list of events in the map"""
+        for dict in events_list:
             __class__(dict)
 
     def trigger(self, obj):
