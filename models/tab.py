@@ -348,6 +348,13 @@ class tab_class():
                 self.surf.blit(surface, (240 - surface.get_width()//2, 150 - surface.get_height() // 2))
                 surface = create_text_surface(pygame.key.name(keys[3]), size)
                 self.surf.blit(surface, (170, 135 - surface.get_height()//2))
+            count = 0
+            surface = create_text_surface("Entity stats:")
+            self.surf.blit(surface, (20, 200))
+            for stat, value in self.selected_entity["stats"].items():
+                surface = create_text_surface("{}: {}".format(stat, value))
+                self.surf.blit(surface, (20, 240 + count * 30))
+                count += 1
         else:
             surface = create_text_surface("Please create or select an entity")
             self.surf.blit(surface, (10, 70))
@@ -390,15 +397,16 @@ class tab_class():
         self.linking_button.click(x, y)
 
     def click_entities(self, x, y):
-        for button in self.entities_obj:
-            button.click(x, y)
+        if self.selected_entity is not None:
+            for button in self.entities_obj:
+                button.click(x, y)
 
     def click_events(self, x, y):
-        for button in self.events_obj:
-            button.click(x, y)
-
-        for button in self.events_action_buttons[self.events_obj[1].label_number]:
-            button.click(x, y)
+        if self.selected_entity is not None:
+            for button in self.events_obj:
+                button.click(x, y)
+            for button in self.events_action_buttons[self.events_obj[1].label_number]:
+                button.click(x, y)
 
     def calcul_index(self, offset, x, y, size = 40):
         """calculate the index"""

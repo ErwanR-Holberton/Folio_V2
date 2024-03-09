@@ -49,14 +49,14 @@ while running:
                     if mouse_x > grid.width:
                         grid.selected_tile = tab.click(mouse_x - grid.width, mouse_y)
                     else:
-                        if tab.selected_tab == 1:
+                        if tab.selected_tab == 1:  # map
                             grid.old_index = None
                             grid.click(mouse_x, mouse_y, offset)
-                        elif tab.selected_tab == 2:
+                        elif tab.selected_tab == 2:  # tiles
                             grid.set_color(mouse_x, mouse_y, tab.selected_color, screen)
-                        elif tab.selected_tab == 5:
+                        elif tab.selected_tab == 5:  # entities
                             grid.new_entity(mouse_x, mouse_y, offset)
-                        elif tab.selected_tab == 6:
+                        elif tab.selected_tab == 6:  # events
                             grid.new_event(mouse_x, mouse_y, offset)
                         grid.allow_process = 1
             elif event.button == 4:  # scroll down

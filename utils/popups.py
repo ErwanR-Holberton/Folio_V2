@@ -42,7 +42,7 @@ def popup(message, title, grid, tab, top, size=(400, 110), get_key=0):
                 if get_key:  # if we just want a key return the key
                     return event.key
 
-                if 'a' <= event.unicode <= 'z' or 'A' <= event.unicode <= 'Z': # from a to z
+                if 'a' <= event.unicode <= 'z' or 'A' <= event.unicode <= 'Z' or '0' <= event.unicode <= '9': # from a to z or 0 to 9
                     answer += event.unicode  # append the response and draw it
                     answer_surface = create_text_surface(answer)
                     pygame.draw.rect(popup, (240, 240, 240), (10, 70, size[0] -20, 20))

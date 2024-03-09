@@ -485,10 +485,22 @@ class button_class():
             keys[1] = popup("Please press the Right key for this entity", "Choosing the keys", self.grid, self.tab, self.top, get_key=1)
             keys[2] = popup("Please press the Down key for this entity", "Choosing the keys", self.grid, self.tab, self.top, get_key=1)
             keys[3] = popup("Please press the Left key for this entity", "Choosing the keys", self.grid, self.tab, self.top, get_key=1)
-            self.tab.selected_entity["keys"] = keys
+            if all(key is not None for key in keys):
+                self.tab.selected_entity["keys"] = keys
+            else:
+                self.cycle_labels(["Playable: no", "Playable: yes"])
 
     def add_stat(self):
-        pass
+        stat_name = popup("Please enter a stat for the entity", "Adding a stat", self.grid, self.tab, self.top)
+        stat_value = popup("Please enter a value for the stat", "Setting the value", self.grid, self.tab, self.top)
+
+        if stat_name is None or stat_value is None:
+            return
+
+        if stat_value.isdigit():
+            stat_value = int(stat_value)
+
+        self.tab.selected_entity["stats"][stat_name] = stat_value
 
     def show_entities(self):
         """switch between showing entities always or only on the tab"""
@@ -530,6 +542,10 @@ class button_class():
 
         self.tab.process_tab(self.tab.screen)
         self.grid.allow_process = 1
+
+    def change_label(self, new_label):
+        self.text_surface = create_text_surface(new_label)
+        self.set_position(*self.rect_value)
 
     def select_event_type(self):
         self.cycle_labels(["Type: walk on", "Type: map start"])
@@ -589,6 +605,27 @@ class button_class():
                         return self.grid.calculate_coordinates(x, y)
                     return
 
+    def require_user_drag(self):
+        """get user to select tiles on the grid"""
+        dragging = 0
+        positions = []
+        while True:
+            for event in pygame.event.get():
+                if event.type == MOUSEBUTTONDOWN:
+                    dragging = 1
+                if event.type == MOUSEMOTION and dragging:
+                    if event.pos[0] < self.grid.width:
+                        pos_x, pos_y = self.grid.calculate_coordinates(*event.pos)
+                        if [pos_x, pos_y] not in positions:
+                            positions.append([pos_x, pos_y])
+                if event.type == MOUSEBUTTONUP:
+                    x, y = event.pos
+                    if x < self.grid.width:
+                        pos_x, pos_y = self.grid.calculate_coordinates(*event.pos)
+                        if [pos_x, pos_y] not in positions:
+                            positions.append([pos_x, pos_y])
+                    return positions
+
     def set_mobility(self):
         """choose if entity is mobile"""
         self.cycle_labels(["Mobility: no", "Mobility: yes"])
@@ -599,9 +636,9 @@ class button_class():
 
     def choose_path(self):
         """choose path for a mobile entity"""
-        result = self.require_user_click()
-        if result is not None:
-            x, y = result
+        result = self.require_user_drag()
+        for position in result:
+            x, y = position
             if "path_tiles" in self.tab.selected_entity:
                 if [x, y] not in self.tab.selected_entity["path_tiles"]:
                     self.tab.selected_entity["path_tiles"].append([x, y])

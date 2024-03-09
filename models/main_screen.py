@@ -269,16 +269,26 @@ class main_screen():
 
         for entity in self.entities:  # check if click on existing entity
             if entity["position"] == [index_x, index_y]:
-                self.tab.selected_entity = entity
-                self.allow_process = 1
+                self.select_entity(entity)
                 return
         new_entity = {"id": str(uuid4()), "skin": None, "stats": {},
                       "name": "Enter_name", "position": [index_x, index_y],
                       "path_tiles": [], "mobility": 0}
         self.entities.append(new_entity)
-        self.allow_process = 1
+        self.select_entity(new_entity)
 
-        self.tab.selected_entity = new_entity
+    def select_entity(self, entity):
+        """select an entity and load the dictionnary"""
+        self.tab.selected_entity = entity
+        if "keys" in entity:
+            self.tab.entities_obj[2].change_label("Playable: yes")
+        else:
+            self.tab.entities_obj[2].change_label("Playable: no")
+        if entity["mobility"]:
+            self.tab.entities_obj[3].change_label("Mobility: yes")
+        else:
+            self.tab.entities_obj[3].change_label("Mobility: no")
+        self.allow_process = 1
         self.tab.process_tab(self.screen)
 
     def new_event(self, x, y, offset):
@@ -300,16 +310,11 @@ class main_screen():
         new_event = {"position": [index_x, index_y], "type": "walk_on", "target": "all", "area": 1, "action": "move"}
         self.events.append(new_event)
         self.select_event(new_event)
-        self.allow_process = 1
-
-        self.tab.selected_event = new_event
-        self.tab.process_tab(self.screen)
 
     def select_event(self, event):
         """select an event and change the buttons according to the dictionnary"""
         self.tab.selected_event = event
         self.allow_process = 1
-        print(event)
         """button type"""
         index = self.find_index(event["type"], ["walk_on", "map_start"])
         self.tab.events_obj[0].label_number = index - 1

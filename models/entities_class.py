@@ -63,14 +63,15 @@ class entities_class:
         map = map_class.list_of_maps[map_class.current_map]  # get the current map
 
         index = "{}.{}".format(x, y)
-        if index in map.tiles:  # moves the character only if tile is traversable
-            if map.tiles[index].properties["traversable"] == 1:
-                self.position = [x * 32, y * 32]
-                self.move_cooldown = pygame.time.get_ticks()
-                for event in event_class.all:
-                    if event.type == "walk_on":
-                        if event.position == [x, y]:
-                            event.trigger(self)
+        if self.path_tiles == [] or [x, y] in self.path_tiles:
+            if index in map.tiles:  # moves the character only if tile is traversable
+                if map.tiles[index].properties["traversable"] == 1:
+                    self.position = [x * 32, y * 32]
+                    self.move_cooldown = pygame.time.get_ticks()
+                    for event in event_class.all:
+                        if event.type == "walk_on":
+                            if event.position == [x, y]:
+                                event.trigger(self)
 
     @staticmethod
     def load_entities():
