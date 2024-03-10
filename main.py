@@ -55,9 +55,9 @@ while running:
                         elif tab.selected_tab == 2:  # tiles
                             grid.set_color(mouse_x, mouse_y, tab.selected_color, screen)
                         elif tab.selected_tab == 5:  # entities
-                            grid.new_entity(mouse_x, mouse_y, offset)
+                            grid.new_entity(mouse_x, mouse_y)
                         elif tab.selected_tab == 6:  # events
-                            grid.new_event(mouse_x, mouse_y, offset)
+                            grid.new_event(mouse_x, mouse_y)
                         grid.allow_process = 1
             elif event.button == 3:  # right click
                 grid.delete_entity_or_event(*event.pos)
@@ -86,6 +86,7 @@ while running:
 
                 elif event.buttons[2]:
                     offset = (offset[0] + event.rel[0], offset[1] + event.rel[1])
+                    grid.offset = offset
                     grid.allow_process = 1
             top.hover(mouse_x, mouse_y)
             tab.menu.hover(mouse_x - grid.width, mouse_y)

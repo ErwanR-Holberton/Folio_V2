@@ -10,31 +10,45 @@ class main_screen():
 
     def __init__(self, screen):
         """Initialize the main screen instance"""
-        self.grid_status = 1
-        self.selected_tile = None # Currently selected tile
+
+        self.set_variables()
+
         self.coordinates = {} # Dictionary to store coordinates and corresponding tiles
         self.tile_size = 32 # Size of each tile
         self.mode = 0 # Display mode (0 for map grid, 1 for tile grid)
-        self.tile_grid = [[(255, 255, 255, 0) for value in range(16)] for value in range(16)]
-        self.offset = (0, 0)
-        self.tile_surf = pygame.Surface((self.tile_size, self.tile_size), pygame.SRCALPHA) # create a starting surface of tile size
+
+        # creates empty tile
+        self.tile_grid = [[(0, 0, 0, 0) for value in range(16)] for value in range(16)]
+        # create a starting surface of tile size
+        self.tile_surf = pygame.Surface((self.tile_size, self.tile_size), pygame.SRCALPHA)
         self.tile_surf.fill((0, 0, 0, 0))
-        self.tile_offset = None
+
         self.screen = screen
-        self.allow_process = 1
-        self.history_tile = []
-        self.history_map = []
-        self.undo_index_tile = 0
-        self.undo_index_map = 0
+
+        self.save_history_map()  # saves initial empty map
+        self.save_history_tile()
+
+    def set_variables(self):
+        """set some variables here to clean the init function"""
+        self.selected_tile = None # Currently selected tile
+        self.allow_process = 1  # allows the main to process this instance to avoid unecessary loops
         self.dragging = 0
         self.old_index = None
-        self.save_history_map()
-        self.save_history_tile()
-        self.entities = []
+
+        self.offset = (0, 0)  # the amount of pixels
+        self.tile_offset = None  # the number of tiles
+
+        self.grid_status = 1
+
+        self.entities = []  # lists of events and entities on the map
         self.events = []
-        self.show_entities = 1
+        self.show_entities = 1  # display settings for event and entities
         self.show_events = 1
 
+        self.undo_index_tile = 0  # history variables
+        self.undo_index_map = 0
+        self.history_tile = []
+        self.history_map = []
 
     def process_surface(self, screen, offset = None):
         """process one frame of the grid """
@@ -44,71 +58,89 @@ class main_screen():
         else:
             offset = self.offset
 
-        self.width = screen.get_width() - tab_class.width   # update tab size
+        self.width = screen.get_width() - tab_class.width   # update grid size
         height = screen.get_height()
+
         if self.width <= 0:
             return
+
         self.surf = pygame.Surface((self.width, height), pygame.SRCALPHA)
 
-        if self.mode == 0:          # Map grid mode
+        if self.mode == 0:          # Map mode
+            self.process_map_mode(offset, height)
+        else:  # tile mode
+            self.process_tile_mode(height)
 
-            self.surf.fill((54, 57, 63)) # Background color
-            if self.grid_status == 1:           # draw grid under
-                self.draw_grid(offset, height)
+    def process_map_mode(self, offset, height):
+        """process the map mode"""
 
-            if self.tile_offset is not None:
-                dx, dy = self.tile_offset
-            else:
-                dx = dy = 0
+        self.surf.fill((54, 57, 63)) # Background color
+        if self.grid_status == 1:           # draw grid under
+            self.draw_grid(offset, height)
 
-            self.surf.blit(self.tile_surf, (offset[0] + dx * self.tile_size, offset[1] + dy * self.tile_size))
-
-            if self.show_entities or self.tab.selected_tab == 5:
-                for entity in self.entities:
-                    if entity["skin"] is not None:  # draws entity
-                        image = pygame.image.load("./saves/tiles/" + entity["skin"] + ".png")
-                        scaled_image = pygame.transform.scale(image, (32, 32))
-                        self.surf.blit(scaled_image, (offset[0] + (entity["position"][0]) * 32, offset[1] + (entity["position"][1] * 32)))
-                    else:  # or red square
-                        pygame.draw.rect(self.surf, (255, 0, 0), (offset[0] + (entity["position"][0]) * 32, offset[1] + (entity["position"][1]) * 32, 32, 32))
-
-                    if self.tab.selected_entity == entity:  # draws white square around the selected entity
-                        pygame.draw.rect(self.surf, (255, 255, 255), (offset[0] + (entity["position"][0]) * 32, offset[1] + (entity["position"][1]) * 32, 32, 32), 2)
-                        for path_tile in entity["path_tiles"]:
-                            pygame.draw.rect(self.surf, (255, 255, 0), (offset[0] + path_tile[0] * 32, offset[1] + path_tile[1] * 32, 32, 32), 1)
-
-            if self.show_events or self.tab.selected_tab == 6:
-                event_icon = pygame.image.load("./base_assets/Event_icon.png")
-                for event in self.events:
-                    self.surf.blit(event_icon, (offset[0] + (event["position"][0]) * 32, offset[1] + (event["position"][1] * 32)))
-
-                    if self.tab.selected_event == event:  # draws white square around the selected event
-                        pygame.draw.rect(self.surf, (255, 255, 255), (offset[0] + (event["position"][0]) * 32, offset[1] + (event["position"][1]) * 32, 32, 32), 2)
-                        if "dest" in event["optional_keys"]:
-                            dest_x, dest_y = event["optional_keys"]["dest"]
-                            pygame.draw.rect(self.surf, (0, 255, 0), (offset[0] + dest_x * 32, offset[1] + dest_y * 32, 32, 32), 1)
-
-
-            if self.grid_status == 2:           # draw grid over
-                self.draw_grid(offset, height)
-
+        if self.tile_offset is not None:
+            dx, dy = self.tile_offset
         else:
-            """ Tile grid mode"""
-            pixel_size_x = (self.width - 20) / PIXEL_NUMBER
-            pixel_size_y = (height - 30 - 20) / PIXEL_NUMBER #remplacer 30 par menu height
-            pixel_size = int (min(pixel_size_x, pixel_size_y))
-            offset_x = int((self.width - (pixel_size * PIXEL_NUMBER)) / 2)
-            offset_y = int((height - (pixel_size * PIXEL_NUMBER) - 30) / 2 + 30) #remplacer 30 par menu height
+            dx = dy = 0
 
-            self.surf.fill((255, 255, 255)) # Background color
+        self.surf.blit(self.tile_surf, (offset[0] + dx * self.tile_size, offset[1] + dy * self.tile_size))
 
-            for x in range(16):
-                for y in range(16):
-                    pygame.draw.rect(self.surf, self.tile_grid[x][y], (x * pixel_size + offset_x, y * pixel_size + offset_y, pixel_size, pixel_size))
+        if self.show_entities or self.tab.selected_tab == 5:
+            self.draw_entities(offset)
 
-            for x in range(0, (PIXEL_NUMBER + 1) * pixel_size, pixel_size):
-                pygame.draw.line(self.surf, (0, 0, 0), (x + offset_x, offset_y), (x + offset_x, pixel_size * PIXEL_NUMBER + offset_y))
-                pygame.draw.line(self.surf, (0, 0, 0), (offset_x, x + offset_y), (pixel_size * PIXEL_NUMBER + offset_x, x + offset_y))
+        if self.show_events or self.tab.selected_tab == 6:
+            self.draw_events(offset)
+
+
+        if self.grid_status == 2:           # draw grid over
+            self.draw_grid(offset, height)
+
+    def process_tile_mode(self, height):
+        """process the tile mode"""
+        pixel_size_x = (self.width - 20) / PIXEL_NUMBER
+        pixel_size_y = (height - 30 - 20) / PIXEL_NUMBER #remplacer 30 par menu height
+        pixel_size = int (min(pixel_size_x, pixel_size_y))
+        offset_x = int((self.width - (pixel_size * PIXEL_NUMBER)) / 2)
+        offset_y = int((height - (pixel_size * PIXEL_NUMBER) - 30) / 2 + 30) #remplacer 30 par menu height
+
+        self.surf.fill((255, 255, 255)) # Background color
+
+        for x in range(16):
+            for y in range(16):
+                pygame.draw.rect(self.surf, self.tile_grid[x][y], (x * pixel_size + offset_x, y * pixel_size + offset_y, pixel_size, pixel_size))
+
+        for x in range(0, (PIXEL_NUMBER + 1) * pixel_size, pixel_size):
+            pygame.draw.line(self.surf, (0, 0, 0), (x + offset_x, offset_y), (x + offset_x, pixel_size * PIXEL_NUMBER + offset_y))
+            pygame.draw.line(self.surf, (0, 0, 0), (offset_x, x + offset_y), (pixel_size * PIXEL_NUMBER + offset_x, x + offset_y))
+
+    def draw_entities(self, offset):
+        """draws all the entities"""
+        for entity in self.entities:
+            if entity["skin"] is not None:  # draws entity
+                image = pygame.image.load("./saves/tiles/" + entity["skin"] + ".png")
+                scaled_image = pygame.transform.scale(image, (32, 32))
+                self.surf.blit(scaled_image, (offset[0] + (entity["position"][0]) * 32, offset[1] + (entity["position"][1] * 32)))
+            else:  # or red square
+                pygame.draw.rect(self.surf, (255, 0, 0), (offset[0] + (entity["position"][0]) * 32, offset[1] + (entity["position"][1]) * 32, 32, 32))
+
+            if self.tab.selected_entity == entity:  # draws white square around the selected entity
+                pygame.draw.rect(self.surf, (255, 255, 255), (offset[0] + (entity["position"][0]) * 32, offset[1] + (entity["position"][1]) * 32, 32, 32), 2)
+                for path_tile in entity["path_tiles"]:
+                    pygame.draw.rect(self.surf, (255, 255, 0), (offset[0] + path_tile[0] * 32, offset[1] + path_tile[1] * 32, 32, 32), 1)
+
+    def draw_events(self, offset):
+        """draws all events on the grid"""
+        event_icon = pygame.image.load("./base_assets/Event_icon.png")
+
+        for event in self.events:
+            self.surf.blit(event_icon, (offset[0] + (event["position"][0]) * 32, offset[1] + (event["position"][1] * 32)))
+
+            if self.tab.selected_event == event:  # draws white square around the selected event
+                pygame.draw.rect(self.surf, (255, 255, 255), (offset[0] + (event["position"][0]) * 32, offset[1] + (event["position"][1]) * 32, 32, 32), 2)
+
+                if "dest" in event["optional_keys"]:  # if the selected event has dest it draws a green rectangle at destination
+                    dest_x, dest_y = event["optional_keys"]["dest"]
+                    pygame.draw.rect(self.surf, (0, 255, 0), (offset[0] + dest_x * 32, offset[1] + dest_y * 32, 32, 32), 1)
 
     def draw_grid(self, offset, height):
         """draw the grid"""
@@ -254,25 +286,23 @@ class main_screen():
         if self.dragging == 1:
             self.dragging = 2
 
-    def new_entity(self, x, y, offset):
+    def new_entity(self, x, y):
         """creates a new entity when the user clicks on the grid"""
-        x -= offset[0]
-        y -= offset[1]
-        if x < 0: #remove ghost column
-            x -= self.tile_size
-        if y < 0: #remove ghost line
-            y -= self.tile_size
 
-        index_x = int(x/self.tile_size) # get index from coordinates
-        index_y = int(y/self.tile_size)
+        if self.mode == 1:
+            return
+
+        index_x, index_y = self.calculate_coordinates(x, y)
 
         for entity in self.entities:  # check if click on existing entity
             if entity["position"] == [index_x, index_y]:
                 self.select_entity(entity)
                 return
+
         new_entity = {"id": str(uuid4()), "skin": None, "stats": {},
                       "name": "Enter_name", "position": [index_x, index_y],
                       "path_tiles": [], "mobility": 0, "animation": "Trainer"}
+
         self.entities.append(new_entity)
         self.select_entity(new_entity)
 
@@ -290,17 +320,13 @@ class main_screen():
         self.allow_process = 1
         self.tab.process_tab(self.screen)
 
-    def new_event(self, x, y, offset):
+    def new_event(self, x, y):
         """creates a new event when the user clicks on the grid"""
-        x -= offset[0]
-        y -= offset[1]
-        if x < 0: #remove ghost column
-            x -= self.tile_size
-        if y < 0: #remove ghost line
-            y -= self.tile_size
 
-        index_x = int(x/self.tile_size)  # get index from coordinates
-        index_y = int(y/self.tile_size)
+        if self.mode == 1:
+            return
+
+        index_x, index_y = self.calculate_coordinates(x, y)
 
         for event in self.events:  # check if click on existing event
             if event["position"] == [index_x, index_y]:
@@ -336,25 +362,31 @@ class main_screen():
         """convert pixel value to tile index"""
         x -= self.offset[0]
         y -= self.offset[1]
+
         if x < 0: #remove ghost column
             x -= self.tile_size
         if y < 0: #remove ghost line
             y -= self.tile_size
+
         index_x = int(x/self.tile_size)  # get index from coordinates
         index_y = int(y/self.tile_size)
+
         return index_x, index_y
 
     def delete_entity_or_event(self, x, y):
         """delete an entity or an event"""
         if x > self.width:
             return
+
         index_x, index_y = self.calculate_coordinates(x, y)
+
         if self.tab.selected_tab == 5:  # entities
             for entity in self.entities:
                 if [index_x, index_y] == entity["position"]:
                     if entity == self.tab.selected_entity:
                         self.tab.selected_entity = None
                     self.entities.remove(entity)
+                    
         elif self.tab.selected_tab == 6:  # events
             for event in self.events:
                 if [index_x, index_y] == event["position"]:
