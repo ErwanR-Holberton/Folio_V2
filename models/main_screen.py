@@ -84,8 +84,9 @@ class main_screen():
 
                     if self.tab.selected_event == event:  # draws white square around the selected event
                         pygame.draw.rect(self.surf, (255, 255, 255), (offset[0] + (event["position"][0]) * 32, offset[1] + (event["position"][1]) * 32, 32, 32), 2)
-                        if "dest" in event:
-                            pygame.draw.rect(self.surf, (0, 255, 0), (offset[0] + (event["dest"][0]) * 32, offset[1] + (event["dest"][1]) * 32, 32, 32), 1)
+                        if "dest" in event["optional_keys"]:
+                            dest_x, dest_y = event["optional_keys"]["dest"]
+                            pygame.draw.rect(self.surf, (0, 255, 0), (offset[0] + dest_x * 32, offset[1] + dest_y * 32, 32, 32), 1)
 
 
             if self.grid_status == 2:           # draw grid over
@@ -271,7 +272,7 @@ class main_screen():
                 return
         new_entity = {"id": str(uuid4()), "skin": None, "stats": {},
                       "name": "Enter_name", "position": [index_x, index_y],
-                      "path_tiles": [], "mobility": 0}
+                      "path_tiles": [], "mobility": 0, "animation": "Trainer"}
         self.entities.append(new_entity)
         self.select_entity(new_entity)
 
@@ -305,7 +306,7 @@ class main_screen():
             if event["position"] == [index_x, index_y]:
                 self.select_event(event)
                 return
-        new_event = {"position": [index_x, index_y], "type": "walk_on", "target": "all", "area": 1, "action": "move"}
+        new_event = {"position": [index_x, index_y], "type": "walk_on", "target": "all", "area": 1, "action": "move", "optional_keys": {}}
         self.events.append(new_event)
         self.select_event(new_event)
 

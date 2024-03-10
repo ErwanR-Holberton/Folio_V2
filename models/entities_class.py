@@ -3,6 +3,8 @@ import json
 from models.map_class import map_class
 from models.events_class import event_class
 from random import randint
+import os
+from utils.functions import list_png
 
 class entities_class:
 
@@ -19,22 +21,32 @@ class entities_class:
                 self.position = [x * 32 for x in value]
             else:
                 setattr(self, key, value)
+        if hasattr(self, "animation"):
+            self.direction = "down"
+            skins = list_png("animations/" + self.animation)
+            if "down.png" in skins:
+                self.change_direction("down")
         __class__.camera_focus = self
         __class__.all.append(self)
 
     def move(self, key):
         """move the entity player"""
+        new_direction = self.direction
         pos = [self.position[0], self.position[1]]
 
         if hasattr(self, "keys"):
             if key == self.keys[0]:
                 pos[1] -= 32
+                new_direction = "up"
             elif key == self.keys[1]:
                 pos[0] += 32
+                new_direction = "right"
             elif key == self.keys[2]:
                 pos[1] += 32
+                new_direction = "down"
             elif key == self.keys[3]:
                 pos[0] -= 32
+                new_direction = "left"
 
         x = pos[0]//32
         y = pos[1]//32
@@ -45,6 +57,7 @@ class entities_class:
         if index in map.tiles:  # moves the character only if tile is traversable
             if map.tiles[index].properties["traversable"] == 1:
                 self.position = [pos[0], pos[1]]
+                self.change_direction(new_direction)
                 for event in event_class.all:
                     if event.type == "walk_on":
                         if event.position == [x, y]:
@@ -88,6 +101,12 @@ class entities_class:
             return None
         icon = pygame.image.load("./saves/tiles/" + path + ".png")
         return pygame.transform.scale(icon, (32, 32))
+
+    def change_direction(self, direction):
+        """change the icon according to direction"""
+        self.direction = direction
+        icon = pygame.image.load("./animations/" + self.animation + "/" + direction + ".png")
+        self.icon = pygame.transform.scale(icon, (32, 32))
 
     def draw(self, screen):
         """draw the entity on the map"""

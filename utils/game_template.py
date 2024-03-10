@@ -75,7 +75,7 @@ while running:
         x, y = event.position
         pygame.draw.rect(screen, (255, 255, 255), (x * 32, y * 32, 32, 32), 1)
 
-    if event.win:
+    if event_class.win:
         rect = screen.get_rect()
         transparent = pygame.Surface((rect[2], rect[3]), pygame.SRCALPHA)
         transparent.fill((50, 50, 50, 200))
@@ -88,7 +88,7 @@ while running:
         for anim in win_animations:
             anim.draw_next_frame(screen)
 
-    if event.loose:
+    if event_class.loose:
         rect = screen.get_rect()
         transparent = pygame.Surface((rect[2], rect[3]), pygame.SRCALPHA)
         transparent.fill((255, 100, 100, 80))

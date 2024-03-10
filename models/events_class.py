@@ -11,7 +11,11 @@ class event_class():
     def __init__(self, event_dict):
 
         for key, value in event_dict.items():
-            setattr(self, key, value)
+            if key == "optional_keys":
+                for key2, value2 in event_dict["optional_keys"].items():
+                    setattr(self, key2, value2)
+            else:
+                setattr(self, key, value)
         __class__.all.append(self)
 
     @staticmethod
@@ -31,11 +35,25 @@ class event_class():
             for entity in self.entities:
                 if entity.id == self.target:
                     selected_entities = [entity]
+
         if self.action == "move":
+            if not hasattr(self, "dest"):
+                return
             for entity in selected_entities:
                 entity.position = [self.dest[0] * 32, self.dest[1] * 32]
-        if self.action == "win":
+        elif self.action == "win":
             __class__.win = 1
-        if self.action == "loose":
+        elif self.action == "loose":
             __class__.loose = 1
+        elif self.action == "change_stat":
+            for key in ["sign", "stat", "value"]:
+                if not hasattr(self, key):
+                    return
+            for entity in selected_entities:
+                if self.stat in entity.stats:
+                    if self.sign == "-":
+                        entity.stats[self.stat] -= self.value
+                    elif self.sign == "+":
+                        entity.stats[self.stat] += self.value
+                    print(entity.stats)
 

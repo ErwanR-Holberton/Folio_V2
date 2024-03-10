@@ -572,6 +572,8 @@ class button_class():
         elif self.label_number == 4:
             self.tab.selected_event["action"] = "loose"
 
+        self.tab.selected_event["optional_keys"] = {}  # attributes linked to specific action
+
     def select_event_target(self):
         """change the label of the button and the value in the dictionnary"""
         self.cycle_labels(["Target: one", "Target: all", "Target: choose"])
@@ -596,7 +598,7 @@ class button_class():
         result = self.require_user_click()
         if result is not None:
             x, y = result
-            self.tab.selected_event["dest"] = [x, y]
+            self.tab.selected_event["optional_keys"]["dest"] = [x, y]
             self.grid.allow_process = 1
 
     def require_user_click(self):
@@ -649,4 +651,24 @@ class button_class():
             else:
                 self.tab.selected_entity["path_tiles"] = [[x, y]]
             self.grid.allow_process = 1
+
+    def choose_stat(self):
+        """choose a stat for event change stat"""
+        name = popup("Please choose a stat", "Choosing a stat", self.grid, self.tab, self.top)
+        if name is not None:
+            self.change_label("Choose stat: " + name)
+            self.tab.selected_event["optional_keys"]["stat"] = name
+
+    def choose_sign(self):
+        """choose a sign for event change stat"""
+        self.cycle_labels(["+", "-"])
+        sign = "-" if self.label_number else "+"
+        self.tab.selected_event["optional_keys"]["sign"] = sign
+
+    def choose_value(self):
+        """choose a value for event change stat"""
+        value = popup("Please choose a value", "Choosing a value", self.grid, self.tab, self.top)
+        if value is not None:
+            self.change_label("Choose stat: " + value)
+            self.tab.selected_event["optional_keys"]["value"] = int(value)
 

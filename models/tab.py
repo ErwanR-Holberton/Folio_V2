@@ -126,7 +126,7 @@ class tab_class():
         ]
         self.events_action_buttons = [
             [button_class("Choose destination").set_position(20, 200, 280, 30)],
-            [],
+            [button_class("Choose a stat").set_position(20, 200, 280, 30), button_class("+").set_position(20, 240, 30, 30), button_class("Value").set_position(60, 240, 240, 30)],
             [],
             [],
             []
@@ -137,6 +137,9 @@ class tab_class():
         self.events_obj[2].function = self.events_obj[2].select_event_target
         self.events_obj[3].function = self.events_obj[3].choose_event_target
         self.events_action_buttons[0][0].function = self.events_action_buttons[0][0].choose_destination
+        self.events_action_buttons[1][0].function = self.events_action_buttons[1][0].choose_stat
+        self.events_action_buttons[1][1].function = self.events_action_buttons[1][1].choose_sign
+        self.events_action_buttons[1][2].function = self.events_action_buttons[1][2].choose_value
 
     def process_tab(self, screen):
         """Calculate the appearance of the tab based on the selected tab"""
@@ -402,7 +405,7 @@ class tab_class():
                 button.click(x, y)
 
     def click_events(self, x, y):
-        if self.selected_entity is not None:
+        if self.selected_event is not None:
             for button in self.events_obj:
                 button.click(x, y)
             for button in self.events_action_buttons[self.events_obj[1].label_number]:
