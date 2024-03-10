@@ -110,6 +110,32 @@ class entities_class:
             return
         icon = pygame.image.load(path)
         self.icon = pygame.transform.scale(icon, (32, 32))
+        self.add_clothes("Armor2", "Hair1", "Hat1")
+
+    def add_clothes(self, outfit=None, hair=None, hat=None):
+        """Adds some layers to the skin if the path exists"""
+
+        anim = self.animation
+        direc = self.direction
+
+        if outfit is not None:
+            path = "./animations/" + anim + "/outfit/" + outfit + "/" + direc + ".png"
+            if os.path.exists(path):
+                outfit = pygame.image.load(path)
+                self.icon.blit(outfit, (0, 0))
+
+        if hair is not None:
+            path = "./animations/" + anim + "/Hair/" + hair + "/" + direc + ".png"
+            if os.path.exists(path):
+                hair = pygame.image.load(path)
+                self.icon.blit(hair, (0, 0))
+                
+        if hat is not None:
+            path = "./animations/" + anim + "/Hat/" + hat + "/" + direc + ".png"
+            if os.path.exists(path):
+                hat = pygame.image.load(path)
+                self.icon.blit(hat, (0, 0))
+
 
     def draw(self, screen):
         """draw the entity on the map"""
