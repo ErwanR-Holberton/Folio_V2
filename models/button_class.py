@@ -11,6 +11,7 @@ from utils.functions import create_text_surface, draw_screen, count_lines, list_
 
 
 class button_class():
+
     def __init__(self, label, parent=None):
         """Initialize class button with name"""
 
@@ -135,6 +136,15 @@ class button_class():
         x, y, width, height = self.rect_value
         self.set_position(x, y, width, height)
 
+    def new_tile(self):
+        """creates a new tile"""
+        self.tab.selected_tab = 2
+        self.grid.allow_process = 1
+        self.grid.mode = 1
+        self.grid.tile_grid = [[(0, 0, 0, 0) for x in range(16)] for y in range(16)]
+        self.tab.process_tab(self.tab.screen)
+        self.grid.save_history_tile()
+
     def save_tile(self):
         """save a tile as a png file"""
         new_tile = pygame.Surface((len(self.grid.tile_grid), len(self.grid.tile_grid)), pygame.SRCALPHA)
@@ -163,37 +173,18 @@ class button_class():
             self.grid.allow_process = 1
             self.grid.save_history_tile()
 
+    def delete_tile(self):
+        """delete a tile"""
+        name = popup("Please choose a tile to delete:", "Tile delete", self.grid, self.tab, self.top)
+        if name is not None and os.path.exists("./saves/tiles/" + name + ".png"):
+            os.remove("./saves/tiles/" + name + ".png")
+
     def save_json(self, path, object):
         """saves an object to a json file"""
         with open(path, "w") as file:
             json.dump(object, file)
 
-    def new_tile(self):
-        """creates a new tile"""
-        self.tab.selected_tab = 2
-        self.grid.allow_process = 1
-        self.grid.mode = 1
-        self.grid.tile_grid = [[(0, 0, 0, 0) for x in range(16)] for y in range(16)]
-        self.tab.process_tab(self.tab.screen)
-        self.grid.save_history_tile()
-
-    def save_map(self, destination=None):
-        """save a map"""
-        if destination is None:
-            name = popup("Please choose a name for the map:", "Map save", self.grid, self.tab, self.top)
-            if name is not None:
-                destination = "saves/maps/" + name
-            else:
-                return
-        tiles = {}
-        pygame.image.save(self.grid.tile_surf, destination + ".png")
-        for key, value in self.grid.coordinates.items():
-            tiles[key] = self.get_path_from_img(value)[:-4]
-        offset = self.grid.tile_offset or [0, 0]
-        map_dict = {"offset": offset, "tiles": tiles, "events": self.grid.events, "entities": self.grid.entities}
-        self.save_json(destination + ".json", map_dict)
-
-    def get_path_from_img(self, image):
+    def get_path_from_img(self, image, full=0):
         """get the path from an image"""
         path = "./base_assets/tiles/"  # list base tiles
         tile_files = list_png(path)
@@ -205,6 +196,8 @@ class button_class():
 
         for tile in new_list:  # compare each image to the source image
             if self.compare_surfaces(tile[1], image):
+                if full:
+                    return "./base_assets/tiles/" + tile[0]
                 return "b" + tile[0]  # add b for the base tile
 
         path = "./saves/tiles/"  # list user tiles
@@ -217,6 +210,8 @@ class button_class():
 
         for tile in new_list:  # compare each image to the source image
             if self.compare_surfaces(tile[1], image):
+                if full:
+                    return "./saves/tiles/" + tile[0]
                 return "u" + tile[0]  # add u for the user tile
 
     def compare_surfaces(self, s1, s2):
@@ -264,11 +259,21 @@ class button_class():
         self.grid.save_history_map()
         self.grid.coordinates = {}
 
-    def delete_tile(self):
-        """delete a tile"""
-        name = popup("Please choose a tile to delete:", "Tile delete", self.grid, self.tab, self.top)
-        if name is not None and os.path.exists("./saves/tiles/" + name + ".png"):
-            os.remove("./saves/tiles/" + name + ".png")
+    def save_map(self, destination=None):
+        """save a map"""
+        if destination is None:
+            name = popup("Please choose a name for the map:", "Map save", self.grid, self.tab, self.top)
+            if name is not None:
+                destination = "saves/maps/" + name
+            else:
+                return
+        pygame.image.save(self.grid.tile_surf, destination + ".png")
+        tiles = {}
+        for key, value in self.grid.coordinates.items():
+            tiles[key] = self.get_path_from_img(value)[:-4]
+        offset = self.grid.tile_offset or [0, 0]
+        map_dict = {"offset": offset, "tiles": tiles, "events": self.grid.events, "entities": self.grid.entities}
+        self.save_json(destination + ".json", map_dict)
 
     def delete_map(self):
         """delete a map"""
@@ -408,6 +413,10 @@ class button_class():
         name = popup("Please choose a name for the blueprint:", "Blueprint save", self.grid, self.tab, self.top)
         if name is not None:
             pygame.image.save(self.grid.tile_surf, "./saves/blueprints/" + name + ".png")
+            tiles = {}
+            for key, value in self.grid.coordinates.items():
+                tiles[key] = self.get_path_from_img(value)[:-4]
+            self.save_json("./saves/blueprints/" + name + ".json", tiles)
             self.grid.tab.reload_blueprints()
 
     def delete_blueprint(self):

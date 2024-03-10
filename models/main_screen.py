@@ -1,7 +1,8 @@
 import pygame
-from time import time
+from utils.functions import load_json
 from models.tab import *
 import copy
+import os
 from uuid import uuid4
 
 PIXEL_NUMBER = 16
@@ -193,7 +194,16 @@ class main_screen():
                 for x in range(width):
                     for y in range(height):
                         tile = self.selected_tile.subsurface((x * 32, y * 32, 32, 32))
+                        button = self.tab.tools_obj[0]  # use a button
+                        path = button.get_path_from_img(tile, full=1)  # 
+
+                        if path is not None and os.path.exists(path):
+                            tile = pygame.image.load(path)
+                            tile = pygame.transform.scale(tile, (32, 32))
+                            self.coordinates["{}.{}".format(index_x + x, index_y + y)] = tile
+
                         self.append_surface(index_x + x, index_y + y, tile)
+
                 self.save_history_map()
 
             elif index not in self.coordinates or self.coordinates[index] != self.selected_tile:
@@ -386,7 +396,7 @@ class main_screen():
                     if entity == self.tab.selected_entity:
                         self.tab.selected_entity = None
                     self.entities.remove(entity)
-                    
+
         elif self.tab.selected_tab == 6:  # events
             for event in self.events:
                 if [index_x, index_y] == event["position"]:

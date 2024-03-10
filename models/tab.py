@@ -167,79 +167,6 @@ class tab_class():
 
         pygame.draw.line(self.surf, (150,150,150), (0,0), (0, screen.get_height()))
 
-    def draw(self, screen):
-        """Draw the tab on the screen"""
-
-        for button in self.menu.buttons:
-            button.draw(self.surf)
-        screen.blit(self.surf, (screen.get_width() - self.width, 0))
-
-    def click(self, x, y):
-        """Handle a click event on the tab"""
-
-        if self.selected_tab == 1: # map
-            self.click_map_mode(x, y)
-
-        elif self.selected_tab == 2: # tools
-            self.click_tile_mode(x, y)
-
-        elif self.selected_tab == 3: # settings
-            for button in self.settings_obj:
-                button.click(x, y)
-
-        elif self.selected_tab == 4: # project
-            self.click_project(x, y)
-
-        elif self.selected_tab == 5: # entities
-            self.click_entities(x, y)
-
-        elif self.selected_tab == 6: # events
-            self.click_events(x, y)
-
-        self.process_tab(self.screen)
-
-        return self.selected_tile
-
-    def create_list_of_tiles(self):
-        """Duplicate tiles for demonstration purposes
-        Load tiles for the "Tiles" tab"""
-        from utils.functions import get_tile
-        self.tiles = []
-        delete_tile = pygame.image.load("base_assets/delete.png")
-        delete_tile = pygame.transform.scale(delete_tile, (32, 32))
-        self.tiles.append(delete_tile)
-        for tile in load_tiles():
-            self.tiles.append(tile)
-
-    def handle_key_input(self, key):
-        """handle user input to change RGB values"""
-        if self.selected_tab == 2:
-            if key >= 1073741913 and key <= 1073741922:
-                key = (key - 1073741912) % 10
-            elif key >= K_0 and key <= K_9:
-                key = (key - 48)
-            elif key == K_BACKSPACE:
-                key = -1
-            else:
-                return
-            for button_index in range(3): #RGB buttons
-                if self.tools_obj[button_index].state == 1:
-                    self.tools_obj[button_index].edit_label(key)
-            self.selected_color = (self.tools_obj[0].label, self.tools_obj[1].label, self.tools_obj[2].label)
-            self.selected_color = tuple(int (x) if x.isdigit() else 255 for x in self.selected_color)
-
-    def reload_user_tiles(self):
-        """load user tiles"""
-        self.user_tiles = load_tiles("./saves/tiles/")
-        for index in range(len(self.user_tiles)):
-            self.user_tiles[index] = pygame.transform.scale(self.user_tiles[index], (32, 32))
-        self.process_tab(self.screen)
-
-    def reload_blueprints(self):
-        """load user blueprints"""
-        self.blueprints = load_tiles("./saves/blueprints/")
-        self.process_tab(self.screen)
-
     def draw_map_mode(self):
         """Display tiles in the "Tiles" tab"""
         count = 0
@@ -271,38 +198,6 @@ class tab_class():
                     blueprint = pygame.transform.scale(tile, (int(w / maxi * 96), int(h / maxi * 96)))
                 self.surf.blit(blueprint, ((count %3) * 106 + 6, offset + int(count /3) * 106 + 6))
                 count += 1
-
-    def click_map_mode(self, x, y):
-        """Calculate the index of the clicked tile in the map mode"""
-        cliked = 0
-        for button in self.drop_downs:
-            if button.click(x, y):
-                cliked = 1
-
-        if y < self.menu.height or cliked:
-            self.selected_tile = None
-            return
-
-        if self.dropdown_base_tiles:
-            index = self.calcul_index(self.drop_downs[0].rect_value[1] + 20, x, y)
-
-            if index == 0:
-                self.selected_tile = None
-            elif len(self.tiles) > index > 0:
-                self.selected_tile = self.tiles[index]
-
-        if self.dropdown_user_tiles:
-            index = self.calcul_index(self.drop_downs[1].rect_value[1] + 20, x, y)
-
-            if len(self.user_tiles) > index >= 0:
-                self.selected_tile = self.user_tiles[index]
-
-        if self.dropdown_blueprints:
-            index = self.calcul_index(self.drop_downs[2].rect_value[1] + 20, x, y, 106)
-
-            if len(self.blueprints) > index >= 0:
-                self.selected_tile = self.blueprints[index]
-                """self.selected_blueprint ="""
 
     def draw_tile_mode(self):
         """Display color palette in the "Tools" tab"""
@@ -373,6 +268,71 @@ class tab_class():
             surface = create_text_surface("Please create or select an event")
             self.surf.blit(surface, (10, 70))
 
+    def draw(self, screen):
+        """Draw the tab on the screen"""
+
+        for button in self.menu.buttons:
+            button.draw(self.surf)
+        screen.blit(self.surf, (screen.get_width() - self.width, 0))
+
+    def click(self, x, y):
+        """Handle a click event on the tab"""
+
+        if self.selected_tab == 1: # map
+            self.click_map_mode(x, y)
+
+        elif self.selected_tab == 2: # tools
+            self.click_tile_mode(x, y)
+
+        elif self.selected_tab == 3: # settings
+            for button in self.settings_obj:
+                button.click(x, y)
+
+        elif self.selected_tab == 4: # project
+            self.click_project(x, y)
+
+        elif self.selected_tab == 5: # entities
+            self.click_entities(x, y)
+
+        elif self.selected_tab == 6: # events
+            self.click_events(x, y)
+
+        self.process_tab(self.screen)
+
+        return self.selected_tile
+
+    def click_map_mode(self, x, y):
+        """Calculate the index of the clicked tile in the map mode"""
+        cliked = 0
+        for button in self.drop_downs:
+            if button.click(x, y):
+                cliked = 1
+
+        if y < self.menu.height or cliked:
+            self.selected_tile = None
+            return
+
+        if self.dropdown_base_tiles:
+            index = self.calcul_index(self.drop_downs[0].rect_value[1] + 20, x, y)
+
+            if index == 0:
+                self.selected_tile = None
+            elif len(self.tiles) > index > 0:
+                self.selected_tile = self.tiles[index]
+
+        if self.dropdown_user_tiles:
+            index = self.calcul_index(self.drop_downs[1].rect_value[1] + 20, x, y)
+
+            if len(self.user_tiles) > index >= 0:
+                self.selected_tile = self.user_tiles[index]
+
+        if self.dropdown_blueprints:
+            index = self.calcul_index(self.drop_downs[2].rect_value[1] + 20, x, y, 106)
+
+            if len(self.blueprints) > index >= 0:
+                self.selected_tile = self.blueprints[index]
+                """self.selected_blueprint ="""
+
     def click_tile_mode(self, x, y):
         """detect where the click happened in tile mode"""
         for i in range(20): #test the circles
@@ -410,6 +370,46 @@ class tab_class():
                 button.click(x, y)
             for button in self.events_action_buttons[self.events_obj[1].label_number]:
                 button.click(x, y)
+                
+    def create_list_of_tiles(self):
+        """Duplicate tiles for demonstration purposes
+        Load tiles for the "Tiles" tab"""
+        from utils.functions import get_tile
+        self.tiles = []
+        delete_tile = pygame.image.load("base_assets/delete.png")
+        delete_tile = pygame.transform.scale(delete_tile, (32, 32))
+        self.tiles.append(delete_tile)
+        for tile in load_tiles():
+            self.tiles.append(tile)
+
+    def handle_key_input(self, key):
+        """handle user input to change RGB values"""
+        if self.selected_tab == 2:
+            if key >= 1073741913 and key <= 1073741922:
+                key = (key - 1073741912) % 10
+            elif key >= K_0 and key <= K_9:
+                key = (key - 48)
+            elif key == K_BACKSPACE:
+                key = -1
+            else:
+                return
+            for button_index in range(3): #RGB buttons
+                if self.tools_obj[button_index].state == 1:
+                    self.tools_obj[button_index].edit_label(key)
+            self.selected_color = (self.tools_obj[0].label, self.tools_obj[1].label, self.tools_obj[2].label)
+            self.selected_color = tuple(int (x) if x.isdigit() else 255 for x in self.selected_color)
+
+    def reload_user_tiles(self):
+        """load user tiles"""
+        self.user_tiles = load_tiles("./saves/tiles/")
+        for index in range(len(self.user_tiles)):
+            self.user_tiles[index] = pygame.transform.scale(self.user_tiles[index], (32, 32))
+        self.process_tab(self.screen)
+
+    def reload_blueprints(self):
+        """load user blueprints"""
+        self.blueprints = load_tiles("./saves/blueprints/")
+        self.process_tab(self.screen)
 
     def calcul_index(self, offset, x, y, size = 40):
         """calculate the index"""
