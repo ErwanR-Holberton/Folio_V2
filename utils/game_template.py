@@ -66,14 +66,15 @@ while running:
     for entity in entities_class.all:  # draws entities
         entity.draw(screen)
 
-    for tile in map_object.tiles.keys():  # draws border around tiles (temporary)
-        x, y = tile.split(".")
+    for index, tile in map_object.tiles.items():  # draws border around tiles (temporary)
+        x, y = index.split(".")
         x, y = int(x), int(y)
-        pygame.draw.rect(screen, (0, 0, 0), (x * 32, y * 32, 32, 32), 1)
+        if tile.properties["traversable"]:
+            pygame.draw.rect(screen, (0, 0, 0), (x * 32 + cam[0], y * 32 + cam[1], 32, 32), 1)
 
     for event in event_class.all:  # draws border around events (temporary)
         x, y = event.position
-        pygame.draw.rect(screen, (255, 255, 255), (x * 32, y * 32, 32, 32), 1)
+        pygame.draw.rect(screen, (255, 255, 255), (x * 32 + cam[0], y * 32 + cam[1], 32, 32), 1)
 
     if event_class.win:
         rect = screen.get_rect()
