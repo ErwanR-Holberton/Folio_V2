@@ -105,7 +105,10 @@ class entities_class:
     def change_direction(self, direction):
         """change the icon according to direction"""
         self.direction = direction
-        icon = pygame.image.load("./animations/" + self.animation + "/" + direction + ".png")
+        path = "./animations/" + self.animation + "/" + direction + ".png"
+        if not os.path.exists(path):
+            return
+        icon = pygame.image.load(path)
         self.icon = pygame.transform.scale(icon, (32, 32))
 
     def draw(self, screen):
