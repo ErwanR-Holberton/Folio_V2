@@ -195,7 +195,7 @@ class main_screen():
                     for y in range(height):
                         tile = self.selected_tile.subsurface((x * 32, y * 32, 32, 32))
                         button = self.tab.tools_obj[0]  # use a button
-                        path = button.get_path_from_img(tile, full=1)  # 
+                        path = button.get_path_from_img(tile, full=1)  #
 
                         if path is not None and os.path.exists(path):
                             tile = pygame.image.load(path)
@@ -342,7 +342,7 @@ class main_screen():
             if event["position"] == [index_x, index_y]:
                 self.select_event(event)
                 return
-        new_event = {"position": [index_x, index_y], "type": "walk_on", "target": "all", "area": 1, "action": "move", "optional_keys": {}}
+        new_event = {"position": [index_x, index_y], "type": "walk_on", "target": "one", "area": 1, "action": "move", "optional_keys": {}}
         self.events.append(new_event)
         self.select_event(new_event)
 
