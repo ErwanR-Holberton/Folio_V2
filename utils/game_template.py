@@ -45,28 +45,28 @@ while running:
         elif event.type == KEYUP:
             if event.key == K_ESCAPE:
                 running = 0
-            for entity in entities_class.all:
-                entity.move(event.key)
+            for entity in entities_class.all:  # goes through all entities
+                entity.move(event.key)  # moves the entity player
     for entity in entities_class.all:
-        entity.automove()
+        entity.automove()  # moves the entity
 
     if entities_class.camera_focus is not None:
         a, b = entities_class.camera_focus.position  # get position of the focused entity
-        center_x = screen.get_width() // 2
+        center_x = screen.get_width() // 2  # calculate coordinates of center of the screen
         center_y = screen.get_height() // 2
-        cam = entities_class.camera_offset = [center_x - a, center_y - b]
+        cam = entities_class.camera_offset = [center_x - a, center_y - b]  # set the offset according to entity's position and center
     else:
         cam = entities_class.camera_offset = [0, 0]
 
-    screen.fill((50, 50, 50))  #Fill the screen with a white background
+    screen.fill((50, 50, 50))  #Fill the screen with a grey background
 
 
-    screen.blit(map, (map_object.offset[0] * 32 + cam[0], map_object.offset[1] * 32 + cam[1]))
+    screen.blit(map, (map_object.offset[0] * 32 + cam[0], map_object.offset[1] * 32 + cam[1]))  # displays the map
 
     for entity in entities_class.all:  # draws entities
         entity.draw(screen)
 
-    for index, tile in map_object.tiles.items():  # draws border around tiles (temporary)
+    """for index, tile in map_object.tiles.items():  # draws border around tiles (temporary)
         x, y = index.split(".")
         x, y = int(x), int(y)
         if tile.properties["traversable"]:
@@ -74,7 +74,7 @@ while running:
 
     for event in event_class.all:  # draws border around events (temporary)
         x, y = event.position
-        pygame.draw.rect(screen, (255, 255, 255), (x * 32 + cam[0], y * 32 + cam[1], 32, 32), 1)
+        pygame.draw.rect(screen, (255, 255, 255), (x * 32 + cam[0], y * 32 + cam[1], 32, 32), 1)"""
 
     if event_class.win:
         rect = screen.get_rect()

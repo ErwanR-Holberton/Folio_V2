@@ -13,20 +13,20 @@ clock = pygame.time.Clock()
 
 """Main game loop"""
 while running:
-    clock.tick(30)
+    clock.tick(30)  # Refresh rate control
 
     """Event handling loop"""
     for event in pygame.event.get():
         if event.type == QUIT:  # Check for quit event (click on red cross or press Esc key)
-            top.buttons[5].autosave()
-            running = 0
+            top.buttons[5].autosave()  # call autosave function
+            running = 0  # quit the program
 
         elif event.type == KEYUP:  # when a key is released
-            tab.handle_key_input(event.key)
-            tab.process_tab(screen)
+            tab.handle_key_input(event.key)  # handle user input to change RGB values
+            tab.process_tab(screen)  # change appearance of the tab
 
         elif event.type == KEYDOWN:  # when a key is pressed down
-            keys = pygame.key.get_pressed()
+            keys = pygame.key.get_pressed()  # get the keys
             if (keys[K_LCTRL] or keys[K_RCTRL]) and keys[K_z]:
                 top.buttons[4].sub_buttons[0].function()  # call undo
             elif (keys[K_LCTRL] or keys[K_RCTRL]) and keys[K_y]:
