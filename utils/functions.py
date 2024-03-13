@@ -41,7 +41,6 @@ def draw_screen(screen, tab, grid, top):
 
     screen.fill((255, 255, 255))  #Fill the screen with a white background
 
-    tab.draw(screen)  # Draw the menus tab and grid
     grid.draw(screen)
     top.draw()  # Draw menus and submenus
 
@@ -57,6 +56,7 @@ def draw_screen(screen, tab, grid, top):
             pos_x = index_x * 32 + grid.offset[0]
             pos_y = index_y * 32 + grid.offset[1]
             screen.blit(grid.selected_tile, (pos_x , pos_y))
+    tab.draw(screen)  # Draw the menus tab and grid
 
     pygame.display.flip() # Refresh the display
 
