@@ -164,6 +164,7 @@ class button_class():
         name = popup("Please choose a tile to load:", "Tile load", self.grid, self.tab, self.top)
         if name is not None and os.path.exists("./saves/tiles/" + name + ".png"):
             image = pygame.image.load("saves/tiles/" + name + ".png")
+            image = pygame.transform.scale(image, (16, 16))
             tile = self.grid.tile_grid = []
             for line in range(image.get_height()):
                 new_line = []
