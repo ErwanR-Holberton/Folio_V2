@@ -122,7 +122,10 @@ class main_screen():
                 scaled_image = pygame.transform.scale(image, (32, 32))
                 self.surf.blit(scaled_image, (offset[0] + (entity["position"][0]) * 32, offset[1] + (entity["position"][1] * 32)))
             else:  # or red square
-                pygame.draw.rect(self.surf, (255, 0, 0), (offset[0] + (entity["position"][0]) * 32, offset[1] + (entity["position"][1]) * 32, 32, 32))
+                if self.draw_animations(entity, offset):
+                    pass
+                else:
+                    pygame.draw.rect(self.surf, (255, 0, 0), (offset[0] + (entity["position"][0]) * 32, offset[1] + (entity["position"][1]) * 32, 32, 32))
 
             if self.tab.selected_entity == entity:  # draws white square around the selected entity
                 pygame.draw.rect(self.surf, (255, 255, 255), (offset[0] + (entity["position"][0]) * 32, offset[1] + (entity["position"][1]) * 32, 32, 32), 2)
@@ -311,7 +314,7 @@ class main_screen():
 
         new_entity = {"id": str(uuid4()), "skin": None, "stats": {},
                       "name": "Enter_name", "position": [index_x, index_y],
-                      "path_tiles": [], "mobility": 0, "animation": "Trainer"}
+                      "path_tiles": [], "mobility": 0, "animations": {}}
 
         self.entities.append(new_entity)
         self.select_entity(new_entity)
@@ -320,13 +323,13 @@ class main_screen():
         """select an entity and load the dictionnary"""
         self.tab.selected_entity = entity
         if "keys" in entity:
-            self.tab.entities_obj[2].change_label("Playable: yes")
+            self.tab.entities_obj[6].change_label("Playable: yes")
         else:
-            self.tab.entities_obj[2].change_label("Playable: no")
+            self.tab.entities_obj[6].change_label("Playable: no")
         if entity["mobility"]:
-            self.tab.entities_obj[3].change_label("Mobility: yes")
+            self.tab.entities_obj[7].change_label("Mobility: yes")
         else:
-            self.tab.entities_obj[3].change_label("Mobility: no")
+            self.tab.entities_obj[7].change_label("Mobility: no")
         self.allow_process = 1
         self.tab.process_tab(self.screen)
 
@@ -405,3 +408,33 @@ class main_screen():
                     self.events.remove(event)
         self.allow_process = 1
         self.tab.process_tab(self.screen)
+
+    def draw_animations(self, entity, offset):
+
+        result = False
+        if "body" in entity["animations"]:
+            path = "./animations/" + entity["animations"]["body"] + "/down.png"
+            if os.path.exists(path):
+                image = pygame.image.load(path)
+                self.surf.blit(image, (offset[0] + (entity["position"][0]) * 32, offset[1] + (entity["position"][1] * 32)))
+                result = True
+        if "outfit" in entity["animations"]:
+            path = "./animations/" + entity["animations"]["outfit"] + "/down.png"
+            if os.path.exists(path):
+                image = pygame.image.load(path)
+                self.surf.blit(image, (offset[0] + (entity["position"][0]) * 32, offset[1] + (entity["position"][1] * 32)))
+                result = True
+        if "hair" in entity["animations"]:
+            path = "./animations/" + entity["animations"]["hair"] + "/down.png"
+            if os.path.exists(path):
+                image = pygame.image.load(path)
+                self.surf.blit(image, (offset[0] + (entity["position"][0]) * 32, offset[1] + (entity["position"][1] * 32)))
+                result = True
+        if "hat" in entity["animations"]:
+            path = "./animations/" + entity["animations"]["hat"] + "/down.png"
+            if os.path.exists(path):
+                image = pygame.image.load(path)
+                self.surf.blit(image, (offset[0] + (entity["position"][0]) * 32, offset[1] + (entity["position"][1] * 32)))
+                result = True
+        return result
+

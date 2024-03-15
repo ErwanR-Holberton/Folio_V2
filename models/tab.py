@@ -105,17 +105,27 @@ class tab_class():
     def create_entities_variables(self):
         self.entities_obj = [
             button_class("Select skin").set_position(20, 80, 130, 30),
-            button_class("Add stat").set_position(170, 80, 130, 30),
-            button_class("Playable: no").set_position(20, 120, 130, 30),
-            button_class("Mobility: no").set_position(20, 160, 130, 30),
-            button_class("Choose path").set_position(170, 160, 130, 30)
+            button_class("Animation: no").set_position(170, 80, 130, 30),
+            button_class("Hat: no").set_position(20, 120, 130, 30),
+            button_class("Hair: no").set_position(170, 120, 130, 30),
+            button_class("Undies: no").set_position(20, 160, 130, 30),
+            button_class("Outfit: no").set_position(170, 160, 130, 30),
+            button_class("Playable: no").set_position(20, 200, 130, 30),
+            button_class("Mobility: no").set_position(20, 240, 130, 30),
+            button_class("Choose path").set_position(170, 240, 130, 30),
+            button_class("Add stat").set_position(20, 280, 130, 30),
         ]
         self.entities_obj[0].function = self.entities_obj[0].select_skin
-        self.entities_obj[1].function = self.entities_obj[1].add_stat
-        self.entities_obj[2].function = self.entities_obj[2].set_playable_mode
+        self.entities_obj[1].function = self.entities_obj[1].select_animation
+        self.entities_obj[2].function = self.entities_obj[2].change_hat
         self.selected_entity = None
-        self.entities_obj[3].function = self.entities_obj[3].set_mobility
-        self.entities_obj[4].function = self.entities_obj[4].choose_path
+        self.entities_obj[3].function = self.entities_obj[3].change_hair
+        self.entities_obj[4].function = self.entities_obj[4].change_undies
+        self.entities_obj[5].function = self.entities_obj[5].change_outfit
+        self.entities_obj[6].function = self.entities_obj[6].set_playable_mode
+        self.entities_obj[7].function = self.entities_obj[7].set_mobility
+        self.entities_obj[8].function = self.entities_obj[8].choose_path
+        self.entities_obj[9].function = self.entities_obj[9].add_stat
 
     def create_events_variables(self):
         self.events_obj = [
@@ -238,20 +248,22 @@ class tab_class():
             if "keys" in self.selected_entity:
                 keys = self.selected_entity["keys"]
                 size = 18
+                position = self.entities_obj[6].rect_value[1]
                 surface = create_text_surface(pygame.key.name(keys[0]), size)
-                self.surf.blit(surface, (240 - surface.get_width()//2, 120 - surface.get_height()//2))
+                self.surf.blit(surface, (240 - surface.get_width()//2, position - surface.get_height()//2))
                 surface = create_text_surface(pygame.key.name(keys[1]), size)
-                self.surf.blit(surface, (310 - surface.get_width() , 135 - surface.get_height()//2))
+                self.surf.blit(surface, (310 - surface.get_width() , position + 15 - surface.get_height()//2))
                 surface = create_text_surface(pygame.key.name(keys[2]), size)
-                self.surf.blit(surface, (240 - surface.get_width()//2, 150 - surface.get_height() // 2))
+                self.surf.blit(surface, (240 - surface.get_width()//2, position + 30 - surface.get_height() // 2))
                 surface = create_text_surface(pygame.key.name(keys[3]), size)
-                self.surf.blit(surface, (170, 135 - surface.get_height()//2))
+                self.surf.blit(surface, (170, position + 15 - surface.get_height()//2))
             count = 0
+            position = self.entities_obj[9].rect_value[1] + 40
             surface = create_text_surface("Entity stats:")
-            self.surf.blit(surface, (20, 200))
+            self.surf.blit(surface, (20, position))
             for stat, value in self.selected_entity["stats"].items():
                 surface = create_text_surface("{}: {}".format(stat, value))
-                self.surf.blit(surface, (20, 240 + count * 30))
+                self.surf.blit(surface, (20, position + 40 + count * 30))
                 count += 1
         else:
             surface = create_text_surface("Please create or select an entity")
@@ -370,7 +382,7 @@ class tab_class():
                 button.click(x, y)
             for button in self.events_action_buttons[self.events_obj[1].label_number]:
                 button.click(x, y)
-                
+
     def create_list_of_tiles(self):
         """Duplicate tiles for demonstration purposes
         Load tiles for the "Tiles" tab"""

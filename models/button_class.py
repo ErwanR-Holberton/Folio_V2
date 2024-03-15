@@ -687,3 +687,51 @@ class button_class():
             self.change_label("Choose stat: " + value)
             self.tab.selected_event["optional_keys"]["value"] = int(value)
 
+    def select_animation(self):
+        if self.label_number == 0:
+            name = popup("Please enter the animation name", "Choosing an animation", self.grid, self.tab, self.top)
+            if name is not None:
+                self.tab.selected_entity["animations"]["body"] = name
+                self.change_label("Anim: " + name)
+                self.label_number = 1
+            else:
+                if "body" in self.tab.selected_entity["animations"]:
+                    del self.tab.selected_entity["animations"]["body"]
+                self.change_label("Animation: no")
+        elif self.label_number == 1:
+            if "body" in self.tab.selected_entity["animations"]:
+                del self.tab.selected_entity["animations"]["body"]
+            self.change_label("Animation: no")
+            self.label_number = 0
+        self.grid.allow_process = 1
+
+    def change_hat(self):
+        self.switch_button("Please enter the hat name", "Choosing a hat", "hat", "Hat: ")
+
+    def change_hair(self):
+        self.switch_button("Please enter the hair name", "Choosing hair", "hair", "Hair: ")
+
+    def change_undies(self):
+        pass
+
+    def change_outfit(self):
+        self.switch_button("Please enter the outfit name", "Choosing an outfit", "outfit", "Outfit: ")
+
+    def switch_button(self, message, title, key, button_name):
+
+        if self.label_number == 0:
+            name = popup(message, title, self.grid, self.tab, self.top)
+            if name is not None:
+                self.tab.selected_entity["animations"][key] = name
+                self.change_label(button_name + name)
+                self.label_number = 1
+            else:
+                if key in self.tab.selected_entity["animations"]:
+                    del self.tab.selected_entity["animations"][key]
+                self.change_label(button_name + "no")
+        elif self.label_number == 1:
+            if key in self.tab.selected_entity["animations"]:
+                del self.tab.selected_entity["animations"][key]
+            self.change_label(button_name + "no")
+            self.label_number = 0
+        self.grid.allow_process = 1

@@ -21,9 +21,9 @@ class entities_class:
                 self.position = [x * 32 for x in value]
             else:
                 setattr(self, key, value)
-        if hasattr(self, "animation"):
+        if "body" in self.animations:
             self.direction = "down"
-            skins = list_png("animations/" + self.animation)
+            skins = list_png("animations/" + self.animations["body"])
             if "down.png" in skins:
                 self.change_direction("down")
         __class__.camera_focus = self
@@ -31,22 +31,25 @@ class entities_class:
 
     def move(self, key):
         """move the entity player"""
-        new_direction = self.direction
+        if not hasattr(self, "keys"):
+            return
+
+        if hasattr(self.animations, "body"):
+            new_direction = self.direction
         pos = [self.position[0], self.position[1]]
 
-        if hasattr(self, "keys"):
-            if key == self.keys[0]:
-                pos[1] -= 32
-                new_direction = "up"
-            elif key == self.keys[1]:
-                pos[0] += 32
-                new_direction = "right"
-            elif key == self.keys[2]:
-                pos[1] += 32
-                new_direction = "down"
-            elif key == self.keys[3]:
-                pos[0] -= 32
-                new_direction = "left"
+        if key == self.keys[0]:
+            pos[1] -= 32
+            new_direction = "up"
+        elif key == self.keys[1]:
+            pos[0] += 32
+            new_direction = "right"
+        elif key == self.keys[2]:
+            pos[1] += 32
+            new_direction = "down"
+        elif key == self.keys[3]:
+            pos[0] -= 32
+            new_direction = "left"
 
         x = pos[0]//32
         y = pos[1]//32
@@ -57,7 +60,8 @@ class entities_class:
         if index in map.tiles:  # moves the character only if tile is traversable
             if map.tiles[index].properties["traversable"] == 1:
                 self.position = [pos[0], pos[1]]
-                self.change_direction(new_direction)
+                if hasattr(self.animations, "body"):
+                    self.change_direction(new_direction)
                 for event in event_class.all:
                     if event.type == "walk_on":
                         if event.position == [x, y]:
@@ -105,18 +109,31 @@ class entities_class:
     def change_direction(self, direction):
         """change the icon according to direction"""
         self.direction = direction
-        path = "./animations/" + self.animation + "/" + direction + ".png"
+        path = "./animations/" + self.animations["body"] + "/" + direction + ".png"
         if not os.path.exists(path):
             return
         icon = pygame.image.load(path)
         self.icon = pygame.transform.scale(icon, (32, 32))
-        self.add_clothes("Armor2", "Hair1", "Hat1")
+        self.add_clothes()
 
-    def add_clothes(self, outfit=None, hair=None, hat=None):
+    def add_clothes(self):
         """Adds some layers to the skin if the path exists"""
 
-        anim = self.animation
+        anim = self.animations["body"]
         direc = self.direction
+
+        if "outfit" in self.animations:
+            outfit = self.animations["outfit"]
+        else:
+            outfit = None
+        if "hair" in self.animations:
+            hair = self.animations["hair"]
+        else:
+            hair = None
+        if "hat" in self.animations:
+            hat = self.animations["hat"]
+        else:
+            hat = None
 
         if outfit is not None:
             path = "./animations/" + anim + "/outfit/" + outfit + "/" + direc + ".png"
@@ -129,7 +146,7 @@ class entities_class:
             if os.path.exists(path):
                 hair = pygame.image.load(path)
                 self.icon.blit(hair, (0, 0))
-                
+
         if hat is not None:
             path = "./animations/" + anim + "/Hat/" + hat + "/" + direc + ".png"
             if os.path.exists(path):
