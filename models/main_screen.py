@@ -270,13 +270,13 @@ class main_screen():
             offset_copy = (self.tile_offset[0], self.tile_offset[1])
         else:
             offset_copy = None
-        if self.undo_index_map == 0:
-            if self.dragging == 2:
-                self.history_map[0] = [self.tile_surf.copy(), offset_copy]
-            else:
-                self.history_map.insert(0, [self.tile_surf.copy(), offset_copy])
-        else:
-            self.history_map.insert(self.undo_index_map, [self.tile_surf.copy(), offset_copy])
+        if self.undo_index_map == 0:  # did not use ctrl-z before
+            if self.dragging == 2:  # overwrite the save if dragging
+                self.history_map[0] = [self.tile_surf.copy(), offset_copy, self.coordinates.copy()]
+            else:  # new save if not dragging
+                self.history_map.insert(0, [self.tile_surf.copy(), offset_copy, self.coordinates.copy()])
+        else:  # used ctrl-z before
+            self.history_map.insert(self.undo_index_map, [self.tile_surf.copy(), offset_copy, self.coordinates.copy()])
             self.history_map = self.history_map[self.undo_index_map:]
             self.undo_index_map = 0
         if self.dragging == 1:

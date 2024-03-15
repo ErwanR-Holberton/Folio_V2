@@ -158,6 +158,7 @@ class button_class():
             properties = {"traversable": self.tab.traversable_status}
             self.save_json("saves/tiles/" + name + ".json", properties)
         self.grid.tab.reload_user_tiles()
+        self.update_button_position()
 
     def load_tile(self):
         """loads a tile from a png"""
@@ -288,6 +289,7 @@ class button_class():
                 self.grid.undo_index_map += 1
                 self.grid.tile_surf = self.grid.history_map[self.grid.undo_index_map][0].copy()
                 self.grid.tile_offset = self.copy_tuple(self.grid.history_map[self.grid.undo_index_map][1])
+                self.grid.coordinates = self.grid.history_map[self.grid.undo_index_map][2].copy()
         elif self.grid.mode == 1:
             if self.grid.undo_index_tile != len(self.grid.history_tile) - 1:
                 self.grid.undo_index_tile += 1
@@ -300,6 +302,7 @@ class button_class():
                 self.grid.undo_index_map -= 1
                 self.grid.tile_surf = self.grid.history_map[self.grid.undo_index_map][0].copy()
                 self.grid.tile_offset = self.copy_tuple(self.grid.history_map[self.grid.undo_index_map][1])
+                self.grid.coordinates = self.grid.history_map[self.grid.undo_index_map][2].copy()
         elif self.grid.mode == 1:
             if self.grid.undo_index_tile != 0:
                 self.grid.undo_index_tile -= 1
@@ -434,7 +437,9 @@ class button_class():
             self.tab.dropdown_user_tiles = not self.tab.dropdown_user_tiles
         elif self.label.startswith("Blueprints"):
             self.tab.dropdown_blueprints = not self.tab.dropdown_blueprints
+        self.update_button_position()
 
+    def update_button_position(self):
         position = self.tab.drop_downs[0].rect_value[1]
         lines = 0
         if self.tab.dropdown_base_tiles:
