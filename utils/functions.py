@@ -51,7 +51,7 @@ def draw_screen(screen, tab, grid, top):
         scaled = pygame.transform.scale(grid.selected_tile, (32, 32))  # scale selected tile
         screen.blit(scaled, (grid.width - 32, 0))  # draw it
 
-        if grid.selected_tile.get_width() > 32:  # draw the selected blueprint where it will be
+        if grid.selected_tile.get_width() > 32 and grid.mode == 0:  # draw the selected blueprint where it will be
             index_x, index_y = grid.calculate_coordinates(*pygame.mouse.get_pos())
             pos_x = index_x * 32 + grid.offset[0]
             pos_y = index_y * 32 + grid.offset[1]
