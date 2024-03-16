@@ -6,6 +6,8 @@ from random import randint
 import os
 from utils.functions import list_png
 
+body_path = "animations/Character/Body/"
+
 class entities_class:
 
     all = []
@@ -22,10 +24,12 @@ class entities_class:
             else:
                 setattr(self, key, value)
         if "body" in self.animations:
-            self.direction = "down"
-            skins = list_png("animations/" + self.animations["body"])
-            if "down.png" in skins:
-                self.change_direction("down")
+            """self.direction = "down"""
+            path = body_path + self.animations["body"]
+            if os.path.exists(path):
+                skins = list_png(path)
+                if "down.png" in skins:
+                    self.change_direction("down")
         __class__.camera_focus = self
         __class__.all.append(self)
 
@@ -34,7 +38,7 @@ class entities_class:
         if not hasattr(self, "keys"):
             return
 
-        if hasattr(self.animations, "body"):
+        if "body" in self.animations:
             new_direction = self.direction
         pos = [self.position[0], self.position[1]]
 
@@ -60,7 +64,7 @@ class entities_class:
         if index in map.tiles:  # moves the character only if tile is traversable
             if map.tiles[index].properties["traversable"] == 1:
                 self.position = [pos[0], pos[1]]
-                if hasattr(self.animations, "body"):
+                if "body" in self.animations:
                     self.change_direction(new_direction)
                 for event in event_class.all:
                     if event.type == "walk_on":
@@ -109,7 +113,7 @@ class entities_class:
     def change_direction(self, direction):
         """change the icon according to direction"""
         self.direction = direction
-        path = "./animations/" + self.animations["body"] + "/" + direction + ".png"
+        path = body_path + self.animations["body"] + "/" + direction + ".png"
         if not os.path.exists(path):
             return
         icon = pygame.image.load(path)
@@ -119,7 +123,7 @@ class entities_class:
     def add_clothes(self):
         """Adds some layers to the skin if the path exists"""
 
-        anim = self.animations["body"]
+        base_path = "./animations/Character/"
         direc = self.direction
 
         if "outfit" in self.animations:
@@ -134,25 +138,24 @@ class entities_class:
             hat = self.animations["hat"]
         else:
             hat = None
-
+        print(outfit, hair, hat)
         if outfit is not None:
-            path = "./animations/" + anim + "/outfit/" + outfit + "/" + direc + ".png"
+            path = base_path + "Outfit/" + outfit + "/" + direc + ".png"
             if os.path.exists(path):
                 outfit = pygame.image.load(path)
                 self.icon.blit(outfit, (0, 0))
 
         if hair is not None:
-            path = "./animations/" + anim + "/Hair/" + hair + "/" + direc + ".png"
+            path = base_path + "Hair/" + hair + "/" + direc + ".png"
             if os.path.exists(path):
                 hair = pygame.image.load(path)
                 self.icon.blit(hair, (0, 0))
 
         if hat is not None:
-            path = "./animations/" + anim + "/Hat/" + hat + "/" + direc + ".png"
+            path = base_path + "Hat/" + hat + "/" + direc + ".png"
             if os.path.exists(path):
                 hat = pygame.image.load(path)
                 self.icon.blit(hat, (0, 0))
-
 
     def draw(self, screen):
         """draw the entity on the map"""

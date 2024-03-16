@@ -412,29 +412,21 @@ class main_screen():
     def draw_animations(self, entity, offset):
 
         result = False
-        if "body" in entity["animations"]:
-            path = "./animations/" + entity["animations"]["body"] + "/down.png"
-            if os.path.exists(path):
-                image = pygame.image.load(path)
-                self.surf.blit(image, (offset[0] + (entity["position"][0]) * 32, offset[1] + (entity["position"][1] * 32)))
-                result = True
-        if "outfit" in entity["animations"]:
-            path = "./animations/" + entity["animations"]["outfit"] + "/down.png"
-            if os.path.exists(path):
-                image = pygame.image.load(path)
-                self.surf.blit(image, (offset[0] + (entity["position"][0]) * 32, offset[1] + (entity["position"][1] * 32)))
-                result = True
-        if "hair" in entity["animations"]:
-            path = "./animations/" + entity["animations"]["hair"] + "/down.png"
-            if os.path.exists(path):
-                image = pygame.image.load(path)
-                self.surf.blit(image, (offset[0] + (entity["position"][0]) * 32, offset[1] + (entity["position"][1] * 32)))
-                result = True
-        if "hat" in entity["animations"]:
-            path = "./animations/" + entity["animations"]["hat"] + "/down.png"
-            if os.path.exists(path):
-                image = pygame.image.load(path)
-                self.surf.blit(image, (offset[0] + (entity["position"][0]) * 32, offset[1] + (entity["position"][1] * 32)))
-                result = True
+        if self.add_layer(entity, "Body", "body", offset):
+            result = True
+        if self.add_layer(entity, "Outfit", "outfit", offset):
+            result = True
+        if self.add_layer(entity, "Hair", "hair", offset):
+            result = True
+        if self.add_layer(entity, "Hat", "hat", offset):
+            result = True
         return result
+
+    def add_layer(self, entity, folder, name, offset):
+        if name in entity["animations"]:
+            path = "./animations/Character/" + folder + '/' + entity["animations"][name] + "/down.png"
+            if os.path.exists(path):
+                image = pygame.image.load(path)
+                self.surf.blit(image, (offset[0] + (entity["position"][0]) * 32, offset[1] + (entity["position"][1] * 32)))
+                return True
 

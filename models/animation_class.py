@@ -29,10 +29,10 @@ class animation_class:
     def create_win_animations(screen):
         width, height = screen.get_size()
         array = []
-        array.append(__class__((25, height - 500 + 30), "Flame1", 500))
-        array.append(__class__((width - 525, height - 500 + 30), "Flame1", 500))
-        array.append(__class__((400, 200), "Explosion2", 200))
-        array.append(__class__((width - 600, 200), "Explosion2", 200))
+        array.append(__class__((25, height - 500 + 30), "Flames/1", 500))
+        array.append(__class__((width - 525, height - 500 + 30), "Flames/1", 500))
+        array.append(__class__((400, 200), "Explosions/2", 200))
+        array.append(__class__((width - 600, 200), "Explosions/2", 200))
         return array
 
     @staticmethod
@@ -41,6 +41,6 @@ class animation_class:
         array = []
         array.append(__class__((25, height - 300 + 30), "Light outline Skull pack", 200))
         array.append(__class__((width - 225, height - 300 + 30), "Light outline Skull pack", 200))
-        array.append(__class__((400, 200), "Explosion2", 200))
-        array.append(__class__((width - 600, 200), "Explosion2", 200))
+        array.append(__class__((400, 200), "Explosions/2", 200))
+        array.append(__class__((width - 600, 200), "Explosions/2", 200))
         return array
