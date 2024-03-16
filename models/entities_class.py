@@ -4,7 +4,7 @@ from models.map_class import map_class
 from models.events_class import event_class
 from random import randint
 import os
-from utils.functions import list_png
+from utils.functions import list_png, create_text_surface
 
 body_path = "animations/Character/Body/"
 
@@ -79,10 +79,15 @@ class entities_class:
 
         x = pos[0]//32
         y = pos[1]//32
+        direction = self.direction
         if randint(0, 1):
-            x += randint(-1, 1)
+            change = randint(-1, 1)
+            x += change
+            direction = "right" if change == 1 else ("left" if change == -1 else direction)
         else:
-            y += randint(-1, 1)
+            change = randint(-1, 1)
+            y += change
+            direction = "down" if change == 1 else ("up" if change == -1 else direction)
 
         map = map_class.list_of_maps[map_class.current_map]  # get the current map
 
@@ -91,6 +96,7 @@ class entities_class:
             if index in map.tiles:  # moves the character only if tile is traversable
                 if map.tiles[index].properties["traversable"] == 1:
                     self.position = [x * 32, y * 32]
+                    self.change_direction(direction)
                     self.move_cooldown = pygame.time.get_ticks()
                     for event in event_class.all:
                         if event.type == "walk_on":
@@ -138,7 +144,6 @@ class entities_class:
             hat = self.animations["hat"]
         else:
             hat = None
-        print(outfit, hair, hat)
         if outfit is not None:
             path = base_path + "Outfit/" + outfit + "/" + direc + ".png"
             if os.path.exists(path):

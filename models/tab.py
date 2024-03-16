@@ -185,7 +185,7 @@ class tab_class():
             dropdown.draw(self.surf)
         offset = self.drop_downs[0].rect_value[1] + 20
         if self.dropdown_base_tiles:    #draw base tiles
-            for tile in self.tiles:
+            for tile, name in self.tiles:
                 self.surf.blit(tile, ((count %TILES_PER_LINE) * 40 + 4, offset + int(count /TILES_PER_LINE) * 40 + 4)) #remplacer par height
                 count += 1
 
@@ -193,19 +193,19 @@ class tab_class():
 
         count = 0
         if self.dropdown_user_tiles:    #draw user tiles
-            for tile in self.user_tiles:
+            for tile, name in self.user_tiles:
                 self.surf.blit(tile, ((count %TILES_PER_LINE) * 40 + 4, offset + int(count /TILES_PER_LINE) * 40 + 4)) #remplacer par height
                 count += 1
         offset = self.drop_downs[2].rect_value[1] + 20
         count = 0
         if self.dropdown_blueprints:    #draw blueprints
             for tile in self.blueprints:
-                w = tile.get_width()
-                h = tile.get_height()
+                w = tile[0].get_width()
+                h = tile[0].get_height()
                 maxi = max(w, h)
-                blueprint = tile
+                blueprint = tile[0]
                 if maxi > 96:
-                    blueprint = pygame.transform.scale(tile, (int(w / maxi * 96), int(h / maxi * 96)))
+                    blueprint = pygame.transform.scale(tile[0], (int(w / maxi * 96), int(h / maxi * 96)))
                 self.surf.blit(blueprint, ((count %3) * 106 + 6, offset + int(count /3) * 106 + 6))
                 count += 1
 
@@ -390,7 +390,7 @@ class tab_class():
         self.tiles = []
         delete_tile = pygame.image.load("base_assets/delete.png")
         delete_tile = pygame.transform.scale(delete_tile, (32, 32))
-        self.tiles.append(delete_tile)
+        self.tiles.append([delete_tile, "bdelete"])
         for tile in load_tiles():
             self.tiles.append(tile)
 
@@ -415,7 +415,7 @@ class tab_class():
         """load user tiles"""
         self.user_tiles = load_tiles("./saves/tiles/")
         for index in range(len(self.user_tiles)):
-            self.user_tiles[index] = pygame.transform.scale(self.user_tiles[index], (32, 32))
+            self.user_tiles[index][0] = pygame.transform.scale(self.user_tiles[index][0], (32, 32))
         self.process_tab(self.screen)
 
     def reload_blueprints(self):

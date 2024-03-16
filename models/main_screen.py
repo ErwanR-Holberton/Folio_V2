@@ -190,13 +190,13 @@ class main_screen():
                     for y in range(self.tile_size):
                         self.tile_surf.set_at(((index_x - self.tile_offset[0]) * self.tile_size + x, (index_y - self.tile_offset[1]) * self.tile_size + y), (0, 0, 0, 0))
         else:   # if we don't erase we place the tile
-            width = self.selected_tile.get_width() // 32
-            height = self.selected_tile.get_height() // 32
+            width = self.selected_tile[0].get_width() // 32
+            height = self.selected_tile[0].get_height() // 32
 
             if width > 1 or height > 1: #handle blueprint
                 for x in range(width):
                     for y in range(height):
-                        tile = self.selected_tile.subsurface((x * 32, y * 32, 32, 32))
+                        tile = self.selected_tile[0].subsurface((x * 32, y * 32, 32, 32))
                         button = self.tab.tools_obj[0]  # use a button
                         path = button.get_path_from_img(tile, full=1)  #
 
@@ -211,7 +211,7 @@ class main_screen():
 
             elif index not in self.coordinates or self.coordinates[index] != self.selected_tile:
                 self.coordinates[index] = self.selected_tile
-                self.append_surface(index_x, index_y, self.selected_tile)
+                self.append_surface(index_x, index_y, self.selected_tile[0])
                 self.save_history_map()
 
     def append_surface(self, index_x, index_y, tile):

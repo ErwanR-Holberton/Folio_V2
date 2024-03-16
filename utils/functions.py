@@ -15,7 +15,6 @@ def get_tile(x, y, set = tileset):
 
 def load_tiles(path = "./base_assets/tiles/"):
     """Load individual tiles from the desired directory and return a list of scaled tiles."""
-
     tile_list = list_png(path)  # lists the png files
     tile_list.sort()
 
@@ -25,9 +24,11 @@ def load_tiles(path = "./base_assets/tiles/"):
 
         if path == "./base_assets/tiles/":
             scaled_image = pygame.transform.scale(loaded_image, (32, 32))
-            tiles.append(scaled_image)
+            tiles.append([scaled_image, "b" + file[:-4]])
+        elif path == "./saves/tiles/":
+            tiles.append([loaded_image, "u" + file[:-4]])
         else:
-            tiles.append(loaded_image)
+            tiles.append([loaded_image])
 
     return tiles
 
@@ -48,14 +49,14 @@ def draw_screen(screen, tab, grid, top):
     pygame.draw.rect(screen, (100, 100, 100), (grid.width - 32, 0, 32, 32))  # background
     pygame.draw.rect(screen, (0, 0, 0), (grid.width - 32, 0, 32, 32), 1)  # border
     if grid.selected_tile is not None:
-        scaled = pygame.transform.scale(grid.selected_tile, (32, 32))  # scale selected tile
+        scaled = pygame.transform.scale(grid.selected_tile[0], (32, 32))  # scale selected tile
         screen.blit(scaled, (grid.width - 32, 0))  # draw it
 
-        if grid.selected_tile.get_width() > 32 and grid.mode == 0:  # draw the selected blueprint where it will be
+        if grid.selected_tile[0].get_width() > 32 and grid.mode == 0:  # draw the selected blueprint where it will be
             index_x, index_y = grid.calculate_coordinates(*pygame.mouse.get_pos())
             pos_x = index_x * 32 + grid.offset[0]
             pos_y = index_y * 32 + grid.offset[1]
-            screen.blit(grid.selected_tile, (pos_x , pos_y))
+            screen.blit(grid.selected_tile[0], (pos_x , pos_y))
     tab.draw(screen)  # Draw the menus tab and grid
 
     pygame.display.flip() # Refresh the display

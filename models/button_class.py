@@ -248,7 +248,7 @@ class button_class():
                     if os.path.exists(path):
                         image = pygame.image.load(path)
                         scaled_image = pygame.transform.scale(image, (32, 32))
-                        self.grid.coordinates[key] = scaled_image
+                        self.grid.coordinates[key] = [scaled_image, value]
             self.grid.save_history_map()
 
     def new_map(self):
@@ -272,7 +272,7 @@ class button_class():
         pygame.image.save(self.grid.tile_surf, destination + ".png")
         tiles = {}
         for key, value in self.grid.coordinates.items():
-            tiles[key] = self.get_path_from_img(value)[:-4]
+            tiles[key] = value[1]
         offset = self.grid.tile_offset or [0, 0]
         map_dict = {"offset": offset, "tiles": tiles, "events": self.grid.events, "entities": self.grid.entities}
         self.save_json(destination + ".json", map_dict)
