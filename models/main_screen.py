@@ -308,6 +308,8 @@ class main_screen():
         if self.mode == 1:
             return
 
+        self.tab.unselect_buttons(self.tab.entities_obj)
+
         index_x, index_y = self.calculate_coordinates(x, y)
 
         for entity in self.entities:  # check if click on existing entity
@@ -341,6 +343,7 @@ class main_screen():
 
         if self.mode == 1:
             return
+        self.tab.unselect_buttons(self.tab.events_obj)
 
         index_x, index_y = self.calculate_coordinates(x, y)
 

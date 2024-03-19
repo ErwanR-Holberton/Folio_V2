@@ -355,6 +355,7 @@ class tab_class():
 
     def click_tile_mode(self, x, y):
         """detect where the click happened in tile mode"""
+        self.unselect_buttons(self.tools_obj)
         for i in range(20): #test the circles
             center_x = 20 + (i % 10) * 30
             center_y = 90 + int(i / 10) * 35
@@ -382,12 +383,14 @@ class tab_class():
 
     def click_entities(self, x, y):
         """detect click on tab entities"""
+        self.unselect_buttons(self.entities_obj)
         if self.selected_entity is not None:
             for button in self.entities_obj:
                 button.click(x, y)
 
     def click_events(self, x, y):
         """detect click on tab events"""
+        self.unselect_buttons(self.events_obj)
         if self.selected_event is not None:
             for button in self.events_obj:
                 button.click(x, y)
@@ -395,8 +398,7 @@ class tab_class():
                 button.click(x, y)
 
     def create_list_of_tiles(self):
-        """Duplicate tiles for demonstration purposes
-        Load tiles for the "Tiles" tab"""
+        """Load tiles for the "Tiles" tab"""
         self.tiles = []
         delete_tile = pygame.image.load("base_assets/delete.png")
         delete_tile = pygame.transform.scale(delete_tile, (32, 32))
@@ -451,3 +453,10 @@ class tab_class():
                 x, y, width, height = button.rect_value
                 button.set_position(x, y + value, width, height)
             self.process_tab(self.screen)
+
+    def unselect_buttons(self, array):
+        """unselects all buttons in the array"""
+        for button in array:
+            button.state = 0
+        self.process_tab(self.screen)
+        self.grid.allow_process = 1
