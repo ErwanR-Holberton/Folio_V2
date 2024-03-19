@@ -252,6 +252,7 @@ class button_class():
             self.grid.save_history_map()
 
     def new_map(self):
+        """creates a new map"""
         self.grid.entities = []
         self.grid.events = []
         self.grid.set = None
@@ -284,6 +285,7 @@ class button_class():
             os.remove("./saves/maps/" + name + ".png")
 
     def undo(self):
+        """undo the last action made"""
         if self.grid.mode == 0:
             if self.grid.undo_index_map != len(self.grid.history_map) - 1:
                 self.grid.undo_index_map += 1
@@ -297,6 +299,7 @@ class button_class():
         self.grid.allow_process = 1
 
     def redo(self):
+        """redo the last action undone"""
         if self.grid.mode == 0:
             if self.grid.undo_index_map != 0:
                 self.grid.undo_index_map -= 1
@@ -310,6 +313,7 @@ class button_class():
         self.grid.allow_process = 1
 
     def activate_grid(self):
+        """change the status of the grid"""
         self.grid.grid_status += 1  # status changes in a loop
         self.grid.grid_status %= 3  # 0 -> 1 -> 2 -> 0
 
@@ -327,6 +331,7 @@ class button_class():
         self.grid.allow_process = 1
 
     def activate_traversable(self):
+        """change the traversable status of a tile"""
         self.tab.traversable_status += 1  # status changes in a loop
         self.tab.traversable_status %= 2  # 0 -> 1 -> 0
 
@@ -342,6 +347,7 @@ class button_class():
 
     @staticmethod
     def copy_tuple(target):
+        """copy a tuple"""
         if target is None:
             return None
         return (target[0], target[1])
@@ -365,6 +371,7 @@ class button_class():
         self.grid.allow_process = 1
 
     def new_project(self):
+        """creates a new project"""
         name = popup("Please choose a name for the project:", "New project", self.grid, self.tab, self.top)
         if name is not None and not os.path.exists("./saves/projects/" + name):
             self.tab.project_name = name
@@ -389,7 +396,7 @@ class button_class():
             self.tab.process_tab(self.tab.screen)
 
     def link_map_to_project(self):
-
+        """links a chosen map to the current project"""
         name = popup("Please choose a map to link:", "Map link", self.grid, self.tab, self.top)
 
         if name is not None:
@@ -401,6 +408,7 @@ class button_class():
                 self.tab.map_list.append(name)
 
     def new_blueprint(self):
+        """creates a new blueprint"""
         self.new_map()
 
     def load_blueprint(self):
@@ -431,6 +439,7 @@ class button_class():
             self.grid.tab.reload_blueprints()
 
     def dropdown_function(self):
+        """Toggle dropdown visibility based on the label of the dropdown button."""
         if self.label.startswith("Base tiles"):
             self.tab.dropdown_base_tiles = not self.tab.dropdown_base_tiles
         elif self.label.startswith("User tiles"):
@@ -440,6 +449,7 @@ class button_class():
         self.update_button_position()
 
     def update_button_position(self):
+        """ Update the position of dropdown buttons based on the dropdown visibility and content."""
         position = self.tab.drop_downs[0].rect_value[1]
         lines = 0
         if self.tab.dropdown_base_tiles:
@@ -457,6 +467,7 @@ class button_class():
 
     @staticmethod
     def help():
+        """opens browser page with help for the user"""
         import subprocess
         try:  # Run the wslpath command and capture the output
             path = './base_assets/index.html'
@@ -467,6 +478,7 @@ class button_class():
             print(f"Error: {e}")
 
     def play(self):
+        """start the testing mode"""
         import subprocess
         self.autosave()
         subprocess.run(['./utils/game_template.py', './saves/autosave_map.png'])
@@ -488,12 +500,14 @@ class button_class():
         self.save_json("./saves/autosave_events.json", self.grid.events)
 
     def select_skin(self):
+        """allow the user to choose a skin for an entity"""
         name = popup("Please choose a tile as a skin for the entity", "Change skin", self.grid, self.tab, self.top)
         if name is not None and os.path.exists("./saves/tiles/" + name + ".png"):
             self.tab.selected_entity["skin"] = name
             self.grid.allow_process = 1
 
     def set_playable_mode(self):
+        """allow the user to choose keys to move the chosen entity"""
         self.cycle_labels(["Playable: no", "Playable: yes"])
         if self.label_number == 0:
             if "keys" in self.tab.selected_entity:
@@ -510,6 +524,7 @@ class button_class():
                 self.cycle_labels(["Playable: no", "Playable: yes"])
 
     def add_stat(self):
+        """allow user to add a stat to an entity"""
         stat_name = popup("Please enter a stat for the entity", "Adding a stat", self.grid, self.tab, self.top)
         stat_value = popup("Please enter a value for the stat", "Setting the value", self.grid, self.tab, self.top)
 
@@ -563,10 +578,12 @@ class button_class():
         self.grid.allow_process = 1
 
     def change_label(self, new_label):
+        """change the message of the button"""
         self.text_surface = create_text_surface(new_label)
         self.set_position(*self.rect_value)
 
     def select_event_type(self):
+        """change the type of an event"""
         self.cycle_labels(["Type: walk on", "Type: map start"])
         if self.label_number == 0:
             self.tab.selected_event["type"] = "walk_on"
@@ -688,6 +705,7 @@ class button_class():
             self.tab.selected_event["optional_keys"]["value"] = int(value)
 
     def select_animation(self):
+        """ask the user to enter animation name"""
         if self.label_number == 0:
             name = popup("Please enter the animation name", "Choosing an animation", self.grid, self.tab, self.top)
             if name is not None:
@@ -706,19 +724,22 @@ class button_class():
         self.grid.allow_process = 1
 
     def change_hat(self):
+        """ask the user to change hat of the entity"""
         self.switch_button("Please enter the hat name", "Choosing a hat", "hat", "Hat: ")
 
     def change_hair(self):
+        """ask the user to change hair of the entity"""
         self.switch_button("Please enter the hair name", "Choosing hair", "hair", "Hair: ")
 
     def change_undies(self):
         pass
 
     def change_outfit(self):
+        """ask the user to change outfit of the entity"""
         self.switch_button("Please enter the outfit name", "Choosing an outfit", "outfit", "Outfit: ")
 
     def switch_button(self, message, title, key, button_name):
-
+        """this function is used to have a 2 states button"""
         if self.label_number == 0:
             name = popup(message, title, self.grid, self.tab, self.top)
             if name is not None:

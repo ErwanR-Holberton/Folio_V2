@@ -3,6 +3,7 @@ import pygame
 from utils.functions import create_text_surface
 
 class event_class():
+    """define event class"""
 
     all = []
     win = 0

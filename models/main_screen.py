@@ -8,6 +8,7 @@ from uuid import uuid4
 PIXEL_NUMBER = 16
 
 class main_screen():
+    """define main screen class"""
 
     def __init__(self, screen):
         """Initialize the main screen instance"""
@@ -180,6 +181,7 @@ class main_screen():
         return index
 
     def set_tile(self, index, index_x, index_y):
+        """add a tile to the background"""
         if self.selected_tile is None: # None is the value to delete a tile
             if index in self.coordinates: # so we delete it from the list
                 del self.coordinates[index]
@@ -253,6 +255,7 @@ class main_screen():
             self.tile_surf.blit(tile, ((index_x + modified_offset[0]) * self.tile_size, (index_y + modified_offset[1]) * self.tile_size))
 
     def set_color(self, x, y, color, screen):
+        """in tile mode set the color of one pixel"""
         height = screen.get_height()
         pixel_size_x = (self.width - 20) / PIXEL_NUMBER
         pixel_size_y = (height - 30 - 20) / PIXEL_NUMBER #remplacer 30 par menu height
@@ -410,7 +413,7 @@ class main_screen():
         self.tab.process_tab(self.screen)
 
     def draw_animations(self, entity, offset):
-
+        """displays the animation on screen"""
         result = False
         if self.add_layer(entity, "Body", "body", offset):
             result = True
@@ -423,6 +426,7 @@ class main_screen():
         return result
 
     def add_layer(self, entity, folder, name, offset):
+        """add a layer"""
         if name in entity["animations"]:
             path = "./animations/Character/" + folder + '/' + entity["animations"][name] + "/down.png"
             if os.path.exists(path):

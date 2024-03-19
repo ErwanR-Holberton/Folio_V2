@@ -68,7 +68,7 @@ class menu_class():
             self.width = self.current_width
 
     def hover(self, x, y):
-        """"""
+        """test if the mouse is on the button"""
         button_hovered = False
         for button in self.buttons:
             if button.hover(x, y):
@@ -78,7 +78,7 @@ class menu_class():
         return button_hovered
 
     def click(self, x, y):
-        """"""
+        """test if the user clicked on the button"""
         clicked = 0
         for button in self.buttons:
             button.color = (150, 150, 150)
@@ -89,5 +89,6 @@ class menu_class():
         return clicked
 
     def draw(self):
+        """draw the buttons"""
         for button in self.buttons:
             button.draw(self.screen)

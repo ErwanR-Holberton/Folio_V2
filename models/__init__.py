@@ -4,7 +4,7 @@ from models.tab import *  # import models
 from models.main_screen import *
 from models.menu_class import menu_class
 
-from utils.functions import get_tile, load_tiles, draw_screen
+from utils.functions import load_tiles, draw_screen
 from utils.popups import popup
 
 import pygame                   # import pygame and variables
@@ -13,7 +13,7 @@ from pygame.locals import *
 pygame.init()                   # initialize pygame library
 
 screen = pygame.display.set_mode((1200, 800), pygame.RESIZABLE)  # create the screen
-pygame.display.set_caption("RPG Map Builder")
+pygame.display.set_caption("RPG Map Builder")  # set the title on top of the window
 
 system("clear")  # clear terminal (linux)
 

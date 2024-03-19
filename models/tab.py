@@ -65,6 +65,7 @@ class tab_class():
             self.colors.append((255, 255, 255))
 
     def create_map_mode_variables(self):
+        """create the variables used for this tab"""
         self.dropdown_base_tiles = 0
         self.dropdown_user_tiles = 0
         self.dropdown_blueprints = 0
@@ -77,6 +78,7 @@ class tab_class():
             button.function = button.dropdown_function
 
     def create_tile_mode_variables(self):
+        """create the variables used for this tab"""
         self.traversable_status = 1
         self.tools_obj = []
         self.tools_obj.append(button_class("R"))
@@ -93,6 +95,7 @@ class tab_class():
         self.tools_obj[4].function = self.tools_obj[4].activate_traversable
 
     def create_settings_variables(self):
+        """create the variables used for this tab"""
         self.settings_obj = [
             button_class("Grid Under").set_position(20, 80, 130, 30),
             button_class("Show entities: always").set_position(20, 120, 280, 30),
@@ -103,6 +106,7 @@ class tab_class():
         self.settings_obj[2].function = self.settings_obj[2].show_events
 
     def create_entities_variables(self):
+        """create the variables used for this tab"""
         self.entities_obj = [
             button_class("Select skin").set_position(20, 80, 130, 30),
             button_class("Animation: no").set_position(170, 80, 130, 30),
@@ -128,6 +132,7 @@ class tab_class():
         self.entities_obj[9].function = self.entities_obj[9].add_stat
 
     def create_events_variables(self):
+        """create the variables used for this tab"""
         self.events_obj = [
             button_class("Type: walk on").set_position(20, 80, 280, 30),
             button_class("Action: move").set_position(20, 120, 280, 30),
@@ -228,6 +233,7 @@ class tab_class():
             button.draw(self.surf)
 
     def draw_project(self):
+        """draw the project tab"""
         if self.project_name is None:
             surface = create_text_surface("Please create or load a project")
             self.surf.blit(surface, (10, 70))
@@ -242,6 +248,7 @@ class tab_class():
                 count += 1
 
     def draw_entities(self):
+        """draw the entities tab"""
         if self.selected_entity is not None:
             for button in self.entities_obj:
                 button.draw(self.surf)
@@ -270,6 +277,7 @@ class tab_class():
             self.surf.blit(surface, (10, 70))
 
     def draw_events(self):
+        """draw the events tab"""
         if self.selected_event is not None:
             for button in self.events_obj:  # draw permanent button
                 button.draw(self.surf)
@@ -369,14 +377,17 @@ class tab_class():
                         self.colors[10] = self.selected_color
 
     def click_project(self, x, y):
+        """detect click on tab project"""
         self.linking_button.click(x, y)
 
     def click_entities(self, x, y):
+        """detect click on tab entities"""
         if self.selected_entity is not None:
             for button in self.entities_obj:
                 button.click(x, y)
 
     def click_events(self, x, y):
+        """detect click on tab events"""
         if self.selected_event is not None:
             for button in self.events_obj:
                 button.click(x, y)
@@ -386,7 +397,6 @@ class tab_class():
     def create_list_of_tiles(self):
         """Duplicate tiles for demonstration purposes
         Load tiles for the "Tiles" tab"""
-        from utils.functions import get_tile
         self.tiles = []
         delete_tile = pygame.image.load("base_assets/delete.png")
         delete_tile = pygame.transform.scale(delete_tile, (32, 32))

@@ -9,6 +9,7 @@ from utils.functions import list_png, create_text_surface
 body_path = "animations/Character/Body/"
 
 class entities_class:
+    """define entities class"""
 
     all = []
     camera_focus = None
@@ -72,7 +73,7 @@ class entities_class:
                             event.trigger(self)
 
     def automove(self):
-
+        """make the entities move on their own"""
         if self.mobility == 0 or pygame.time.get_ticks() - self.move_cooldown < 500:
             return
         pos = [self.position[0], self.position[1]]

@@ -2,16 +2,6 @@ import pygame
 import os
 import json
 
-tileset = pygame.image.load("tileset.png") #Load the tileset image
-
-def get_tile(x, y, set = tileset):
-    """Extract a specific tile from the tileset and scale it to the desired size."""
-
-    """Extract the specified tile from the tileset"""
-    tile = set.subsurface((y * 16, x * 16, 16, 16)).copy()
-
-    """Scale the tile to the desired size (32x32)"""
-    return pygame.transform.scale(tile, (32, 32))
 
 def load_tiles(path = "./base_assets/tiles/"):
     """Load individual tiles from the desired directory and return a list of scaled tiles."""

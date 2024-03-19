@@ -2,13 +2,16 @@ import pygame
 import os
 
 class animation_class:
+    """define animation class"""
     def __init__(self, position, animation_name, scale=64, path="./animations/"):
+        """Initialize the animation object"""
         self.path = path + animation_name
         self.frame_number = 0
         self.position = position
         self.scale = (scale, scale)
 
     def draw_next_frame(self, surface):
+        """Draw the next frame of the animation on the given surface."""
         frame_names = [f for f in os.listdir(self.path)]
         frame_names.sort()
 
@@ -21,12 +24,14 @@ class animation_class:
         surface.blit(scaled, self.position)
 
     def get_size(self):
+        """ Get the size of the first frame of the animation."""
         name = [f for f in os.listdir(self.path)][0]
         image = pygame.image.load(self.path + "/" + name)
         return image.get_size()
 
     @staticmethod
     def create_win_animations(screen):
+        """ Create a list of Animation objects for winning animations."""
         width, height = screen.get_size()
         array = []
         array.append(__class__((25, height - 500 + 30), "Flames/1", 500))
@@ -37,6 +42,7 @@ class animation_class:
 
     @staticmethod
     def create_loose_animations(screen):
+        """Create a list of Animation objects for losing animations."""
         width, height = screen.get_size()
         array = []
         array.append(__class__((25, height - 300 + 30), "Light outline Skull pack", 200))
