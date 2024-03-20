@@ -1,4 +1,4 @@
-# RPG Map Builder V0
+# RPG Map Builder V1
 
 ### Welcome to our RPG Map Builder project! This project is designed as part of our end-of-study Fundamentals of Computer Programming demo at Holberton school. It's a versatile tool that empowers users to craft custom maps and effortlessly save them for integration into various applications, particularly games. This user-friendly program allows seamless management of map collections organized into projects. The feature of creating personalized tiles offers unparalleled design freedom, making it an ideal choice for creative minds seeking a dynamic and customizable mapping solution.
 
