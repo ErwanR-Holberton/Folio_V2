@@ -200,12 +200,19 @@ class main_screen():
                     for y in range(height):
                         tile = self.selected_tile[0].subsurface((x * 32, y * 32, 32, 32))
                         button = self.tab.tools_obj[0]  # use a button
-                        path = button.get_path_from_img(tile, full=1)  #
+                        path = button.get_path_from_img(tile)  #
+                        tile_name = path
+                        
+                        if path is not None:
+                            if path[0] == 'b':
+                                path = "./base_assets/tiles/" + path
+                            elif path[0] == 'u':
+                                path = "./saves/tiles/" + path
 
-                        if path is not None and os.path.exists(path):
-                            tile = pygame.image.load(path)
-                            tile = pygame.transform.scale(tile, (32, 32))
-                            self.coordinates["{}.{}".format(index_x + x, index_y + y)] = tile
+                            if os.path.exists(path):
+                                tile = pygame.image.load(path)
+                                tile = pygame.transform.scale(tile, (32, 32))
+                                self.coordinates["{}.{}".format(index_x + x, index_y + y)] = [tile, tile_name[:-4]]
 
                         self.append_surface(index_x + x, index_y + y, tile)
 
